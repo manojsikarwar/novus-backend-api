@@ -89,7 +89,8 @@ module.exports.user_list = (body,user) => {
 									'zipcode':key.zipcode.trim(),
 									'user_id':key.user_id,
 									'role_id':key.role_id,
-									'status':key.status
+									'status':key.status,
+									'app_user':key.app_user
 								}
 								Array.push(userlist);
 							}
