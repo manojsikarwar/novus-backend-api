@@ -1,0 +1,91 @@
+const Super = require('../Controller/superadmin_controller');
+
+
+module.exports.user_list = (req, res, next)=>{
+	const body = req.body;
+	const user = req.user;
+
+	Super.user_list(body, user)
+	.then((Data)=>{
+		res.json(Data);
+	}).catch((err)=>res.json({'success':false,'message':'err'}));
+}
+
+module.exports.user_approve = (req, res, next)=>{
+	const body = req.body;
+	const user = req.user;
+
+	Super.user_approve(body, user)
+	.then((Data)=>{
+		res.json(Data);
+	}).catch((err)=>res.json({'success':false,'message':'err'}));
+}
+
+module.exports.user_disapprove = (req, res, next)=>{
+	const body = req.body;
+	const user = req.user;
+
+	Super.user_disapprove(body, user)
+	.then((Data)=>{
+		res.json(Data);
+	}).catch((err)=>res.json({'success':false,'message':'err'}));
+}
+
+module.exports.super_update_profile = (req, res, next)=>{
+	const user = req.user;
+	const body = req.body;
+
+	Super.super_update_profile(user,body)
+	.then((Data)=>{
+		res.json(Data);
+	}).catch((err)=>res.json({'success':false,'message':'err'}));
+}
+
+module.exports.super_forget_password = (req, res, next)=>{
+	const email = req.body.email;
+
+	Super.super_forget_password(email)
+	.then((Data)=>{
+		res.json(Data);
+	}).catch((err)=>res.json({'success':false,'message':'err'}));
+}
+
+module.exports.admin_update_userProfile = (req, res, next)=>{
+	const body = req.body;
+	const user = req.user;
+
+	Super.admin_update_userProfile(body, user)
+	.then((Data)=>{
+		res.json(Data);
+	}).catch((err)=>res.json({'success':false,'message':'err'}));
+}
+
+module.exports.admin_delete_user = (req, res, next)=>{
+	const body = req.body;
+	const user = req.user;
+
+	Super.admin_delete_user(body, user)
+	.then((Data)=>{
+		res.json(Data);
+	}).catch((err)=>res.json({'success':false,'message':'err'}));
+}
+
+module.exports.admin_search_user = (req, res, next)=>{
+	const body = req.body;
+	const user = req.user;
+
+	Super.admin_search_user(body, user)
+	.then((Data)=>{
+		res.json(Data);
+	}).catch((err)=>res.json({'success':false,'message':'err'}));
+}
+
+module.exports.send_notification = (req, res, next)=>{
+	const body = req.body;
+	const user = req.user;
+
+	Super.send_notification(body, user)
+	.then((Data)=>{
+		res.json(Data);
+	}).catch((err)=>res.json({'success':false,'message':'err'}));
+}
