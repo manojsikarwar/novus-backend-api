@@ -90,7 +90,7 @@ module.exports.user_list = (body,user) => {
 									'user_id':key.user_id,
 									'role_id':key.role_id,
 									'status':key.status,
-									'app_user':key.app_user
+									'app_user':JSON.parse(key.app_user)
 								}
 								Array.push(userlist);
 							}
