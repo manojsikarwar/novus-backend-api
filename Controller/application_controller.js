@@ -438,7 +438,7 @@ module.exports.createUser = (body, user) => {
 												state 		: body.state,
 												city 		: body.city,
 												zipcode 	: body.zipcode,
-												status 		: '1',
+												status 		: '0',
 												role_id 	: '4',
 												created_date: myDate,
 												created_by 	: 'NONE',
