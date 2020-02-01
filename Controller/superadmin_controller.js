@@ -65,7 +65,7 @@ module.exports.user_list = (body,user) => {
 			const email = body.email;
 			const role_id = user.role_id;
 			const status = body.status;
-			const Array = [];
+			const UserArray = [];
 			if(role_id == 1){
 				const listuser = `select * from signup`;
 				client.query(listuser,(listerr, listress)=>{
@@ -76,23 +76,44 @@ module.exports.user_list = (body,user) => {
 							resolve(message.DATANOTFOUND);
 						}else{
 							for(let key of listress.rows){
-								
-								const userlist = {
-									'fullname':key.fullname.trim(),
-									'email':key.email.trim(),
-									'company':key.company.trim(),
-									'address1':key.address1.trim(),
-									'address2':key.address2.trim(),
-									'country':key.country.trim(),
-									'state':key.state.trim(),
-									'city':key.city.trim(),
-									'zipcode':key.zipcode.trim(),
-									'user_id':key.user_id,
-									'role_id':key.role_id,
-									'status':key.status,
-									'app_user':JSON.parse(key.app_user)
+								var created_user = JSON.parse(key.app_user);
+								var userlist;
+								if (created_user) {
+									userlist = {
+										'fullname':key.fullname.trim(),
+										'email':key.email.trim(),
+										'company':key.company.trim(),
+										'address1':key.address1.trim(),
+										'address2':key.address2.trim(),
+										'country':key.country.trim(),
+										'state':key.state.trim(),
+										'city':key.city.trim(),
+										'zipcode':key.zipcode.trim(),
+										'user_id':key.user_id,
+										'role_id':key.role_id,
+										'status':key.status,
+										'app_user': created_user //JSON.parse(key.app_user)
+									}	
+								}else{
+									userlist = {
+										'fullname':key.fullname.trim(),
+										'email':key.email.trim(),
+										'company':key.company.trim(),
+										'address1':key.address1.trim(),
+										'address2':key.address2.trim(),
+										'country':key.country.trim(),
+										'state':key.state.trim(),
+										'city':key.city.trim(),
+										'zipcode':key.zipcode.trim(),
+										'user_id':key.user_id,
+										'role_id':key.role_id,
+										'status':key.status,
+										'app_user': [] //JSON.parse(key.app_user)
+									}
 								}
-								Array.push(userlist);
+
+								
+								UserArray.push(userlist);
 							}
 							redisClient.HGETALL('user',function(err,redress){
 								if(err){
@@ -100,7 +121,7 @@ module.exports.user_list = (body,user) => {
 								}else{
 									const successmessage = {
 										'success':true,
-										'data':Array
+										'data':UserArray
 									}
 									resolve(successmessage);
 								}
