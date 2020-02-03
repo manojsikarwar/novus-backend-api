@@ -4,6 +4,19 @@
 
 // "hmset" "super" "superadmin@gmail.com" "{\"super_id\":102,\"fullname\":\"superadmin\",\"email\":\"manoj.emaster@gmail.com\",\"password\":\"$2b$1020$ZiIoZ56/9u102v83ogDwzg102Orhq6RD0t102THFJoUQsiJPkiyY2xVcDty\",\"role_id\":\"4\",\"created_date\":\"0102/23/2020\",\"status\":\"0\"}"
 
+// enter in sever :- sudo -u postgres psql
+// show database     \l
+// enter in database  \c database name
+// show all table \dt 
+// show perticular table schema  \d tablename
+
+// CREATE TABLE app_user (
+// 	app_id serial,
+//     application_id integer,
+//     user_name character(200),
+//     user_id integer
+
+// );
 
 // INSERT INTO cities (city_id, city_name, state_id) VALUES
 // (1, 'Bombuflat', 1),

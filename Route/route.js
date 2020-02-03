@@ -29,6 +29,8 @@ router.get('/user_list',[userAuthenticator],Super.user_list);
 router.post('/user_approve',[userAuthenticator],Super.user_approve);
 router.post('/user_disapprove',[userAuthenticator],Super.user_disapprove);
 router.post('/super_forget_password',Super.super_forget_password);//mail
+router.post('/sendResetPasswordLink',Super.sendResetPasswordLink);//mail
+router.post('/resetpassword/:token',Super.resetpassword);//mail
 router.put('/super_update_profile',[userAuthenticator],Super.super_update_profile);
 router.put('/admin_update_userProfile',[userAuthenticator],Super.admin_update_userProfile);
 router.delete('/admin_delete_user',[userAuthenticator],Super.admin_delete_user);

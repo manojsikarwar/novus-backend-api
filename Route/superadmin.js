@@ -50,6 +50,25 @@ module.exports.super_forget_password = (req, res, next)=>{
 	}).catch((err)=>res.json({'success':false,'message':'err'}));
 }
 
+module.exports.sendResetPasswordLink = (req, res, next)=>{
+	const email = req.body.email;
+
+	Super.sendResetPasswordLink(email)
+	.then((Data)=>{
+		res.json(Data);
+	}).catch((err)=>res.json({'success':false,'message':'err'}));
+}
+
+module.exports.resetpassword = (req, res, next)=>{
+	const reset_token = req.params.token;
+	const password = req.body.new_password;
+
+	Super.resetpassword(reset_token, password)
+	.then((Data)=>{
+		res.json(Data);
+	}).catch((err)=>res.json({'success':false,'message':'err'}));
+}
+
 module.exports.admin_update_userProfile = (req, res, next)=>{
 	const body = req.body;
 	const user = req.user;

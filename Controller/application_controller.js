@@ -408,7 +408,12 @@ module.exports.createUser = (body, user) => {
 					const device_token= 'null';
 					const app_user    = body.create_user;
 
-					const appUser =  JSON.stringify(app_user);
+					var appUser;
+					if (app_user.length > 0) {
+						appUser =  JSON.stringify(app_user);
+					}else{
+						appUser = '';
+					}
 
 		            if(fullname != '' && email != '' && password != '' && company != '' && address1 != '' && address2 != '' && country != '' && state != '' && city != '' && zipcode != '' ){
 		                if(fullname && email != '' && password != '' && company != '' && address1 != '' && address2 != '' && country != '' && state != '' && city != '' && zipcode != '' ){
@@ -447,51 +452,112 @@ module.exports.createUser = (body, user) => {
 												app_user	 : appUser
 											}
 
+											if (app_user.length > 0) {
+												redisClient.hmset('user', email, JSON.stringify(redata), function (err, data) {
+												    if(err){
+												    	resolve(message.SOMETHINGWRONG);
+												    }else{
+												    	if(data == 'OK'){
+													    	// resolve(message.REGISTRATION);
+													    	// sendEmailToSignup(email, company, fullname);
+												    		for(let appData of app_user){
+												    			
+												    			const sqlApp = `insert into app_user(application_id,user_name,user_id,status) values('${appData.application_id}','${appData.user_name}','${userId}','${0}')RETURNING app_id`;
+												
+																client.query(sqlApp, (err1, res1) => {
+																	if (err1) {
+																		resolve(message.SOMETHINGWRONG);
+																	}else{
+																		const AppRedis = {
+																			application_id : appData.application_id,
+																			user_name	   : appData.user_name,
+																			user_id		   : userId,
+																			app_id    	   : res1.rows[0].app_id,
+																			status 			: 0
+																		}
+																		//console.log(AppRedis)
 
-		                                	redisClient.hmset('user', email, JSON.stringify(redata), function (err, data) {
+																		redisClient.hmset('app_user', appData.user_name, JSON.stringify(AppRedis), function (err1, data1) {
+																		    if(err1){
+																		    	resolve(message.SOMETHINGWRONG);
+																		    }else{
+																		    	if(data1 == 'OK'){
+																			    	resolve(message.REGISTRATION);
+																			    	//sendEmailToSignup(email, company, fullname);
+																		    	}else{
+																			    	resolve(message.SOMETHINGWRONG);
+																		    	}
+																		    }
+																		})
+																	}
+																})
+												    		}
+												    	}else{
+													    	resolve(message.SOMETHINGWRONG);
+												    	}
+												    }
+												})
+											}else{
+												
+												redisClient.hmset('user', email, JSON.stringify(redata), function (err, data) {
 											    if(err){
 											    	resolve(message.SOMETHINGWRONG);
 											    }else{
 											    	if(data == 'OK'){
-												    	// resolve(message.REGISTRATION);
+												    	resolve(message.REGISTRATION);
 												    	// sendEmailToSignup(email, company, fullname);
-											    		for(let appData of app_user){
-											    			// const sqlAppmatch = `select * from app_user where status = '${0}'`
-											    			const sqlApp = `insert into app_user(application_id,user_name,user_id,status) values('${appData.application_id}','${appData.user_name}','${userId}','${0}')RETURNING app_id`;
-											
-															client.query(sqlApp, (err1, res1) => {
-																if (err1) {
-																	resolve(message.SOMETHINGWRONG);
-																}else{
-																	const AppRedis = {
-																		application_id : appData.application_id,
-																		user_name	   : appData.user_name,
-																		user_id		   : userId,
-																		app_id    	   : res1.rows[0].app_id,
-																		status 			: 0
-																	}
-																	//console.log(AppRedis)
-
-																	redisClient.hmset('app_user', appData.user_name, JSON.stringify(AppRedis), function (err1, data1) {
-																	    if(err1){
-																	    	resolve(message.SOMETHINGWRONG);
-																	    }else{
-																	    	if(data1 == 'OK'){
-																		    	resolve(message.REGISTRATION);
-																		    	//sendEmailToSignup(email, company, fullname);
-																	    	}else{
-																		    	resolve(message.SOMETHINGWRONG);
-																	    	}
-																	    }
-																	})
-																}
-															})
-											    		}
 											    	}else{
 												    	resolve(message.SOMETHINGWRONG);
 											    	}
 											    }
 											})
+
+											}
+
+		         //                        	redisClient.hmset('user', email, JSON.stringify(redata), function (err, data) {
+											//     if(err){
+											//     	resolve(message.SOMETHINGWRONG);
+											//     }else{
+											//     	if(data == 'OK'){
+											// 	    	// resolve(message.REGISTRATION);
+											// 	    	// sendEmailToSignup(email, company, fullname);
+											//     		for(let appData of app_user){
+											//     			// const sqlAppmatch = `select * from app_user where status = '${0}'`
+											//     			const sqlApp = `insert into app_user(application_id,user_name,user_id,status) values('${appData.application_id}','${appData.user_name}','${userId}','${0}')RETURNING app_id`;
+											
+											// 				client.query(sqlApp, (err1, res1) => {
+											// 					if (err1) {
+											// 						resolve(message.SOMETHINGWRONG);
+											// 					}else{
+											// 						const AppRedis = {
+											// 							application_id : appData.application_id,
+											// 							user_name	   : appData.user_name,
+											// 							user_id		   : userId,
+											// 							app_id    	   : res1.rows[0].app_id,
+											// 							status 			: 0
+											// 						}
+											// 						//console.log(AppRedis)
+
+											// 						redisClient.hmset('app_user', appData.user_name, JSON.stringify(AppRedis), function (err1, data1) {
+											// 						    if(err1){
+											// 						    	resolve(message.SOMETHINGWRONG);
+											// 						    }else{
+											// 						    	if(data1 == 'OK'){
+											// 							    	resolve(message.REGISTRATION);
+											// 							    	//sendEmailToSignup(email, company, fullname);
+											// 						    	}else{
+											// 							    	resolve(message.SOMETHINGWRONG);
+											// 						    	}
+											// 						    }
+											// 						})
+											// 					}
+											// 				})
+											//     		}
+											//     	}else{
+											// 	    	resolve(message.SOMETHINGWRONG);
+											//     	}
+											//     }
+											// })
 		                                }
 		                            })
 		                        }
