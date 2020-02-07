@@ -85,6 +85,7 @@ module.exports.signup = (body) => {
 					const created_by = ''; //user.id;
 					const device_type = 'null';
 					const device_token = 'null';
+					const app_user = '';
 
 		            if(fullname != '' && email != '' && password != '' && company != '' && address1 != '' && address2 != '' && country != '' && state != '' && city != '' && zipcode != '' ){
 		                if(fullname && email != '' && password != '' && company != '' && address1 != '' && address2 != '' && country != '' && state != '' && city != '' && zipcode != '' ){
@@ -93,7 +94,7 @@ module.exports.signup = (body) => {
 		                        if (emailress.rows != '') {
 		                            resolve(message.ALREADYUSE);
 		                        } else {
-		                            const sql = `insert into signup(fullname,email,password,company,address1,address2,country,state,city,zipcode,status,created_by,created_date,role_id,device_type,device_token) values('${fullname}','${email}','${hash}','${company}','${address1}','${address2}','${country}','${state}','${city}','${zipcode}','${1}','${created_by}','${myDate}','${rollid}','${device_type}','${device_token}')RETURNING user_id`;
+		                            const sql = `insert into signup(fullname,email,password,company,address1,address2,country,state,city,zipcode,status,created_by,created_date,role_id,device_type,device_token,app_user) values('${fullname}','${email}','${hash}','${company}','${address1}','${address2}','${country}','${state}','${city}','${zipcode}','${1}','${created_by}','${myDate}','${rollid}','${device_type}','${device_token}','${app_user}')RETURNING user_id`;
 		                            client.query(sql, (usererr, userress) => {
 		                                if (usererr) {
 		                                    resolve(message.SOMETHINGWRONG);
