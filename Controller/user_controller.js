@@ -64,11 +64,11 @@ var sendEmailToSignup = (email, company, fullname) => {
         });
     });
 }
-module.exports.signup = (body, user) => {
+module.exports.signup = (body) => {
     return new Promise((resolve, reject) => {
         try {
-        	const role_id =  user.role_id;
-        	if(role_id == 1){
+        	const role_id =  '4'; //user.role_id;
+        	// if(role_id == 1){
 				const password = body.password;
 
 	        	bcrypt.hash(password,10,function(err,hash){
@@ -82,7 +82,7 @@ module.exports.signup = (body, user) => {
 					const city = body.city;
 					const zipcode = body.zipcode;
 					const rollid = '4';
-					const created_by = user.id;
+					const created_by = ''; //user.id;
 					const device_type = 'null';
 					const device_token = 'null';
 
@@ -141,9 +141,9 @@ module.exports.signup = (body, user) => {
 		            }
 	        	})   
 
-        	}else{
-        		resolve(message.NOTPERMISSION)
-        	}
+        	// }else{
+        	// 	resolve(message.NOTPERMISSION)
+        	// }
         } catch (error) {
 	            resolve(message.ERROR); 
         }

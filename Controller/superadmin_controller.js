@@ -583,6 +583,14 @@ module.exports.admin_update_userProfile = (body, user) => {
 			const state 	= body.state;
 			const city 		= body.city;
 			const zipcode 	= body.zipcode;
+			const app_user    = body.create_user;
+
+			var appUser;
+			if (app_user.length > 0) {
+				appUser =  JSON.stringify(app_user);
+			}else{
+				appUser = '';
+			}
 			
 		    if(fullname != '' && company != '' && address1 != '' && address2 != '' && country != '' && state != '' && city != '' && zipcode != '' ){
 			    if(role_id == 1){
@@ -613,6 +621,7 @@ module.exports.admin_update_userProfile = (body, user) => {
 									city 	:city,
 									zipcode :zipcode,
 									email:email,
+									app_user: appUser,
 									password:matchress.rows[0].password,
 									status  :matchress.rows[0].status,
 									role_id :matchress.rows[0].role_id,
@@ -629,7 +638,8 @@ module.exports.admin_update_userProfile = (body, user) => {
 											country ='${country}',
 											state 	='${state}',
 											city 	='${city}',
-											zipcode ='${zipcode}' where user_id ='${user_id}' `;
+											zipcode ='${zipcode}',
+											app_user='${appUser}' where user_id ='${user_id}' `;
 								client.query(sql,(err,result)=>{
 									// console.log(sql)
 									if(err){
@@ -649,6 +659,65 @@ module.exports.admin_update_userProfile = (body, user) => {
 										    	resolve(errmessage)
 										    }else{
 										    	if(data == 'OK'){
+												
+													//start
+										    		for(let appData of app_user){
+										    			const del = `delete from app_user where application_id = '${appData.application_id}' and user_id = '${body.user_id}'`;
+														client.query(del, (delerr, delress) => {
+														    if (delerr) {
+														        resolve(message.SOMETHINGWRONG)
+														    } else {
+														    	const rUdata = {
+														    		application_id : appData.application_id,
+																   	user_name : appData.user_name,
+																	user_id   : user_id
+																}
+																redisClient.hdel('app_user',rUdata,function(err1,redisdata1){
+																	if(err1){
+																		// resolve(message.SOMETHINGWRONG);
+																	}else{
+																		if(redisdata1 == 0){
+																			//resolve(message.APP);
+																		}
+																	}	
+																});	
+															}	
+
+														});		
+										    		}
+
+										    		for(let appData of app_user){
+												    			
+										    			const sqlApp = `insert into app_user(application_id,user_name,user_id,status) values('${appData.application_id}','${appData.user_name}','${user_id}','${0}')RETURNING app_id`;
+										
+														client.query(sqlApp, (err1, res1) => {
+															if (err1) {
+																resolve(message.SOMETHINGWRONG);
+															}else{
+																const AppRedis = {
+																	application_id : appData.application_id,
+																	user_name	   : appData.user_name,
+																	user_id		   : user_id,
+																	app_id    	   : res1.rows[0].app_id,
+																	status 			: 0
+																}
+
+																redisClient.hmset('app_user', appData.user_name, JSON.stringify(AppRedis), function (err1, data1) {
+																    if(err1){
+																    	resolve(message.SOMETHINGWRONG);
+																    }else{
+																    	if(data1 == 'OK'){
+																	    	resolve(message.REGISTRATION);
+																    	}else{
+																	    	resolve(message.SOMETHINGWRONG);
+																    	}
+																    }
+																})
+															}
+														})
+										    		}
+										    		// end
+
 											    	resolve(message.PROFILEUPDATE)
 										    	}else{
 											    	resolve(message.NOTUPDATE)

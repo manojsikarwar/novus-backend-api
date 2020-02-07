@@ -15,7 +15,7 @@ router.use(bodyParser.json());
 
 // =================== user ===============================
 
-router.post('/signup',[userAuthenticator],User.signup);
+router.post('/signup',User.signup);
 router.post('/login',User.login);
 router.get('/user_profile',[userAuthenticator],User.user_profile);
 router.put('/user_update_profile',[userAuthenticator],User.user_update_profile);
