@@ -85,7 +85,7 @@ module.exports.signup = (body) => {
 					const created_by = ''; //user.id;
 					const device_type = 'null';
 					const device_token = 'null';
-					const app_user = '';
+					const app_user = [];
 
 		            if(fullname != '' && email != '' && password != '' && company != '' && address1 != '' && address2 != '' && country != '' && state != '' && city != '' && zipcode != '' ){
 		                if(fullname && email != '' && password != '' && company != '' && address1 != '' && address2 != '' && country != '' && state != '' && city != '' && zipcode != '' ){
