@@ -589,7 +589,7 @@ module.exports.admin_update_userProfile = (body, user) => {
 			if (app_user.length > 0) {
 				appUser =  JSON.stringify(app_user);
 			}else{
-				appUser = '';
+				appUser = 'null';
 			}
 			
 		    if(fullname != '' && company != '' && address1 != '' && address2 != '' && country != '' && state != '' && city != '' && zipcode != '' ){
