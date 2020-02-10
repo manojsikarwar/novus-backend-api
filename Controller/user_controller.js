@@ -57,9 +57,9 @@ var sendEmailToSignup = (email, company, fullname) => {
 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                resolve(error);
+                console.log(error);
             } else {
-                resolve(info);
+                console.log(info);
             }
         });
     });
@@ -744,9 +744,9 @@ var sendEmailToCustomer = (email, password, first_name) => {
 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                resolve(error);
+                console.log(error);
             }
-            resolve(info);
+            console.log(info);
         });
     });
 }
