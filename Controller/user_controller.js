@@ -95,12 +95,12 @@ module.exports.signup = (body) => {
 		                            resolve(message.ALREADYUSE);
 		                        } else {
 		                            const sql = `insert into signup(fullname,email,password,company,address1,address2,country,state,city,zipcode,status,created_by,created_date,role_id,device_type,device_token,app_user) values('${fullname}','${email}','${hash}','${company}','${address1}','${address2}','${country}','${state}','${city}','${zipcode}','${1}','${created_by}','${myDate}','${rollid}','${device_type}','${device_token}','${app_user}')RETURNING user_id`;
-		                            client.query(sql, (usererr, userress) => {
+		                            client.query(sql, async(usererr, userress) => {
 		                                if (usererr) {
 		                                    resolve(message.SOMETHINGWRONG);
 		                                } else {
 	                                		let redata = {
-				                        		user_id 	: userress.rows[0].user_id,
+				                        		user_id 	: await userress.rows[0].user_id,
 												fullname 	: body.fullname,
 												email 		: body.email,
 												password 	: body.password,
@@ -119,7 +119,7 @@ module.exports.signup = (body) => {
 												device_token : device_token,
 												app_user	 : 	'null'
 											}
-		                                	redisClient.hmset('user', email, JSON.stringify(redata), function (err, data) {
+		                                	await redisClient.hmset('user', email, JSON.stringify(redata), function (err, data) {
 											    if(err){
 											    	resolve(message.SOMETHINGWRONG);
 											    }else{
