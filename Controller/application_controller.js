@@ -138,7 +138,7 @@ module.exports.application_list = (user) =>{
 			const role_id = user.role_id;
 			const Array = [];
 			if(role_id == 1){
-				const applist = `select * from application_management`;
+				const applist = `select * from application_management order by application_id desc`;
 				client.query(applist, (applisterr, applistress) => {
 					if(applisterr){
 						resolve(message.SOMETHINGWRONG);
