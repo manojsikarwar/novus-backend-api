@@ -116,7 +116,8 @@ module.exports.signup = (body) => {
 												created_date: myDate,
 												created_by 	: 'NONE',
 												device_type  :device_type,
-												device_token : device_token
+												device_token : device_token,
+												app_user	 : 	app_user
 											}
 		                                	redisClient.hmset('user', email, JSON.stringify(redata), function (err, data) {
 											    if(err){
