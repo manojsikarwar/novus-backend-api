@@ -40,8 +40,7 @@ module.exports.adminlogin = (body) => {
                                         } else {
                                             bcrypt.compare(password, adminresult.rows[0].password.trim(), (err, isMatch) => {
                                                 if (isMatch == true) {
-
-                                                    const appuser = `select * from application_management where application_id = '${adminresult.rows[0].access_application_id}' and status = '${0}'`;
+                                                    const appuser = `select * from application_management where application_id = '${adminresult.rows[0]. access_application_id}' and status = '${0}'`;                                                    
                                                     client.query(appuser, (apperr, appress) => {
                                                         if (apperr) {
                                                             resolve(message.SOMETHINGWRONG);
@@ -49,13 +48,13 @@ module.exports.adminlogin = (body) => {
                                                             if (appress.rows == '') {
                                                                 resolve(message.DATANOTFOUND);
                                                             } else {
-
                                                                 appdata = {
                                                                     'app_id': appress.rows[0].application_id,
                                                                     'app_name': appress.rows[0].application_name.trim(),
                                                                     'app_icon': appress.rows[0].icon.trim(),
                                                                     'selected_countries': appress.rows[0].selected_countries.trim(),
                                                                     'status': appress.rows[0].status,
+                                                                     'users_id':appress.rows[0].selected_user, //todo changes
                                                                     'created_date': appress.rows[0].created_date
                                                                 }
 
