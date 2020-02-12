@@ -67,7 +67,7 @@ module.exports.user_list = (body,user) => {
 			const status = body.status;
 			const UserArray = [];
 			if(role_id == 1){
-				const listuser = `select * from signup`;
+				const listuser = `select * from signup where role_id = '${4}'`;
 				client.query(listuser,(listerr, listress)=>{
 					if(listerr){
 						resolve(message.SOMETHINGWRONG);
@@ -1005,4 +1005,246 @@ var sendResetPasswordEmail = (email, reset_token, first_name) => {
             resolve(info);
         });
     });
+}
+
+
+
+module.exports.createAdmin = (body, user) => {
+    return new Promise((resolve, reject) => {
+        try {
+        	const role_id =  user.role_id;
+        	if(role_id == 1){
+				const password = body.password;
+
+	        	bcrypt.hash(password,10,function(err,hash){
+		    		const fullname    = body.fullname;
+					const email 	  = body.email;
+					const company 	  = body.company;
+					const address1    = body.address1;
+					const address2    = body.address2;
+					const country     = body.country;
+					const state 	  = body.state;
+					const city 		  = body.city;
+					const zipcode     = body.zipcode;
+					const rollid 	  = '2';
+					const created_by  = user.id;
+					const device_type = 'null';
+					const device_token= 'null';
+					const app_user    = 'null';
+					const access_application_id = body.access_application_id;
+
+		            if(fullname != '' && email != '' && password != '' && company != '' && address1 != '' && address2 != '' && country != '' && state != '' && city != '' && zipcode != '' ){
+		                if(fullname && email != '' && password != '' && company != '' && address1 != '' && address2 != '' && country != '' && state != '' && city != '' && zipcode != '' ){
+		                    const getemail = `select * from signup where email = '${email}' and access_application_id = '${access_application_id}' and role_id = '${2}'  `;
+		                    client.query(getemail, (emailerr, emaildataress) => {
+		                        if (emaildataress.rows != '') {
+		                            resolve(message.ALREADYUSE);
+		                        } else {
+		                        	// resolve('insert')
+		                            const sql = `insert into signup(fullname,email,password,company,address1,address2,country,state,city,zipcode,status,created_by,created_date,role_id,device_type,device_token,app_user,access_application_id) values('${fullname}','${email}','${hash}','${company}','${address1}','${address2}','${country}','${state}','${city}','${zipcode}','${1}','${created_by}','${myDate}','${rollid}','${device_type}','${device_token}','${app_user}','${access_application_id}')RETURNING user_id`;
+		                            client.query(sql, (usererr, userress) => {
+		                                if (usererr) {
+		                                    resolve(message.SOMETHINGWRONG);
+		                                } else {
+
+		                                	const userId = userress.rows[0].user_id;
+
+	                                		let redata = {
+				                        		user_id 	: userId,
+												fullname 	: body.fullname,
+												email 		: body.email,
+												password 	: body.password,
+												company 	: body.company,
+												address1 	: body.address1,
+												address2 	: body.address2,
+												country 	: body.country,
+												state 		: body.state,
+												city 		: body.city,
+												zipcode 	: body.zipcode,
+												status 		: '0',
+												role_id 	: '2',
+												created_date: myDate,
+												created_by 	: 'NONE',
+												device_type  :device_type,
+												device_token : device_token,
+												app_user	 : app_user,
+												access_application_id : access_application_id
+											}
+												
+											redisClient.hmset('user', email, JSON.stringify(redata), function (err, data) {
+											    if(err){
+											    	resolve(message.SOMETHINGWRONG);
+											    }else{
+											    	if(data == 'OK'){
+												    	resolve(message.CREATED);
+												    	// sendEmailToSignup(email, company, fullname);
+											    	}else{
+												    	resolve(message.SOMETHINGWRONG);
+											    	}
+											    }
+											})
+
+		                                }
+		                            })
+		                        }
+		                    });
+		                }else{
+		                    resolve(message.PARAMETES);
+		                }
+		            } else {
+		                resolve(message.FILEDS);
+		            }
+	        	})   
+
+        	}else{
+        		resolve(message.NOTPERMISSION)
+        	}
+        } catch (error) {
+	            resolve(message.ERROR); 
+        }
+    })
+}
+
+
+module.exports.adminlist = (body, user) => {
+	return new Promise((resolve, reject)=>{
+		try{
+			const application_id = body.application_id;
+			const role_id = user.role_id;
+			const status = body.status;
+			const UserArray = [];
+			if(role_id == 1){
+				const listuser = `select * from signup where role_id = '${2}' and status = '${0}' and access_application_id = '${application_id}'`;
+				client.query(listuser,(listerr, listress)=>{
+					if(listerr){
+						resolve(message.SOMETHINGWRONG);
+					}else{
+						if(listress.rows == ''){
+							resolve(message.DATANOTFOUND);
+						}else{
+							for(let key of listress.rows){
+								var created_user = JSON.parse(key.app_user);
+								var userlist;
+								if (created_user) {
+									userlist = {
+										'fullname':key.fullname.trim(),
+										'email':key.email.trim(),
+										'company':key.company.trim(),
+										'address1':key.address1.trim(),
+										'address2':key.address2.trim(),
+										'country':key.country.trim(),
+										'state':key.state.trim(),
+										'city':key.city.trim(),
+										'zipcode':key.zipcode.trim(),
+										'user_id':key.user_id,
+										'role_id':key.role_id,
+										'status':key.status,
+									}	
+								}else{
+									userlist = {
+										'fullname':key.fullname.trim(),
+										'email':key.email.trim(),
+										'company':key.company.trim(),
+										'address1':key.address1.trim(),
+										'address2':key.address2.trim(),
+										'country':key.country.trim(),
+										'state':key.state.trim(),
+										'city':key.city.trim(),
+										'zipcode':key.zipcode.trim(),
+										'user_id':key.user_id,
+										'role_id':key.role_id,
+										'status':key.status,
+									}
+								}
+
+								
+								UserArray.push(userlist);
+							}
+							redisClient.HGETALL('user',function(err,redress){
+								if(err){
+									resolve(message.SOMETHINGWRONG);
+								}else{
+									const successmessage = {
+										'success':true,
+										'data':UserArray
+									}
+									resolve(successmessage);
+								}
+							})
+						}
+					}
+					})
+			}else{
+				resolve(message.NOTPERMISSION);
+			}
+
+		}catch(error){
+			resolve(error)
+		}
+
+	})
+}
+
+
+
+module.exports.deleteAdmin = (body, user) => {
+    return new Promise((resolve, reject) => {
+        try {
+        	const role_id = user.role_id;
+        	const admin_id = body.admin_id;
+            if (role_id == 1) {
+                if (admin_id != '') {
+                        const Check = `select * from signup where user_id = '${admin_id}' and role_id = '${2}'`;
+                        client.query(Check, (chkerr, chkress) => {
+                            if(chkerr){
+                                resolve(message.SOMETHINGWRONG);
+                            }else{
+                                if (chkress.rows == '') {
+                                    resolve(message.DATANOTFOUND)
+                                } else {
+                                    //const companyid = chkress.rows[0].company_id;
+                                    const del = `delete from signup where user_id = '${admin_id}' and role_id = '${2}' `
+                                    client.query(del, (delerr, delress) => {
+                                        if (delerr) {
+                                            resolve(message.SOMETHINGWRONG)
+                                        } else {
+                                        	const rUdata = {
+									    		user_id : admin_id,
+											}
+                                        	redisClient.hdel('signup',rUdata,function(err1,redisdata1){
+												if(err1){
+													// resolve(message.SOMETHINGWRONG);
+												}else{
+													if(redisdata1 == 0){
+														resolve(message.ADMINDELETE)
+													}
+												}	
+											});
+
+
+                                           // resolve(message.USERDELETE)
+                                        }
+                                    })
+                                }
+                            }
+                        })
+                    
+                } else {
+                    const errMessage = {
+                        'success': false,
+                        'message': 'admin_id compulsary'
+                    }
+                    resolve(errMessage)
+                }
+            } else {
+                resolve(message.NOTPERMISSION)
+            }
+        } catch (error) {
+            const errMessage = {
+                'status': false,
+                'message': error
+            }
+            resolve(errMessage);
+        }
+    })
 }

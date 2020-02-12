@@ -108,3 +108,35 @@ module.exports.send_notification = (req, res, next)=>{
 		res.json(Data);
 	}).catch((err)=>res.json({'success':false,'message':'err'}));
 }
+
+module.exports.createAdmin = (req, res, next)=>{
+	const body = req.body;
+	const user = req.user;
+	console.log(body)
+	console.log(user)
+	Super.createAdmin(body, user)
+	.then((Data)=>{
+		res.json(Data);
+	}).catch((err)=>res.json({'success':false,'message':'err'}));
+}
+
+module.exports.adminlist = (req, res, next)=>{
+	const body = req.body;
+	const user = req.user;
+
+	Super.adminlist(body, user)
+	.then((Data)=>{
+		res.json(Data);
+	}).catch((err)=>res.json({'success':false,'message':'err'}));
+}
+
+
+module.exports.deleteAdmin = (req, res, next)=>{
+	const body = req.body;
+	const user = req.user;
+
+	Super.deleteAdmin(body, user)
+	.then((Data)=>{
+		res.json(Data);
+	}).catch((err)=>res.json({'success':false,'message':'err'}));
+}

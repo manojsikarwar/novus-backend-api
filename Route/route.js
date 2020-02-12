@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const User = require('./user');
+const Admin = require('./admin');
 const Super = require('./superadmin');
 const Application = require('./application');
 const File = require('../Controller/file_upload');
@@ -36,6 +37,14 @@ router.put('/admin_update_userProfile',[userAuthenticator],Super.admin_update_us
 router.delete('/admin_delete_user',[userAuthenticator],Super.admin_delete_user);
 router.post('/admin_search_user',[userAuthenticator],Super.admin_search_user);
 router.post('/send_notification',[userAuthenticator],Super.send_notification);
+router.post('/createAdmin',[userAuthenticator],Super.createAdmin);
+router.post('/adminlist',[userAuthenticator],Super.adminlist);
+router.delete('/deleteAdmin',[userAuthenticator],Super.deleteAdmin);
+
+// ======================== Admin ==========================
+
+router.post('/adminlogin',Admin.adminlogin);
+
 
 // ===================== Aplication management ===================
 
