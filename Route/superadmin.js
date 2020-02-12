@@ -121,6 +121,7 @@ module.exports.createAdmin = (req, res, next)=>{
 }
 
 module.exports.adminlist = (req, res, next)=>{
+         console.log(req.body)
 	const body = req.body;
 	const user = req.user;
 

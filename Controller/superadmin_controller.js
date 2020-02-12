@@ -1114,7 +1114,8 @@ module.exports.adminlist = (body, user) => {
 			const status = body.status;
 			const UserArray = [];
 			if(role_id == 1){
-				const listuser = `select * from signup where role_id = '${2}' and status = '${0}' and access_application_id = '${application_id}'`;
+				const listuser = `select * from signup where access_application_id = '${application_id}'`;
+				// const listuser = `select * from signup where role_id = '${2}' and status = '${0}' and access_application_id = '${application_id}'`;
 				client.query(listuser,(listerr, listress)=>{
 					if(listerr){
 						resolve(message.SOMETHINGWRONG);
