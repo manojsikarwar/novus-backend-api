@@ -1040,8 +1040,8 @@ module.exports.createAdmin = (body, user) => {
 		                        if (emaildataress.rows != '') {
 		                            resolve(message.ALREADYUSE);
 		                        } else {
-		                        	// resolve('insert')
-		                            const sql = `insert into signup(fullname,email,password,company,address1,address2,country,state,city,zipcode,status,created_by,created_date,role_id,device_type,device_token,app_user,access_application_id) values('${fullname}','${email}','${hash}','${company}','${address1}','${address2}','${country}','${state}','${city}','${zipcode}','${1}','${created_by}','${myDate}','${rollid}','${device_type}','${device_token}','${app_user}','${access_application_id}')RETURNING user_id`;
+		                        	// resolve('insert')   /todo change ->1
+		                            const sql = `insert into signup(fullname,email,password,company,address1,address2,country,state,city,zipcode,status,created_by,created_date,role_id,device_type,device_token,app_user,access_application_id) values('${fullname}','${email}','${hash}','${company}','${address1}','${address2}','${country}','${state}','${city}','${zipcode}','${0}','${created_by}','${myDate}','${rollid}','${device_type}','${device_token}','${app_user}','${access_application_id}')RETURNING user_id`;
 		                            client.query(sql, (usererr, userress) => {
 		                                if (usererr) {
 		                                    resolve(message.SOMETHINGWRONG);
@@ -1115,7 +1115,7 @@ module.exports.adminlist = (body, user) => {
 			const UserArray = [];
 			if(role_id == 1){
 				const listuser = `select * from signup where access_application_id = '${application_id}'`;
-				// const listuser = `select * from signup where role_id = '${2}' and status = '${0}' and access_application_id = '${application_id}'`;
+				// const listuser = `select * from signup where role_id = '${2}' and status = '${0}' and access_application_id = '${application_id}'`; todo =>chegess
 				client.query(listuser,(listerr, listress)=>{
 					if(listerr){
 						resolve(message.SOMETHINGWRONG);
