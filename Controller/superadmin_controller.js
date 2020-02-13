@@ -226,7 +226,7 @@ module.exports.user_approve = (body, user) => {
 		const id = body.user_id;
 		const status = body.status;
 
-	    if(role_id == 1){
+	    if(role_id < 3){
 	    	if(id != '' && status != ''){
 	    		if(id && status){
 				   	const finduser = `select * from signup where user_id = '${id}' `;

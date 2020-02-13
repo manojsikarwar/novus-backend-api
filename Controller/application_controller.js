@@ -587,7 +587,7 @@ module.exports.AppUserApprove = (body, user) => {
 		const role_id = user.role_id;
 		const id = body.user_id;
 		const userArray = JSON.stringify(body.create_user);
-	    if(role_id == 1){
+	    if(role_id < 3){
 	    	console.log(userArray);
 	    	// console.log(body);
 	    	 const getUser = `select * from signup where user_id = '${id}'`;
