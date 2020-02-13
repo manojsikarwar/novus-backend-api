@@ -131,6 +131,15 @@ module.exports.adminlist = (req, res, next)=>{
 	}).catch((err)=>res.json({'success':false,'message':'err'}));
 }
 
+module.exports.adminApproveAndDisapprove = (req, res, next)=>{
+	const body = req.body;
+	const user = req.user;
+
+	Super.adminApproveAndDisapprove(body, user)
+	.then((Data)=>{
+		res.json(Data);
+	}).catch((err)=>res.json({'success':false,'message':'err'}));
+}
 
 module.exports.deleteAdmin = (req, res, next)=>{
 	const body = req.body;

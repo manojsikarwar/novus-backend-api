@@ -39,6 +39,7 @@ router.post('/admin_search_user',[userAuthenticator],Super.admin_search_user);
 router.post('/send_notification',[userAuthenticator],Super.send_notification);
 router.post('/createAdmin',[userAuthenticator],Super.createAdmin);
 router.post('/adminlist',[userAuthenticator],Super.adminlist);
+router.post('/adminApproveAndDisapprove',[userAuthenticator],Super.adminApproveAndDisapprove);
 router.delete('/deleteAdmin',[userAuthenticator],Super.deleteAdmin);
 
 // ======================== Admin ==========================

@@ -389,7 +389,8 @@ module.exports.createUser = (body, user) => {
     return new Promise((resolve, reject) => {
         try {
         	const role_id =  user.role_id;
-        	if(role_id == 1){
+        	// if(role_id == 1){
+        	if(role_id != ''){	
 				const password = body.password;
 
 	        	bcrypt.hash(password,10,function(err,hash){

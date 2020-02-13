@@ -468,7 +468,8 @@ module.exports.superlogin = (email, password) => {
 		                                                                    'selected_countries': appress.rows[0].selected_countries.trim(),
 		                                                                    'status': appress.rows[0].status,
 		                                                                     'users_id':appress.rows[0].selected_user, //todo changes
-		                                                                    'created_date': appress.rows[0].created_date
+		                                                                    'created_date': appress.rows[0].created_date,
+		                                                                    'application_id': '',
 		                                                                }
 
 		                                                                redisClient.hget('application', appress.rows[0].application_name, function(err1, redress1) {
@@ -483,6 +484,7 @@ module.exports.superlogin = (email, password) => {
 		                                                                            "role_id": adminresult.rows[0].role_id,
 		                                                                            "status": adminresult.rows[0].status,
 		                                                                            "created_date": adminresult.rows[0].created_date.trim(),
+		                                                                            'application_id': appdata.app_id,
 		                                                                            'application_data': appdata
 		                                                                        }
 		                                                                        const tokenData = {
