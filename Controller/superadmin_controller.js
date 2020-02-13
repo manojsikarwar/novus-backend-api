@@ -130,24 +130,6 @@ module.exports.user_list = (body,user) => {
 					}
 				})
 			}else if(role_id == 2 ){
-				// const checkAppUser = `select * from app_user where user_id = '${user.id}' and application_id = '${13}'`;
-				// client.query(checkAppUser,(appUerr, appUress)=>{	
-				// 	if(appUerr){
-				// 		resolve(message.SOMETHINGWRONG);
-				// 	}else{
-				// 		redisClient.hget('app_user', appUress.rows[0].user_name, function (Aerr1, Areply1){
-				// 			if(err){
-				// 				resolve(message.SOMETHINGWRONG);
-				// 			}else{
-				// 				const successmessage = {
-				// 					'success':true,
-				// 					'data':UserArray
-				// 				}
-				// 				resolve(successmessage);
-				// 			}
-				// 		})
-				// 	}
-				// });	
 
 				const listuser = `select * from signup where role_id = '${4}' and created_by = '${user.id}'`;
 				client.query(listuser,(listerr, listress)=>{
@@ -676,7 +658,7 @@ module.exports.admin_update_userProfile = (body, user) => {
 			}
 			
 		    if(fullname != '' && company != '' && address1 != '' && address2 != '' && country != '' && state != '' && city != '' && zipcode != '' ){
-			    if(role_id == 1){
+			    if(role_id < 3){
 			    	const match = `select * from signup where user_id = '${user_id}'`;
 			    	client.query(match, (matcherr, matchress) => {
 			    		if(matcherr){
@@ -842,7 +824,7 @@ module.exports.admin_delete_user = (body, user) => {
         try {
         	const role_id = user.role_id;
         	const user_id = body.user_id;
-            if (role_id == 1) {
+            if (role_id < 3) {
                 if (user_id != '') {
                     if(user_id){
                         const search = `select * from signup where user_id = '${user_id}'`;
@@ -853,13 +835,28 @@ module.exports.admin_delete_user = (body, user) => {
                                 if (searchress.rows == '') {
                                     resolve(message.DATANOTFOUND)
                                 } else {
-                                    const companyid = searchress.rows[0].company_id;
+                                    
+                                	const companyid = searchress.rows[0].company_id;
                                     const del = `delete from signup where user_id = '${user_id}' `
                                     client.query(del, (delerr, delress) => {
                                         if (delerr) {
                                             resolve(message.SOMETHINGWRONG)
                                         } else {
-                                           resolve(message.USERDELETE)
+                                      		const AppAcsess = JSON.parse(searchress.rows[0].app_user);
+		                                	for(let app_data of AppAcsess){
+
+		                                		const companyid = searchress.rows[0].company_id;
+			                                    const del1 = `delete from app_user where user_id = '${user_id}' and application_id = '${app_data.application_id}' `
+			                                    client.query(del1, (delerr1, delress1) => {
+			                                        if (delerr1) {
+			                                            resolve(message.SOMETHINGWRONG)
+			                                        } else {
+			                                           resolve(message.USERDELETE)
+			                                        }
+			                                    })
+		                                	}     
+
+                                    
                                         }
                                     })
                                 }
