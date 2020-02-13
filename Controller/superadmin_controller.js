@@ -1336,56 +1336,59 @@ module.exports.adminApproveAndDisapprove = (body, user) => {
         try {
         	const role_id 	   = user.role_id;
         	const admin_id 	   = body.admin_id;
-        	const admin_stauts = body.status;
+        	const admin_status = body.status;
         	const application_id = body.application_id;
             if (role_id == 1) {
                 if (admin_id != '') {
                         const Check = `select * from signup where user_id = '${admin_id}' and access_application_id = '${application_id}' and role_id = '${2}'`;
                         client.query(Check, (chkerr, chkress) => {
-                        	// console.log(chkress);
                             if(chkerr){
                                 resolve(message.SOMETHINGWRONG);
                             }else{
-           //                      if (chkress.rows == '') {
-           //                          resolve(message.DATANOTFOUND)
-           //                      } else {
-           //                          //const companyid = chkress.rows[0].company_id;
-           //                          const del = `delete from signup where user_id = '${admin_id}' and role_id = '${2}' `
-           //                          client.query(del, (delerr, delress) => {
-           //                              if (delerr) {
-           //                                  resolve(message.SOMETHINGWRONG)
-           //                              } else {
-           //                              	const rUdata = {
-									  //   		user_id : admin_id,
-											// }
-           //                              	redisClient.hdel('signup',rUdata,function(err1,redisdata1){
-											// 	if(err1){
-											// 		// resolve(message.SOMETHINGWRONG);
-											// 	}else{
-											// 		if(redisdata1 == 0){
-											// 			resolve(message.ADMINDELETE)
-											// 		}
-											// 	}	
-											// });
+       
+       							const updatedata = `update signup set status = '${admin_status}' where user_id = '${admin_id}' and access_application_id = '${application_id}' `;
+	                                client.query(updatedata, (updatedataerr, result1) => {
+	                                    if (updatedataerr) {
+	                                        resolve(message.SOMETHINGWRONG);
+	                                    } else {
+                                    		let redata = {
 
+												fullname:chkress.rows[0].fullname.trim(),
+												company :chkress.rows[0].company.trim(),
+												address1:chkress.rows[0].address1.trim(),
+												address2:chkress.rows[0].address2.trim(),
+												country :chkress.rows[0].country.trim(),
+												state 	:chkress.rows[0].state.trim(),
+												city 	:chkress.rows[0].city.trim(),
+												zipcode :chkress.rows[0].zipcode.trim(),
+												email:chkress.rows[0].email.trim(),
+												app_user: chkress.rows[0].appUser,
+												password:chkress.rows[0].password.trim(),
+												status  :admin_status,
+												role_id :chkress.rows[0].role_id,
+												user_id :chkress.rows[0].user_id,
+												created_date  :chkress.rows[0].created_date.trim(),
+												created_by :chkress.rows[0].created_by.trim()
 
-           //                                 // resolve(message.USERDELETE)
-           //                              }
-           //                          })
-           //                      }
-                      
-           						console.log(chkress.rows[0].email)	
-           						redisClient.hget('user', chkress.rows[0].email, function (err1, reply1){
-				            		console.log(err1)
-				            		console.log(reply1)
-				            		// const data = JSON.parse(reply)
-				            		// resolve(data)
-				            		if(reply1 == null){
-				                        resolve(message.INVALIDEMAIL);
-				            		}else{
-				            			console.log('Done');
-				            		}
-                            	});
+											}
+											redisClient.hmset('user', chkress.rows[0].email.trim(), JSON.stringify(redata), function (err, data) {
+										    if(err){
+										    	resolve(message.SOMETHINGWRONG);
+										    }else{
+										    	if(data == 'OK'){
+			                                        if (admin_status == 0) {
+			                                        	resolve(message.ADMINAPPROVE);
+			                                        }else{
+			                                        	resolve(message.ADMINDISAPPROVE);
+			                                        }
+										    	}else{
+											    	resolve(message.SOMETHINGWRONG);
+										    	}
+										    }
+										});
+                                    }
+                                });
+
                             }
                         })
                     

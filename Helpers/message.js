@@ -29,6 +29,8 @@ const message = {
 
 
 	DISAPPROVEUSER  : {'success':true,'message': "User disapprove sucessfully"},
+	ADMINAPPROVE    : {'success':true,'message': "Admin approved sucessfully"},
+	ADMINDISAPPROVE    : {'success':true,'message': "Admin disapproved sucessfully"},
 	ACTIVEACCOUNT   : {'success':true,'message': "User activated sucessfully"},
 	ACTIVEACCOUNT   : {'success':true,'message': "User activated sucessfully"},
 	REGISTRATION 	: {'success':true,'message':'Registration sucessfully'},
