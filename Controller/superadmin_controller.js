@@ -309,7 +309,7 @@ module.exports.user_disapprove = (body, user) => {
 							if(disapproveerr){
 								resolve(message.SOMETHINGWRONG)
 							}else{
-							let redata = {
+								let redata = {
 	                        		user_id 	: findress.rows[0].user_id,
 									fullname 	: findress.rows[0].fullname,
 									email 		: findress.rows[0].email,

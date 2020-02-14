@@ -22,7 +22,7 @@ router.get('/user_profile',[userAuthenticator],User.user_profile);
 router.put('/user_update_profile',[userAuthenticator],User.user_update_profile);
 router.post('/user_change_password',[userAuthenticator],User.user_change_password);
 router.post('/user_forget_password',User.user_forget_password);//mail
-
+router.post('/ValidateUser',User.ValidateUser);
 // ======================== Super Admin ==========================
 
 router.post('/superlogin',User.superlogin);

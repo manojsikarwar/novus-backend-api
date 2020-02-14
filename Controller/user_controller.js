@@ -11,6 +11,7 @@ const cors          = require('cors');
 const randomToken   = require('random-token');
 const nodemailer 	= require('nodemailer');
 const generator 	= require('generate-password');
+const request = require('request');
 
 
 // ======================= signup =========================== //
@@ -929,5 +930,41 @@ module.exports.user_forget_password = (email) => {
         } catch (error) {
             resolve(error)
         }
+    })
+}
+
+
+
+module.exports.ValidateUser = (body) => {
+    return new Promise((resolve, reject) => {
+       try {
+    		
+    		const URL = 'http://137.117.80.211/node/express/myapp/api/login';
+			var options = {
+			url: URL,
+			method: 'POST',
+			form: {
+					"UserName": body.UserName,
+				  }
+			};
+
+			request(options, (error, response, body)=>{
+				if (error) {
+					resolve(message.SOMETHINGWRONG);
+				}else{
+					const result = JSON.parse(body)
+					resolve(result);
+				}
+			});
+
+		 } catch (error) {
+        	console.log('sfddsfsdfsdfs2222');
+            const errMessage = {
+                'status': false,
+                'message': error
+            }
+            resolve(errMessage);
+        }
+
     })
 }

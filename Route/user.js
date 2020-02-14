@@ -69,3 +69,12 @@ module.exports.user_forget_password = (req, res, next)=>{
 	}).catch((err)=>res.json({'success':false,'message':'err'}));
 }
 
+
+module.exports.ValidateUser = (req, res, next)=>{
+	const body = req.body;	
+	
+	User.ValidateUser(body)
+	.then((Data)=>{
+		res.json(Data);
+	}).catch((err)=>res.json({'success':false,'message':'err'}));
+}
