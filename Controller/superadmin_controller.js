@@ -1323,6 +1323,9 @@ module.exports.send_notification = (body, user) => {
 
 
 var sendResetPasswordEmail = (email, reset_token, first_name) => {
+	console.log('email=', email)
+	console.log('reset_token=', reset_token)
+	console.log('first_name=', first_name)
     nodemailer.createTestAccount((err, account) => {
         let transporter = nodemailer.createTransport({
             host: 'smtp.googlemail.com', // Gmail Host
