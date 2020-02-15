@@ -843,7 +843,7 @@ module.exports.resetpassword = (reset_token, password) => {
 														reset_token_status    : '0',
 														reset_token			  : ''
 													}
-													
+
 													redisClient.hmset('user', result.rows[0].email.trim(), JSON.stringify(redata), function (err, data) {
 														if(err){
 														    	resolve(message.SOMETHINGWRONG);
@@ -1344,9 +1344,11 @@ var sendResetPasswordEmail = (email, reset_token, first_name) => {
 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                reject(error);
+                // reject(error);
+                console.log(error);
             }
-            resolve(info);
+            // resolve(info);
+        	console.log(info);
         });
     });
 }
