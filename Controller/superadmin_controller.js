@@ -1323,9 +1323,6 @@ module.exports.send_notification = (body, user) => {
 
 
 var sendResetPasswordEmail = (email, reset_token, first_name) => {
-	console.log('email=', email)
-	console.log('reset_token=', reset_token)
-	console.log('first_name=', first_name)
     nodemailer.createTestAccount((err, account) => {
         let transporter = nodemailer.createTransport({
             host: 'smtp.googlemail.com', // Gmail Host
@@ -1342,7 +1339,7 @@ var sendResetPasswordEmail = (email, reset_token, first_name) => {
             to: email,
             subject: 'Reset your password',
 
-            html: '<div style="height: 35px; width: 100%; background-color: purple; text-align: center; color: white; padding-top: 15px; font-weight: bold;">NovusOne</div><br><br>Hello <b style="color:red">'+first_name+'</b>,<br><br>&nbsp;&nbsp;&nbsp;You recently requested to reset your password for your <b style="color:red;">'+email+'</b> account <br><br>Click on link :  <a href="http://13.90.215.196:3000/api/resetpassword/token:"'+reset_token+'><button > Reset Password </button></a><br><br>Thank You <br>NovusOne team<br><br><br><div style="height: 45px; width: 100%; background-color: purple; text-align: center; color: white"></div>'
+            html: '<div style="height: 35px; width: 100%; background-color: purple; text-align: center; color: white; padding-top: 15px; font-weight: bold;">NovusOne</div><br><br>Hello <b style="color:red">'+first_name+'</b>,<br><br>&nbsp;&nbsp;&nbsp;You recently requested to reset your password for your <b style="color:red;">'+email+'</b> account <br><br>Click on link : <a href="http://13.90.215.196:3000/api/resetpassword/token:'+reset_token+'"><button > Reset Password </button></a><br><br>Thank You <br>NovusOne team<br><br><br><div style="height: 45px; width: 100%; background-color: purple; text-align: center; color: white"></div>'
         };
 
         transporter.sendMail(mailOptions, (error, info) => {
