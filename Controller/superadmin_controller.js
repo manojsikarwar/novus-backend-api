@@ -464,82 +464,293 @@ module.exports.super_forget_password = (email) => {
 }
 
 
+// module.exports.sendResetPasswordLink = (email) => {
+//     return new Promise((resolve, reject) => {
+//         try {
+//             if (email != '') {
+//                 if(email){
+//                     const matchemail = `select * from supertbl where email = '${email}'`;
+//                     client.query(matchemail, (matchemailerr, result) => {
+//                         if (matchemailerr) {
+//                             resolve(message.SOMETHINGWRONG);
+//                         } else {
+//                             if(result.rows == ''){
+//                                 resolve(message.INVALIDEMAIL);
+//                             } else {
+//                             	var reset_token = generator.generate({
+//                                         length: 10,
+//                                         numbers: true
+//                                 });
+//                             	console.log(reset_token);
+
+//                                 bcrypt.genSalt(10, function(err, salt) {
+//                                         if (err) {
+//                                             resolve(message.PASSWORDNOTGEN);
+//                                         }
+	                                
+// 		                                var first_name = result.rows[0].fullname; 
+// 		                                const updatedata = `update supertbl set reset_token = '${reset_token}',reset_token_status = '${1}' where email = '${email}' `;
+// 		                                client.query(updatedata, (updatedataerr, result1) => {
+// 		                                    if (updatedataerr) {
+// 		                                        resolve(message.SOMETHINGWRONG);
+// 		                                    } else {
+// 		                                    	//console.log(result.rows[0]);
+// 		                                    		let redata = {
+// 													   	fullname  	: result.rows[0].fullname,
+// 													   	email     	: result.rows[0].email,
+// 														password  	: result.rows[0].password,
+// 														reset_token : result.rows[0].reset_token,
+// 														status    	: result.rows[0].status,
+// 														reset_token_status  : result.rows[0].reset_token_status,
+// 														role_id   	: result.rows[0].role_id,
+// 														super_id   	: result.rows[0].super_id,
+// 														created_date: result.rows[0].created_date
+
+// 													}
+
+// 													console.log(redata);
+
+// 													redisClient.hmset('super', email, JSON.stringify(redata), function (err, data) {
+// 												    if(err){
+// 												    	resolve(message.SOMETHINGWRONG);
+// 												    }else{
+// 												    	if(data == 'OK'){
+// 					                                        resolve(message.MAIL_SEND);
+// 												    	}else{
+// 													    	resolve(message.UNREGISTRATION);
+// 												    	}
+// 												    }
+// 												});
+// 		                                    }
+// 		                                });
+// 		                               sendResetPasswordEmail(email,reset_token, first_name);
+	                            	
+//                             	});
+//                             }
+//                         }
+//                     });
+//                 } else {
+//                     resolve(message.PARAMETES);
+//                 }
+//             } else {
+//                 resolve(message.FILEDS);
+//             }
+//         } catch (error) {
+//             resolve('error');
+//         }
+//     });
+// }
+
+
+
 module.exports.sendResetPasswordLink = (email) => {
     return new Promise((resolve, reject) => {
-        try {
-            if (email != '') {
-                if(email){
-                    const matchemail = `select * from supertbl where email = '${email}'`;
-                    client.query(matchemail, (matchemailerr, result) => {
-                        if (matchemailerr) {
-                            resolve(message.SOMETHINGWRONG);
-                        } else {
-                            if(result.rows == ''){
-                                resolve(message.INVALIDEMAIL);
-                            } else {
-                            	var reset_token = generator.generate({
+    	try{
+	        if (email != '') {
+	            if(email){
+	            	
+	                const checkSuperAdmin = `select * from supertbl where email = '${email}'`;
+	                client.query(checkSuperAdmin, (supererr, result) => {
+	                    if (result.rows != '') {
+	                        
+	                        var reset_token = generator.generate({
                                         length: 10,
                                         numbers: true
                                 });
-                            	console.log(reset_token);
-
                                 bcrypt.genSalt(10, function(err, salt) {
-                                        if (err) {
-                                            resolve(message.PASSWORDNOTGEN);
-                                        }
+                                if (err) {
+                                    resolve(message.PASSWORDNOTGEN);
+                                }
 	                                
-		                                var first_name = result.rows[0].fullname; 
-		                                const updatedata = `update supertbl set reset_token = '${reset_token}',reset_token_status = '${1}' where email = '${email}' `;
-		                                client.query(updatedata, (updatedataerr, result1) => {
-		                                    if (updatedataerr) {
-		                                        resolve(message.SOMETHINGWRONG);
-		                                    } else {
-		                                    	//console.log(result.rows[0]);
-		                                    		let redata = {
-													   	fullname  	: result.rows[0].fullname,
-													   	email     	: result.rows[0].email,
-														password  	: result.rows[0].password,
-														reset_token : result.rows[0].reset_token,
-														status    	: result.rows[0].status,
-														reset_token_status  : result.rows[0].reset_token_status,
-														role_id   	: result.rows[0].role_id,
-														super_id   	: result.rows[0].super_id,
-														created_date: result.rows[0].created_date
+		                        var first_name = result.rows[0].fullname; 
+		                        const updatedata = `update supertbl set reset_token = '${reset_token}',reset_token_status = '${1}' where email = '${email}' `;
+		                        client.query(updatedata, (updatedataerr, result1) => {
+                                    if (updatedataerr) {
+                                        resolve(message.SOMETHINGWRONG);
+                                    } else {
+                                		let redata = {
+										   	fullname  	: result.rows[0].fullname,
+										   	email     	: result.rows[0].email,
+											password  	: result.rows[0].password,
+											reset_token : result.rows[0].reset_token,
+											status    	: result.rows[0].status,
+											reset_token_status  : result.rows[0].reset_token_status,
+											role_id   	: result.rows[0].role_id,
+											super_id   	: result.rows[0].super_id,
+											created_date: result.rows[0].created_date
 
-													}
-
-													console.log(redata);
-
-													redisClient.hmset('super', email, JSON.stringify(redata), function (err, data) {
-												    if(err){
-												    	resolve(message.SOMETHINGWRONG);
-												    }else{
-												    	if(data == 'OK'){
-					                                        resolve(message.MAIL_SEND);
-												    	}else{
-													    	resolve(message.UNREGISTRATION);
-												    	}
-												    }
-												});
-		                                    }
-		                                });
-		                               sendResetPasswordEmail(email,reset_token, first_name);
-	                            	
+										}
+										redisClient.hmset('super', email, JSON.stringify(redata), function (err, data) {
+										    if(err){
+										    	resolve(message.SOMETHINGWRONG);
+										    }else{
+										    	if(data == 'OK'){
+			                                        resolve(message.MAIL_SEND);
+										    	}else{
+											    	resolve(message.UNREGISTRATION);
+										    	}
+										    }
+										});
+		                            }
+		                            });
+		                            sendResetPasswordEmail(email,reset_token, first_name);
                             	});
-                            }
-                        }
-                    });
-                } else {
-                    resolve(message.PARAMETES);
-                }
-            } else {
-                resolve(message.FILEDS);
-            }
-        } catch (error) {
-            resolve('error');
-        }
-    });
+
+	                    } else {
+
+	                        /**** Login with Admin ****/
+	                        const checkAdmin = `select * from signup where trim(email) = '${email}' and role_id = '${2}' and status = '${0}'`;
+		                    client.query(checkAdmin, (adminerr, adminresult) => {
+		                        if (adminresult.rows != '') {
+		                        	var reset_token = generator.generate({
+                                        length: 10,
+                                        numbers: true
+                                	});
+                                	bcrypt.genSalt(10, function(err, salt) {
+                                		if (err) {
+                                    		resolve(message.PASSWORDNOTGEN);
+                                		}
+	                                
+		                        		var first_name = adminresult.rows[0].fullname; 
+		                        		const updatedata = `update signup set reset_token = '${reset_token}',reset_token_status = '${1}' where email = '${email}' `;
+		                        		client.query(updatedata, (err1, res1) => {
+                                    	if (err1) {
+                                        	resolve(message.SOMETHINGWRONG);
+                                    	} else {
+	                                		let redata = {
+											   	fullname  	: adminresult.rows[0].fullname,
+											   	email     	: adminresult.rows[0].email,
+												password  	: adminresult.rows[0].password,
+												company  	: adminresult.rows[0].company,
+												address1  	: adminresult.rows[0].address1,
+												address2  	: adminresult.rows[0].address2,
+												country  	: adminresult.rows[0].country,
+												state  		: adminresult.rows[0].state,
+												city  		: adminresult.rows[0].city,
+												zipcode   	: adminresult.rows[0].zipcode,
+												status    	: adminresult.rows[0].status,
+												created_by  : adminresult.rows[0].created_by,
+												created_date: adminresult.rows[0].created_date,
+												role_id   	: adminresult.rows[0].role_id,
+												user_id   	: adminresult.rows[0].user_id,
+												device_type : adminresult.rows[0].device_type,
+												device_token: adminresult.rows[0].device_token,
+												app_user   	: adminresult.rows[0].app_user,
+												access_application_id : adminresult.rows[0].access_application_id,
+												reset_token_status    : '1',
+												reset_token			  : reset_token
+	
+											}
+										redisClient.hmset('user', email, JSON.stringify(redata), function (rerr, rdata) {
+										    if(rerr){
+										    	resolve(message.SOMETHINGWRONG);
+										    }else{
+										    	if(rdata == 'OK'){
+			                                        resolve(message.MAIL_SEND);
+										    	}else{
+											    	resolve(message.UNREGISTRATION);
+										    	}
+										    }
+										});
+		                            }
+		                            });
+		                            sendResetPasswordEmail(email,reset_token, first_name);
+                            	});
+
+
+		                        } else {
+		                            resolve(message.INVALIDEMAIL)
+
+		                        }
+		                    })
+	                        /*** End admin ***/
+	                    }
+	                })
+	            } else {
+	                resolve(message.PARAMETES)
+	            }
+	        } else {
+	            resolve(message.FILEDS)
+	        }
+    	}catch(error){
+	        resolve(message.ERROR)
+    	}
+    })
 }
+
+
+
+// module.exports.resetpassword = (reset_token, password) => {
+//     const chk_token	= reset_token.split(":");
+//     const token = chk_token[1]; 
+ 
+//     return new Promise((resolve, reject) => {
+//         try {
+//             if (token != '') {
+//                 if(token){
+
+//                     const matchToken = `select * from supertbl where reset_token = '${token}'`;
+//                     client.query(matchToken, (matchtokenerr, result) => {
+//                         if (matchtokenerr) {
+//                             resolve(message.SOMETHINGWRONG);
+//                         } else {
+//                             if(result.rows == ''){
+//                                 resolve(message.INVALIDRESETTOKEN);
+//                             } else {
+                     
+//                                 bcrypt.genSalt(10, function(err, salt) {
+//                                         if (err) {
+//                                             resolve(message.PASSWORDNOTGEN);
+//                                         }
+// 	                                bcrypt.hash(password, salt, function(err, hash) {
+// 		                                var first_name = result.rows[0].fullname; 
+// 		                                const updatedata = `update supertbl set password = '${hash}',reset_token = '',reset_token_status = '${0}' where reset_token = '${token}' `;
+// 		                                client.query(updatedata, (updatedataerr, result1) => {
+// 		                                    if (updatedataerr) {
+// 		                                        resolve(message.SOMETHINGWRONG);
+// 		                                    } else {
+// 		                                    		let redata = {
+// 													   	fullname:result.rows[0].fullname,
+// 													   	email: result.rows[0].email,
+// 														password:result.rows[0].hash,
+// 														reset_token:result.rows[0].reset_token,
+// 														status  :result.rows[0].status,
+// 														reset_token_status:result.rows[0].reset_token_status,
+// 														role_id :result.rows[0].role_id,
+// 														super_id :result.rows[0].super_id,
+// 														created_date  :result.rows[0].created_date
+
+// 													}
+// 													redisClient.hmset('super', result.rows[0].email, JSON.stringify(redata), function (err, data) {
+// 												    if(err){
+// 												    	resolve(message.SOMETHINGWRONG);
+// 												    }else{
+// 												    	if(data == 'OK'){
+// 					                                        resolve(message.RESETPASSWORDSUCCESS);
+// 												    	}else{
+// 													    	resolve(message.UNREGISTRATION);
+// 												    	}
+// 												    }
+// 												});
+// 		                                    }
+// 		                                });
+// 		                                //sendEmailTosuper(email, password, first_name);
+// 	                            	})
+//                             	});
+//                             }
+//                         }
+//                     });
+//                 } else {
+//                     resolve(message.RESETTOKEN);
+//                 }
+//             } else {
+//                 resolve(message.RESETTOKEN);
+//             }
+//         } catch (error) {
+//             resolve('error');
+//         }
+//     });
+// }
 
 
 module.exports.resetpassword = (reset_token, password) => {
@@ -553,54 +764,107 @@ module.exports.resetpassword = (reset_token, password) => {
 
                     const matchToken = `select * from supertbl where reset_token = '${token}'`;
                     client.query(matchToken, (matchtokenerr, result) => {
-                        if (matchtokenerr) {
-                            resolve(message.SOMETHINGWRONG);
-                        } else {
-                            if(result.rows == ''){
-                                resolve(message.INVALIDRESETTOKEN);
-                            } else {
-                     
-                                bcrypt.genSalt(10, function(err, salt) {
-                                        if (err) {
-                                            resolve(message.PASSWORDNOTGEN);
-                                        }
-	                                bcrypt.hash(password, salt, function(err, hash) {
-		                                var first_name = result.rows[0].fullname; 
-		                                const updatedata = `update supertbl set password = '${hash}',reset_token = '',reset_token_status = '${0}' where reset_token = '${token}' `;
-		                                client.query(updatedata, (updatedataerr, result1) => {
-		                                    if (updatedataerr) {
-		                                        resolve(message.SOMETHINGWRONG);
-		                                    } else {
-		                                    		let redata = {
-													   	fullname:result.rows[0].fullname,
-													   	email: result.rows[0].email,
-														password:result.rows[0].hash,
-														reset_token:result.rows[0].reset_token,
-														status  :result.rows[0].status,
-														reset_token_status:result.rows[0].reset_token_status,
-														role_id :result.rows[0].role_id,
-														super_id :result.rows[0].super_id,
-														created_date  :result.rows[0].created_date
-
-													}
-													redisClient.hmset('super', result.rows[0].email, JSON.stringify(redata), function (err, data) {
-												    if(err){
+            			if (result.rows != '') {
+            				bcrypt.genSalt(10, function(err, salt) {
+                                if (err) {
+                                    resolve(message.PASSWORDNOTGEN);
+                                }
+	                            bcrypt.hash(password, salt, function(err, hash) {
+                                	var first_name = result.rows[0].fullname; 		
+		                            const updatedata = `update supertbl set password = '${hash}',reset_token = '',reset_token_status = '${0}' where reset_token = '${token}' `;
+		                            client.query(updatedata, (updatedataerr, result1) => {
+	                                    if (updatedataerr) {
+	                                        resolve(message.SOMETHINGWRONG);
+	                                    } else {
+                                    		let redata = {
+											   	fullname    : result.rows[0].fullname,
+											   	email       : result.rows[0].email,
+												password    : result.rows[0].hash,
+												reset_token : result.rows[0].reset_token,
+												status      : result.rows[0].status,
+												reset_token_status : result.rows[0].reset_token_status,
+												role_id     : result.rows[0].role_id,
+												super_id    : result.rows[0].super_id,
+												created_date: result.rows[0].created_date
+											}
+											redisClient.hmset('super', result.rows[0].email.trim(), JSON.stringify(redata), function (err, data) {
+												if(err){
 												    	resolve(message.SOMETHINGWRONG);
-												    }else{
-												    	if(data == 'OK'){
-					                                        resolve(message.RESETPASSWORDSUCCESS);
-												    	}else{
-													    	resolve(message.UNREGISTRATION);
-												    	}
-												    }
-												});
-		                                    }
-		                                });
-		                                //sendEmailTosuper(email, password, first_name);
-	                            	})
-                            	});
-                            }
-                        }
+												}else{
+											    	if(data == 'OK'){
+				                                        resolve(message.RESETPASSWORDSUCCESS);
+											    	}else{
+												    	resolve(message.UNREGISTRATION);
+											    	}
+												}
+											});
+		                                }
+		                            });
+	                            })
+                            });	
+            			}else{
+
+            				/**Admin Reset Password **/
+            				const matchToken = `select * from signup where reset_token = '${token}'`;
+		                    client.query(matchToken, (matchtokenerr, result) => {
+		            			if (result.rows != '') {
+		            				bcrypt.genSalt(10, function(err, salt) {
+		                                if (err) {
+		                                    resolve(message.PASSWORDNOTGEN);
+		                                }
+			                            bcrypt.hash(password, salt, function(err, hash) {
+		                                	var first_name = result.rows[0].fullname; 		
+				                            const updatedata = `update signup set password = '${hash}',reset_token = '',reset_token_status = '${0}' where reset_token = '${token}' `;
+				                            client.query(updatedata, (updatedataerr, result1) => {
+			                                    if (updatedataerr) {
+			                                        resolve(message.SOMETHINGWRONG);
+			                                    } else {
+		                                    		let redata = {
+
+														fullname  	: result.rows[0].fullname,
+													   	email     	: result.rows[0].email,
+														password  	: result.rows[0].password,
+														company  	: result.rows[0].company,
+														address1  	: result.rows[0].address1,
+														address2  	: result.rows[0].address2,
+														country  	: result.rows[0].country,
+														state  		: result.rows[0].state,
+														city  		: result.rows[0].city,
+														zipcode   	: result.rows[0].zipcode,
+														status    	: result.rows[0].status,
+														created_by  : result.rows[0].created_by,
+														created_date: result.rows[0].created_date,
+														role_id   	: result.rows[0].role_id,
+														user_id   	: result.rows[0].user_id,
+														device_type : result.rows[0].device_type,
+														device_token: result.rows[0].device_token,
+														app_user   	: result.rows[0].app_user,
+														access_application_id : result.rows[0].access_application_id,
+														reset_token_status    : '0',
+														reset_token			  : ''
+													}
+													
+													redisClient.hmset('user', result.rows[0].email.trim(), JSON.stringify(redata), function (err, data) {
+														if(err){
+														    	resolve(message.SOMETHINGWRONG);
+														}else{
+													    	if(data == 'OK'){
+						                                        resolve(message.RESETPASSWORDSUCCESS);
+													    	}else{
+														    	resolve(message.UNREGISTRATION);
+													    	}
+														}
+													});
+				                                }
+				                            });
+			                            })
+		                            });	
+		            			}else{
+		            				resolve(message.INVALIDEMAIL)
+		           				}
+		           			});	
+
+           				}
                     });
                 } else {
                     resolve(message.RESETTOKEN);

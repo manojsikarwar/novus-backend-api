@@ -937,8 +937,7 @@ module.exports.user_forget_password = (email) => {
 
 module.exports.ValidateUser = (body) => {
     return new Promise((resolve, reject) => {
-       try {
-    		
+       try {    		
     		const URL = 'http://137.117.80.211/node/express/myapp/api/login';
 			var options = {
 			url: URL,
@@ -958,7 +957,6 @@ module.exports.ValidateUser = (body) => {
 			});
 
 		 } catch (error) {
-        	console.log('sfddsfsdfsdfs2222');
             const errMessage = {
                 'status': false,
                 'message': error
