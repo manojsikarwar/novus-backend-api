@@ -1,14 +1,17 @@
-const express = require('express');
-const router = express.Router();
-const bodyParser = require('body-parser');
-const User = require('./user');
-const Admin = require('./admin');
-const Super = require('./superadmin');
-const Application = require('./application');
-const File = require('../Controller/file_upload');
-const List = require('./list');
+const express 		= require('express');
+const router 		= express.Router();
+const bodyParser 	= require('body-parser');
+const User 			= require('./user');
+const Admin 		= require('./admin');
+const Super 		= require('./superadmin');
+const Application 	= require('./application');
+const File 			= require('../Controller/file_upload');
+const List 			= require('./list');
 const {userAuthenticator} = require('../middlewares/authenticator');
-var cors   = require('cors');
+const Category 		=require('./category');
+const Subcategory   =require('./subcategories');
+const Article       = require('./articles');
+var cors   			= require('cors');
 
 
 router.use(bodyParser.urlencoded({ extended: false }));
@@ -46,7 +49,6 @@ router.delete('/deleteAdmin',[userAuthenticator],Super.deleteAdmin);
 
 router.post('/adminlogin',Admin.adminlogin);
 
-
 // ===================== Aplication management ===================
 
 router.post('/application_management',[userAuthenticator],Application.application_management);
@@ -65,6 +67,29 @@ router.post('/file_upload',File.file_upload);
 router.get('/country_list',List.country_list);
 router.post('/state_list',List.state_list);
 router.post('/city_list',List.city_list);
+
+
+
+//====================== Start Routing for Novus BI =====================
+
+//======================== Novus BI Categories ==========================
+
+router.post('/createCategories',[userAuthenticator],Category.createCategories);
+router.get('/Categories',[userAuthenticator],Category.Categories);
+router.put('/updateCategories',[userAuthenticator],Category.updateCategories);
+router.delete('/deleteCategories',[userAuthenticator],Category.deleteCategories);
+
+
+//======================== Novus BI Subcategories ==========================
+router.post('/createSubCategories',[userAuthenticator], Subcategory.createSubCategories);
+router.post('/SubCategories',[userAuthenticator], Subcategory.SubCategories);
+router.put('/updateSubCategories',[userAuthenticator], Subcategory.updateSubCategories);
+router.delete('/deleteSubCategories',[userAuthenticator], Subcategory.deleteSubCategories);
+
+//====================== Novus BI Articles ====================
+router.post('/createArticle',[userAuthenticator], Article.createArticle);
+router.post('/Articles',[userAuthenticator], Article.Articles);
+router.delete('/deleteArticle',[userAuthenticator], Article.deleteArticle);
 
 module.exports = router;
 

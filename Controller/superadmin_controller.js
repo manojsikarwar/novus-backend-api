@@ -241,7 +241,7 @@ module.exports.user_approve = (body, user) => {
 									if(approveerr){
 										resolve(message.SOMETHINGWRONG)
 									}else{
-									let redata = {
+									    let redata = {
 			                        		user_id 	: findress.rows[0].user_id,
 											fullname 	: findress.rows[0].fullname,
 											email 		: findress.rows[0].email,
@@ -612,7 +612,7 @@ module.exports.sendResetPasswordLink = (email) => {
                                 		}
 	                                
 		                        		var first_name = adminresult.rows[0].fullname; 
-		                        		const updatedata = `update signup set reset_token = '${reset_token}',reset_token_status = '${1}' where email = '${email}' `;
+		                        		const updatedata = `update signup set reset_token = '${reset_token}',reset_token_status = '${1}' where email = '${email}' and role_id = '${2}' `;
 		                        		client.query(updatedata, (err1, res1) => {
                                     	if (err1) {
                                         	resolve(message.SOMETHINGWRONG);
@@ -814,7 +814,7 @@ module.exports.resetpassword = (reset_token, password) => {
 		                                }
 			                            bcrypt.hash(password, salt, function(err, hash) {
 		                                	var first_name = result.rows[0].fullname; 		
-				                            const updatedata = `update signup set password = '${hash}',reset_token = '',reset_token_status = '${0}' where reset_token = '${token}' `;
+				                            const updatedata = `update signup set password = '${hash}',reset_token = '',reset_token_status = '${0}' where reset_token = '${token}' and role_id='${2}' `;
 				                            client.query(updatedata, (updatedataerr, result1) => {
 			                                    if (updatedataerr) {
 			                                        resolve(message.SOMETHINGWRONG);

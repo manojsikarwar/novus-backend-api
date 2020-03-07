@@ -418,7 +418,7 @@ module.exports.createUser = (body, user) => {
 
 		            if(fullname != '' && email != '' && password != '' && company != '' && address1 != '' && address2 != '' && country != '' && state != '' && city != '' && zipcode != '' ){
 		                if(fullname && email != '' && password != '' && company != '' && address1 != '' && address2 != '' && country != '' && state != '' && city != '' && zipcode != '' ){
-		                    const getemail = `select * from signup where email = '${email}'`;
+		                    const getemail = `select * from signup where email = '${email}' and role_id = '${4}'`;
 		                    client.query(getemail, (emailerr, emaildataress) => {
 		                        if (emaildataress.rows != '') {
 		                            resolve(message.ALREADYUSE);
@@ -429,7 +429,7 @@ module.exports.createUser = (body, user) => {
 		                                if (usererr) {
 		                                    resolve(message.SOMETHINGWRONG);
 		                                } else {
-
+											
 		                                	const userId = userress.rows[0].user_id;
 
 	                                		let redata = {
@@ -498,20 +498,19 @@ module.exports.createUser = (body, user) => {
 												    	}
 												    }
 												})
-											}else{
-												
+											}else{												
 												redisClient.hmset('user', email, JSON.stringify(redata), function (err, data) {
-											    if(err){
-											    	resolve(message.SOMETHINGWRONG);
-											    }else{
-											    	if(data == 'OK'){
-												    	resolve(message.REGISTRATION);
-												    	// sendEmailToSignup(email, company, fullname);
-											    	}else{
+												    if(err){
 												    	resolve(message.SOMETHINGWRONG);
-											    	}
-											    }
-											})
+												    }else{
+												    	if(data == 'OK'){
+													    	resolve(message.REGISTRATION);
+													    	// sendEmailToSignup(email, company, fullname);
+												    	}else{
+													    	resolve(message.SOMETHINGWRONG);
+												    	}
+												    }
+												})
 
 											}
 

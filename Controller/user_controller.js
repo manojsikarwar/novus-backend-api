@@ -226,7 +226,7 @@ module.exports.login = (body) => {
 		            		}
 		            	})
 		            }else{
-		                const login = `select * from signup where trim(email) = '${email}'`;
+		                const login = `select * from signup where trim(email) = '${email}' and role_id = '${4}'`;
 		                client.query(login, (err, result) => {
 		                    if (result.rows == '') {
 		                        resolve(message.INVALIDEMAIL)
