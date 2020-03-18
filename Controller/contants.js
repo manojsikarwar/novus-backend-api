@@ -1,122 +1,67 @@
 const client 		= require("../db");
 const message 		= require("../Helpers/message");
 const redis 	    = require('redis');
+const moment 		= require('moment');
+const date   		= new Date();
+const myDate 		= moment(date).format('L');
 const redisClient   = redis.createClient(6379, 'localhost');
 
 /*** Create Contant ***/
 module.exports.createContant = (user, info) => {
 	return new Promise((resolve, reject) => {
 		try{
+			// resolve(user.id)
 			if (user.role_id == 1) {
-				if (info.cat_id != '' && info.subcat_id == '') {
-					const Chkcontant = `SELECT * FROM bi_contant WHERE title = '${info.title}' AND cat_id = '${info.cat_id}' `;
-					client.query(Chkcontant, (err1, res1) => {
-						if(err1){
-							resolve(message.SOMETHINGWRONG);
-						}else{
-							if (res1.rows == '') {	
-									const today = new Date();
-									const written_on_date = (today.getMonth()+1) +'/'+today.getDate()+'/'+today.getFullYear();
-								    const sql = `INSERT INTO bi_contant(title,written_on,auther,description,editor,image,embed,quotations,audio,cat_id,is_status,created_by,created_on) VALUES ('${info.title}','${written_on_date}','${info.auther}','${info.description}','${info.editor}','${info.image}','${info.embed}','${info.quotations}','${info.audio}','${info.cat_id}','${1}','${user.id}','${today}')RETURNING id`;
-									
-									client.query(sql, (error, result) => {
-										if(error){
-											resolve(message.SOMETHINGWRONG);
-										}else{
-											if (result != '') {
-												const redata = {
-													id 	  		  : result.rows[0].id,
-													title  		  : info.title,
-													written_on 	  : written_on_date,
-													auther 		  : info.auther,
-													description   : info.description,
-													editor 		  : info.editor,
-													image 		  : info.image,
-													embed 		  : info.embed,
-													quotations 	  : info.quotations,
-													audio 	      : info.audio,
-													subcat_id 	  : '',
-													cat_id 	      : info.cat_id,
-													is_status	  : 1,
-													created_by    : user.id,
-													created_on    : today
-												}
-												redisClient.hmset('bi_contant', info.title, JSON.stringify(redata), function (err, data) {
-												    if(err){
-												    	resolve(message.SOMETHINGWRONG);
-												    }else{
-												    	if(data == 'OK'){
-													    	resolve(message.CREATEDSUCCESS);
-												    	}else{
-													    	resolve(message.SOMETHINGWRONG);
-												    	}
-												    }
-												})
-											}else{
-												resolve(message.NOTCREATED);
-											}
+				const status = '1';
+				const Chkcontant = `SELECT * FROM bi_contant WHERE title = '${info.title}'`;
+				client.query(Chkcontant, (err1, res1) => {
+					if(err1){
+						resolve(message.SOMETHINGWRONG);
+					}else{
+						if (res1.rows == '') {	
+							// const written_on_date = (today.getMonth()+1) +'/'+today.getDate()+'/'+today.getFullYear();
+						    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by) VALUES ('${info.title}','${info.contant}','${info.type}','${info.categories}','${info.date}','${info.author}','${info.higlight}','${info.resume}','${info.comment}','${myDate}','${status}','${user.id}')RETURNING contant_id`;
+						    client.query(sql, (error, result) => {
+						    	// resolve(sql)
+								if(error){
+									resolve(message.SOMETHINGWRONG);
+								}else{
+									if (result != '') {
+										const redata = {
+											contant_id	  : result.rows[0].contant_id,
+											title  		  : info.title,
+											contant  	  : info.contant,
+											type  		  : info.type,
+											categories    : info.categories,
+											date  		  : info.date,
+											author 		  : info.author,
+											higlight 	  : info.higlight,
+											resume 		  : info.resume,
+											comment 	  : info.comment,
+											status	      : status,
+											created_by    : user.id
 										}
-									})
-							}else{
-								resolve(message.ALREADYEXISTS);
-							}
-						}	
-					});
-
-				}else{
-					const Chkcontant = `SELECT * FROM bi_contant WHERE title = '${info.title}' AND subcat_id = '${info.subcat_id}' AND cat_id = '${info.cat_id}' `;
-					client.query(Chkcontant, (err1, res1) => {
-						if(err1){
-							resolve(message.SOMETHINGWRONG);
+										redisClient.hmset('bi_contant', info.title, JSON.stringify(redata), function (err, data) {
+										    if(err){
+										    	resolve(message.SOMETHINGWRONG);
+										    }else{
+										    	if(data == 'OK'){
+											    	resolve(message.CREATEDSUCCESS);
+										    	}else{
+											    	resolve(message.SOMETHINGWRONG);
+										    	}
+										    }
+										})
+									}else{
+										resolve(message.NOTCREATED);
+									}
+								}
+							})
 						}else{
-							if (res1.rows == '') {	
-									const today = new Date();
-									const written_on_date = (today.getMonth()+1) +'/'+today.getDate()+'/'+today.getFullYear();
-								    const sql = `INSERT INTO bi_contant(title,written_on,auther,description,editor,image,embed,quotations,audio,subcat_id,cat_id,is_status,created_by,created_on) VALUES ('${info.title}','${written_on_date}','${info.auther}','${info.description}','${info.editor}','${info.image}','${info.embed}','${info.quotations}','${info.audio}','${info.subcat_id}','${info.cat_id}','${1}','${user.id}','${today}')RETURNING id`;
-									client.query(sql, (error, result) => {
-										if(error){
-											resolve(message.SOMETHINGWRONG);
-										}else{
-											if (result != '') {
-												const redata = {
-													id 	  		  : result.rows[0].id,
-													title  		  : info.title,
-													written_on 	  : written_on_date,
-													auther 		  : info.auther,
-													description   : info.description,
-													editor 		  : info.editor,
-													image 		  : info.image,
-													embed 		  : info.embed,
-													quotations 	  : info.quotations,
-													audio		  : info.audio,	
-													subcat_id 	  : info.subcat_id,
-													cat_id 	      : info.cat_id,
-													is_status	  : 1,
-													created_by    : user.id,
-													created_on    : today
-												}
-												redisClient.hmset('bi_contant', info.title, JSON.stringify(redata), function (err, data) {
-												    if(err){
-												    	resolve(message.SOMETHINGWRONG);
-												    }else{
-												    	if(data == 'OK'){
-													    	resolve(message.CREATEDSUCCESS);
-												    	}else{
-													    	resolve(message.SOMETHINGWRONG);
-												    	}
-												    }
-												})
-											}else{
-												resolve(message.NOTCREATED);
-											}
-										}
-									})
-							}else{
-								resolve(message.ALREADYEXISTS);
-							}
-						}	
-					});
-				}	
+							resolve(message.ALREADYEXISTS);
+						}
+					}	
+				});
 			}else{
 				resolve(message.PERMISSIONERROR);
 			}			

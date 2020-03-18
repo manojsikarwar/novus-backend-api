@@ -3,6 +3,7 @@ const Subcategories = require('../Controller/subcategories');
 module.exports.createSubCategories = (req, res ,next) => {
 	const body = req.body;
 	const user = req.user;
+	// console.log(body)
 	Subcategories.createSubCategories(user, body)
 	.then((Data) => {
 		res.json(Data)

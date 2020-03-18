@@ -8,48 +8,66 @@ const redisClient  = redis.createClient(6379, 'localhost');
 module.exports.createSubCategories = (user, info) => {
 	return new Promise((resolve, reject) => {
 		try{
+			const subcategory_name = info.subcategory_name;
+			const parant_id = info.cat_id;
 			if (user.role_id == 1) {
-				const ChkCategory = `SELECT * FROM bi_subcategories WHERE subcategory_name = '${info.subcategory_name}'`;
-				client.query(ChkCategory, (err1, res1) => {
-					if(err1){
-						resolve(message.SOMETHINGWRONG);
+				const max = `select max(subcategory_id) from bi_categories `
+				client.query(max, (maxerr, maxress)=>{
+					if(maxerr){
+						resolve('error in max')
 					}else{
-						if (res1.rows == '') {	
-							    const sql = `INSERT INTO bi_subcategories(subcategory_name,cat_id,icon,is_status,created_by) VALUES ('${info.subcategory_name}','${info.cat_id}','${info.icon}','${1}','${user.id}')RETURNING subcat_id`;
-								client.query(sql, (error, result) => {
-									if(error){
-										resolve(message.SOMETHINGWRONG);
-									}else{
-										if (result != '') {
-											const redata = {
-												subcat_id 	 	 : result.rows[0].subcat_id,
-												subcategory_name : info.subcategory_name,
-												cat_id 		     : info.cat_id,
-												icon 		     : info.icon,
-												is_status	     : 1,
-												created_by       : user.id
-											}
-											redisClient.hmset('bi_subcategories', info.subcategory_name, JSON.stringify(redata), function (err, data) {
-											    if(err){
-											    	resolve(message.SOMETHINGWRONG);
-											    }else{
-											    	if(data == 'OK'){
-												    	resolve(message.CREATEDSUCCESS);
-											    	}else{
-												    	resolve(message.SOMETHINGWRONG);
-											    	}
-											    }
-											})
-										}else{
-											resolve(message.NOTCREATED);
-										}
-									}
-								})
+						if(maxress.rows == ''){
+							resolve('blank max')
 						}else{
-							resolve(message.ALREADYEXISTS);
+							var subcategory_id = maxress.rows[0].max
+
+							// resolve(maxress.rows[0].max)
+							const ChkCategory = `SELECT * FROM bi_categories WHERE subcategory_name = '${info.subcategory_name}' AND parant_id = '${parant_id}' `
+							client.query(ChkCategory, (err1, res1) => {
+								if(err1){
+									resolve(message.SOMETHINGWRONG);
+								}else{
+									if (res1.rows == '') {	
+										   const sql = `INSERT INTO bi_categories(category_name,icon,is_status,created_by,subcategory_name,parant_id,subcategory_id) VALUES ('${'none'}','${info.icon}','${1}','${user.id}','${subcategory_name}','${parant_id}','${subcategory_id+1}')RETURNING subcategory_id`;
+											client.query(sql, (error, result) => {
+												if(error){
+													resolve(message.SOMETHINGWRONG);
+												}else{
+													if (result != '') {
+														const redata = {
+															cat_id 	 	  : result.rows[0].subcategory_id,
+															category_name : 'none',
+															icon 		  : info.icon,
+															is_status	  : 1,
+															created_by    : user.id,
+															subcategory_name:subcategory_name,
+															parant_id 	  : parant_id,
+															subcategory_id: subcategory_id+1
+														}
+														redisClient.hmset('bi_categories', parant_id, JSON.stringify(redata), function (err, data) {
+														    if(err){
+														    	resolve(message.SOMETHINGWRONG);
+														    }else{
+														    	if(data == 'OK'){
+															    	resolve(message.CREATED);
+														    	}else{
+															    	resolve(message.SOMETHINGWRONG);
+														    	}
+														    }
+														})
+													}else{
+														resolve(message.NOTCREATED);
+													}
+												}
+											})
+									}else{
+										resolve(message.ALREADYEXISTS);
+									}
+								}	
+							});	
 						}
-					}	
-				});	
+					}
+				})
 			}else{
 				resolve(message.PERMISSIONERROR);
 			}			
@@ -64,85 +82,53 @@ module.exports.createSubCategories = (user, info) => {
 module.exports.SubCategories = (user, catId) => {
 	return new Promise((resolve, reject) => {
 		try{
-			const userId = user.id;
-			if (user.role_id > 2 ) {
-				resolve(message.PERMISSIONERROR);
+			const role_id = user.role_id;
+			
+			const subcatArray = [];
+			if (role_id == 1) {
+				const sql = `SELECT * FROM bi_categories WHERE parant_id = '${catId}' AND is_status = '${1}'`;
+				client.query(sql, (error, result) => {
+					if(error){
+						resolve(message.SOMETHINGWRONG);
+					}else{
+						if(result.rows != ''){
+							for(let dat of result.rows)
+							{
+								const data = {
+									subcat_id		 : dat.cat_id,
+							        subcategory_name : dat.category_name.trim(),
+							        cat_id		     : dat.parant_id,
+							        icon			 : dat.icon.trim()
+								}
+								subcatArray.push(data);
+							}
+							const response = {
+								success : true,
+								message : 'list of subcategories',
+								data     : subcatArray
+							}
+							redisClient.hgetall('bi_subcategories', function (err, data) {
+							    if(err){
+							    	resolve(message.SOMETHINGWRONG);
+							    }else{
+							    	
+									resolve(response)
+							    }
+							})
+							//resolve(response)
+						}else{
+							resolve(message.EMPTY)			
+						}
+					}
+				});
 			}else{
-				const subcatArray = [];
-				if (userId == 1) {
-					const sql = `SELECT * FROM bi_subcategories WHERE cat_id = '${catId}' AND is_status = '${1}'`;
-					client.query(sql, (error, result) => {
-						if(error){
-							resolve(message.SOMETHINGWRONG);
-						}else{
-							if(result.rows != ''){
-								for(let dat of result.rows)
-								{
-									const data = {
-										subcat_id		 : dat.subcat_id,
-								        subcategory_name : dat.subcategory_name.trim(),
-								        cat_id		     : dat.cat_id,
-								        icon			 : dat.icon.trim()
-									}
-									subcatArray.push(data);
-								}
-								const response = {
-									success : true,
-									message : 'list of subcategories',
-									data     : subcatArray
-								}
-								redisClient.hgetall('bi_subcategories', function (err, data) {
-								    if(err){
-								    	resolve(message.SOMETHINGWRONG);
-								    }else{
-								    	
-										resolve(response)
-								    }
-								})
-								//resolve(response)
-							}else{
-								resolve(message.EMPTY)			
-							}
-						}
-					});
-				}else{
-					const sql = `SELECT * FROM bi_subcategories WHERE cat_id = '${catId}' AND is_status = '${1}' AND created_by = '${userId}'`;
-					client.query(sql, (error, result) => {
-						if(error){
-							resolve(message.SOMETHINGWRONG);
-						}else{
-							if(result.rows != ''){
-								for(let dat of result.rows)
-								{
-									const data = {
-										subcat_id		 : dat.subcat_id,
-								        subcategory_name : dat.subcategory_name.trim(),
-								        cat_id		     : dat.cat_id,
-								        icon			 : dat.icon.trim()
-									}
-									subcatArray.push(data);
-								}
-								const response = {
-									success : true,
-									message : 'list of subcategories',
-									data     : subcatArray
-								}
-								redisClient.hgetall('bi_subcategories', function (err, data) {
-								    if(err){
-								    	resolve(message.SOMETHINGWRONG);
-								    }else{
-								    	
-										resolve(response)
-								    }
-								})
-								//resolve(response)
-							}else{
-								resolve(message.EMPTY)			
-							}
-						}
-					});
+				const errmessage = {
+					'status':false,
+					'message':'You have not permission'
 				}
+				resolve(errmessage)
 			}
+			
 		}catch(error){
 			resolve(error)
 		}

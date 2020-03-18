@@ -8,13 +8,15 @@ module.exports.createCategories = (user, info) => {
 	return new Promise((resolve, reject) => {
 		try{
 			if (user.role_id== 1) {
+				const parant_id = info.parent_id;
+
 				const ChkCategory = `SELECT * FROM bi_categories WHERE category_name = '${info.category_name}'`;
 				client.query(ChkCategory, (err1, res1) => {
 					if(err1){
 						resolve(message.SOMETHINGWRONG+"01");
 					}else{
 						if (res1.rows == '') {
-								const sql = `INSERT INTO bi_categories(category_name,icon,is_status,created_by) VALUES ('${info.category_name}','${info.icon}','${1}','${user.id}')RETURNING cat_id`;
+								const sql = `INSERT INTO bi_categories(category_name,icon,is_status,created_by,parant_id) VALUES ('${info.category_name}','${info.icon}','${1}','${user.id}','${parant_id}')RETURNING cat_id`;
 								client.query(sql, (error, result) => {
 									if(error){
 										resolve(message.SOMETHINGWRONG);
@@ -25,7 +27,8 @@ module.exports.createCategories = (user, info) => {
 												category_name : info.category_name,
 												icon 		  : info.icon,
 												is_status	  : 1,
-												created_by    : user.id
+												created_by    : user.id,
+												parant_id 	  : parant_id
 											}
 											redisClient.hmset('bi_categories', info.category_name, JSON.stringify(redata), function (err, data) {
 											    if(err){
@@ -62,17 +65,18 @@ module.exports.createCategories = (user, info) => {
 module.exports.Categories = (user) => {
 	return new Promise((resolve, reject) => {
 		try{
-			const userId = user.id;
+			const role_id = user.role_id;
 			if (user.role > 2 ) {
 				resolve(message.PERMISSIONERROR);
 			}else{
 				const catArray = [];
-				if (userId == 1) {
-					const sql = `SELECT * FROM bi_categories WHERE is_status = '${1}'`;
+				if (role_id == 1) {
+					const sql = `SELECT * FROM bi_categories WHERE is_status = '${1}' and parant_id = '${0}'`;
 					client.query(sql, (error, result) => {
 						if(error){
 							resolve(message.SOMETHINGWRONG);
 						}else{
+							// resolve(result.rows)
 							if(result.rows != ''){
 								for(let dat of result.rows)
 								{
@@ -103,40 +107,45 @@ module.exports.Categories = (user) => {
 						}
 					});
 				}else{
-					const sql = `SELECT * FROM bi_categories WHERE is_status = '${1}' AND created_by = '${userId}'`;
-					client.query(sql, (error, result) => {
-						if(error){
-							resolve(message.SOMETHINGWRONG);
-						}else{
-							if(result.rows != ''){
-								for(let dat of result.rows)
-								{
-									const data = {
-										cat_id		    : dat.cat_id,
-								        category_name	: dat.category_name.trim(),
-										icon	        : dat.icon.trim(),
-									}
-									catArray.push(data);
-								}
-								const response = {
-									success : true,
-									message : 'list of categories',
-									data     : catArray
-								}
-								redisClient.hgetall('bi_categories', function (err, data) {
-								    if(err){
-								    	resolve(message.SOMETHINGWRONG);
-								    }else{
+					const errmessage = {
+						'status': false,
+						'message': 'You have not permission'
+					}
+					resolve(errmessage)
+					// const sql = `SELECT * FROM bi_categories WHERE is_status = '${1}' AND created_by = '${userId}'`;
+					// client.query(sql, (error, result) => {
+					// 	if(error){
+					// 		resolve(message.SOMETHINGWRONG);
+					// 	}else{
+					// 		if(result.rows != ''){
+					// 			for(let dat of result.rows)
+					// 			{
+					// 				const data = {
+					// 					cat_id		    : dat.cat_id,
+					// 			        category_name	: dat.category_name.trim(),
+					// 					icon	        : dat.icon.trim(),
+					// 				}
+					// 				catArray.push(data);
+					// 			}
+					// 			const response = {
+					// 				success : true,
+					// 				message : 'list of categories',
+					// 				data     : catArray
+					// 			}
+					// 			redisClient.hgetall('bi_categories', function (err, data) {
+					// 			    if(err){
+					// 			    	resolve(message.SOMETHINGWRONG);
+					// 			    }else{
 								    	
-										resolve(response)
-								    }
-								})	
-								//resolve(response)
-							}else{
-								resolve(message.EMPTY)			
-							}
-						}
-					});
+					// 					resolve(response)
+					// 			    }
+					// 			})	
+					// 			//resolve(response)
+					// 		}else{
+					// 			resolve(message.EMPTY)			
+					// 		}
+					// 	}
+					// });
 				}
 			}
 		}catch(error){
