@@ -11,41 +11,31 @@ var cors     = require('cors')
 // var mkdirp   = require('mkdirp');
 
 
-
-
-//====================  image upload  ======================
-
-
-//Storage the folder functionality
+//--------------- Storage the folder functionality ----------------
 var storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        if(file.mimetype == 'image/jpeg' || 'image/png'){
-            cb(null, 'uploads/');
-        }else{
-            return cb({'success':false,'message':'Only png, jpeg file can upload'});
-        }
+    destination: function(req, file, cd) {
+        cd(null, 'uploads/audio')
     },
     filename: function(req, file, cd) {
-        var f1 = file.originalname;
-        var text  = f1.split('.')[1];
-        var finle_name = Math.random()+'.'+text;
-        cd(null, finle_name)
+        cd(null,file.originalname)
     }
 })
 
-//upload the file function
+// --------------------upload the file function--------------------
 var upload = multer({
     storage: storage
 }).any('');
 
-module.exports.file_upload = (req, res) => {
 
-        // console.log(req.files)
-    upload(req, res, function(err) {
-        if(err) {
-            res.json(err)
-        }else {
+
+//========================= Upload Audio =========================
+module.exports.uploadAudio=async(req, res) => {
+    upload(req, res, (err) => {
+        if (err) {
+            console.warn(err)
+        } else {
             var imagename = req.files;
+            console.log(imagename)
             const path = imagename[0].filename;
             const map1 = imagename.map(data => {
                 var imageurl = "http://13.90.215.196:3000/"+path;
@@ -53,7 +43,7 @@ module.exports.file_upload = (req, res) => {
                 
                 res.json({
                     "success": true,
-                    "message": 'Image uploaded successfully',
+                    "message": 'Audio uploaded successfully',
                     "imageurl": imageurl,
                     'path':path
                 })

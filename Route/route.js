@@ -8,9 +8,14 @@ const Application 	= require('./application');
 const File 			= require('../Controller/file_upload');
 const List 			= require('./list');
 const {userAuthenticator} = require('../middlewares/authenticator');
-const Category 		=require('./category');
-const Subcategory   =require('./subcategories');
+const Category 		= require('./category');
+const Subcategory   = require('./subcategories');
 const Article       = require('./articles');
+const Contant       = require('./contants');
+const Comment       = require('./comments');
+const News          = require('./news');
+const Banner        = require('./banner');
+const Audio 		= require('../Controller/audio');
 var cors   			= require('cors');
 
 
@@ -86,10 +91,47 @@ router.post('/SubCategories',[userAuthenticator], Subcategory.SubCategories);
 router.put('/updateSubCategories',[userAuthenticator], Subcategory.updateSubCategories);
 router.delete('/deleteSubCategories',[userAuthenticator], Subcategory.deleteSubCategories);
 
+
+//========================== Novus BI Contant ========================
+router.post('/createContant',[userAuthenticator], Contant.createContant);
+router.post('/contants',[userAuthenticator], Contant.contants);
+router.put('/updateContant',[userAuthenticator], Contant.updateContant);
+router.delete('/deleteContant',[userAuthenticator], Contant.deleteContant);
+
+
+//========================== Novus BI Comment ========================
+router.post('/createComment',[userAuthenticator], Comment.createComment);
+router.post('/comments',[userAuthenticator], Comment.comments);
+router.put('/updateComment',[userAuthenticator], Comment.updateComment);
+router.delete('/deleteComment',[userAuthenticator], Comment.deleteComment);
+
+
+//====================== Novus BI Banner ====================
+router.post('/createBanner',[userAuthenticator], Banner.createBanner);
+router.get('/Banners',[userAuthenticator], Banner.Banners);
+router.put('/updateBanner',[userAuthenticator], Banner.updateBanner);
+router.delete('/deleteBanner',[userAuthenticator], Banner.deleteBanner);
+
+
+//====================== Novus BI Audio ====================
+router.post('/uploadAudio',Audio.uploadAudio);
+
+
 //====================== Novus BI Articles ====================
 router.post('/createArticle',[userAuthenticator], Article.createArticle);
 router.post('/Articles',[userAuthenticator], Article.Articles);
+router.put('/updateArticles',[userAuthenticator], Article.updateArticles);
 router.delete('/deleteArticle',[userAuthenticator], Article.deleteArticle);
+
+
+//====================== Novus BI News ====================
+router.post('/createNews',[userAuthenticator], News.createNews);
+router.post('/getNews',[userAuthenticator], News.getNews);
+router.delete('/deleteNews',[userAuthenticator], News.deleteNews);
+
+
+
+
 
 module.exports = router;
 

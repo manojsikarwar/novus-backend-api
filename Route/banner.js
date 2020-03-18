@@ -1,36 +1,35 @@
-const Articles = require('../Controller/articles');
+const Banner = require('../Controller/banner');
 
-module.exports.createArticle = (req, res ,next) => {
+module.exports.createBanner = (req, res ,next) => {
 	const body = req.body;
 	const user = req.user;
-	Articles.createArticle(user, body)
+	Banner.createBanner(user, body)
 	.then((Data) => {
 		res.json(Data)
 	}).catch((err) => next(err))
 }
 
-module.exports.Articles = (req, res, next) => {
+module.exports.Banners = (req, res, next) => {
 	const user = req.user;
-	const subcatId = req.body.subcat_id;
-	Articles.Articles(user, subcatId)
+	Banner.Banners(user)
 	.then((Data) => {
 		res.json(Data)
 	}).catch((err) => next(err))
 }
 
-module.exports.updateArticles = (req, res, next) => {
+module.exports.updateBanner = (req, res, next) => {
 	const user = req.user;
 	const body = req.body;
-	Articles.updateArticles(user, body)
+	Banner.updateBanner(user, body)
 	.then((Data) => {
 		res.json(Data)
 	}).catch((err) => next(err)) 
 }
 
-module.exports.deleteArticle = (req, res, next) => {
+module.exports.deleteBanner = (req, res, next) => {
 	const user = req.user;
 	const body = req.body;
-	Articles.deleteArticle(user, body)
+	Banner.deleteBanner(user, body)
 	.then((Data) => {
 		res.json(Data)
 	}).catch((err) => next(err)) 

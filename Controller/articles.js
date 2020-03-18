@@ -1,6 +1,7 @@
-const client=require("../db")
-const message=require("../Helpers/message")
-
+const client 		= require("../db");
+const message 		= require("../Helpers/message");
+const redis 	    = require('redis');
+const redisClient   = redis.createClient(6379, 'localhost');
 
 /*** Create Articles ***/
 module.exports.createArticle = (user, info) => {
@@ -15,13 +16,38 @@ module.exports.createArticle = (user, info) => {
 						if (res1.rows == '') {	
 								const today = new Date();
 								const written_on_date = (today.getMonth()+1) +'/'+today.getDate()+'/'+today.getFullYear();
-							    const sql = `INSERT INTO bi_articles(title,written_on,auther,article_image,description,subcat_id,is_status,created_by,created_on) VALUES ('${info.title}','${written_on_date}','${info.auther}','${info.article_image}','${info.description}','${info.subcat_id}','${1}','${user.id}','${today}')`;
+							    const sql = `INSERT INTO bi_articles(title,written_on,auther,description,editor,image,embed,quotations,subcat_id,is_status,created_by,created_on) VALUES ('${info.title}','${written_on_date}','${info.auther}','${info.description}','${info.editor}','${info.image}','${info.embed}','${info.quotations}','${info.subcat_id}','${1}','${user.id}','${today}')RETURNING article_id`;
 								client.query(sql, (error, result) => {
 									if(error){
 										resolve(message.SOMETHINGWRONG);
 									}else{
 										if (result != '') {
-											resolve(message.CREATEDSUCCESS);
+											const redata = {
+												article_id 	  : result.rows[0].article_id,
+												title  		  : info.title,
+												written_on 	  : written_on_date,
+												auther 		  : info.auther,
+												description   : info.description,
+												editor 		  : info.editor,
+												image 		  : info.image,
+												embed 		  : info.embed,
+												quotations 	  : info.quotations,
+												subcat_id 	  : info.subcat_id,
+												is_status	  : 1,
+												created_by    : user.id,
+												created_on    : today
+											}
+											redisClient.hmset('bi_articles', info.title, JSON.stringify(redata), function (err, data) {
+											    if(err){
+											    	resolve(message.SOMETHINGWRONG);
+											    }else{
+											    	if(data == 'OK'){
+												    	resolve(message.CREATEDSUCCESS);
+											    	}else{
+												    	resolve(message.SOMETHINGWRONG);
+											    	}
+											    }
+											})
 										}else{
 											resolve(message.NOTCREATED);
 										}
@@ -66,7 +92,10 @@ module.exports.Articles = (user, subcatId) => {
 								        written_on		 : dat.written_on.trim(),
 								        auther		 	 : dat.auther.trim(),
 								        description		 : dat.description.trim(),
-								        article_image	 : dat.article_image.trim(),
+								        editor	 		 : dat.editor.trim(),
+								        image	 		 : dat.image.trim(),
+								        embed	 		 : dat.embed.trim(),
+								        quotations	 	 : dat.quotations.trim(),
 								        subcat_id		 : dat.subcat_id,
 								        is_status		 : dat.is_status,
 								        created_by		 : dat.created_by,
@@ -79,7 +108,15 @@ module.exports.Articles = (user, subcatId) => {
 									message : 'list of articles',
 									data     : articlesArray
 								}
-								resolve(response)
+								redisClient.hgetall('bi_articles', function (err, data) {
+								    if(err){
+								    	resolve(message.SOMETHINGWRONG);
+								    }else{
+								    	
+										resolve(response)
+								    }
+								})
+								// resolve(response)
 							}else{
 								resolve(message.EMPTY)			
 							}
@@ -100,7 +137,10 @@ module.exports.Articles = (user, subcatId) => {
 								        written_on		 : dat.written_on.trim(),
 								        auther		 	 : dat.auther.trim(),
 								        description		 : dat.description.trim(),
-								        article_image	 : dat.article_image.trim(),
+								        editor	 		 : dat.editor.trim(),
+								        image	 		 : dat.image.trim(),
+								        embed	 		 : dat.embed.trim(),
+								        quotations	 	 : dat.quotations.trim(),
 								        subcat_id		 : dat.subcat_id,
 								        is_status		 : dat.is_status,
 								        created_by		 : dat.created_by,
@@ -113,7 +153,15 @@ module.exports.Articles = (user, subcatId) => {
 									message : 'list of articles',
 									data     : articlesArray
 								}
-								resolve(response)
+								redisClient.hgetall('bi_articles', function (err, data) {
+								    if(err){
+								    	resolve(message.SOMETHINGWRONG);
+								    }else{
+								    	
+										resolve(response)
+								    }
+								})
+								//resolve(response)
 							}else{
 								resolve(message.EMPTY)			
 							}
@@ -128,29 +176,103 @@ module.exports.Articles = (user, subcatId) => {
 }
 
 
-// /*** Update SubCategories ***/
-// module.exports.updateSubCategories = (user, info) => {
-// 	return new Promise((resolve, reject) => {
-// 		try{
-// 			if (user.role > 2) {
-// 				resolve(message.PERMISSIONERROR);
-// 			}else{				
-// 				const sql  = `UPDATE tbl_subcategories SET subcategory_name = '${info.subcategory_name}', cat_id = '${info.cat_id}', icon = '${info.icon}' WHERE subcat_id = '${info.subcat_id}'`;
-// 				client.query(sql, (error, result) =>{
-// 					if (error) {
-// 						resolve(message.SOMETHINGWRONG);
-// 					}else{
-// 						if (result) {
-// 							resolve(message.UPDATEDSUCCESS);
-// 						}
-// 					}
-// 				})
-// 			}
-// 		}catch(error){
-// 			resolve(error)
-// 		}
-// 	})
-// }
+/*** Update Articles ***/
+module.exports.updateArticles = (user, info) => {
+	return new Promise((resolve, reject) => {
+		try{
+			if (user.role_id > 2) {
+				resolve(message.PERMISSIONERROR);
+			}else{	
+
+				const checksql = `SELECT * FROM bi_articles WHERE article_id = '${info.article_id}' AND subcat_id = '${info.subcat_id}'`;
+				client.query(checksql, (err, res) =>{
+					if (err) {
+						resolve(message.SOMETHINGWRONG);
+					}else{
+						if (res.rows[0] != '') {
+							const today = new Date();
+							const written_on_date = (today.getMonth()+1) +'/'+today.getDate()+'/'+today.getFullYear();
+
+							const sql  = `UPDATE bi_articles SET 
+									title  		= '${info.title}',
+									written_on  = '${written_on_date}',
+									auther  	= '${info.auther}',
+									description = '${info.description}',
+									editor  	= '${info.editor}',
+									image  		= '${info.image}', 
+									embed 		= '${info.embed}',
+									quotations  = '${info.quotations}',
+									subcat_id   = '${info.subcat_id}' WHERE article_id = '${info.article_id}' AND  subcat_id = '${info.subcat_id}'`;
+
+							client.query(sql, (error, result) =>{
+								if (error) {
+									resolve(message.SOMETHINGWRONG);
+								}else{
+									if (result) {
+										const resdata = {
+											article_id	  : res.rows[0].article_id,
+											title 		  : info.title,
+											written_on    : written_on_date,
+											auther 		  : info.auther,
+											description   : info.description,
+											editor        : info.editor,
+											image         : info.image,
+											embed    	  : info.embed,
+											quotations    : info.quotations,
+											subcat_id     : info.subcat_id
+
+										}
+										redisClient.hmset('bi_articles', res.rows[0].title, JSON.stringify(resdata), function (err, data) {
+										    if(err){
+										    	resolve(message.SOMETHINGWRONG);
+										    }else{
+										    	if(data == 'OK'){
+											    	resolve(message.UPDATEDSUCCESS);
+										    	}else{
+											    	resolve(message.NOTUPDATED);
+										    	}
+										    }
+										})		
+
+										//resolve(message.UPDATEDSUCCESS);
+									}else{
+										resolve(message.NOTUPDATED);
+									}
+								}
+							})	
+							//resolve(message.UPDATEDSUCCESS);
+						}
+					}
+				})
+
+
+
+				// const sql  = `UPDATE bi_articles SET 
+				// 					title  		= '${info.title}',
+				// 					written_on  = '${info.written_on}',
+				// 					auther  	= '${info.auther}',
+				// 					description = '${info.description}',
+				// 					editor  	= '${info.editor}',
+				// 					image  		= '${info.image}', 
+				// 					embed 		= '${info.embed}',
+				// 					quotations  = '${info.quotations}',
+				// 					subcat_id   = '${info.subcat_id}' WHERE subcat_id = '${info.subcat_id}'`;
+
+				// client.query(sql, (error, result) =>{
+				// 	if (error) {
+				// 		resolve(message.SOMETHINGWRONG);
+				// 	}else{
+				// 		if (result) {
+				// 			resolve(message.UPDATEDSUCCESS);
+				// 		}
+				// 	}
+				// })
+			}
+		}catch(error){
+			resolve(error)
+		}
+	})
+}
 
 
 /***  Delete Article ***/
@@ -160,13 +282,25 @@ module.exports.deleteArticle = (user, info) => {
 			if (user.role_id > 2) {
 				resolve(message.PERMISSIONERROR);
 			}else{
-				const sql  = `DELETE FROM bi_articles WHERE article_id = '${info.article_id}'`;
+				const sql  = `DELETE FROM bi_articles WHERE article_id = '${info.article_id}'RETURNING title`;
 				client.query(sql, (error, result) =>{
+					console.log(result);
 					if (error) {
 						resolve(message.SOMETHINGWRONG);
 					}else{
 						if(result) {
-							resolve(message.DELETEDSUCCESS);
+							const article_title = result.rows[0].title.trim();
+                            redisClient.hdel('bi_articles',article_title,function(err,redisdata){
+								if(err){
+									resolve(message.SOMETHINGWRONG);
+								}else{
+									if(redisdata == 1){
+										resolve(message.DELETEDSUCCESS);
+									}else{
+										resolve(message.NORDELETED);
+									}
+								}
+							})
 						}else{		
 							resolve(message.NORDELETED);
 						}

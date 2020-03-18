@@ -1,36 +1,36 @@
-const Articles = require('../Controller/articles');
+const Comments = require('../Controller/comments');
 
-module.exports.createArticle = (req, res ,next) => {
+module.exports.createComment = (req, res ,next) => {
 	const body = req.body;
 	const user = req.user;
-	Articles.createArticle(user, body)
+	Comments.createComment(user, body)
 	.then((Data) => {
 		res.json(Data)
 	}).catch((err) => next(err))
 }
 
-module.exports.Articles = (req, res, next) => {
+module.exports.comments = (req, res, next) => {
 	const user = req.user;
-	const subcatId = req.body.subcat_id;
-	Articles.Articles(user, subcatId)
+	const contantId = req.body.contant_id;
+	Comments.comments(user, contantId)
 	.then((Data) => {
 		res.json(Data)
 	}).catch((err) => next(err))
 }
 
-module.exports.updateArticles = (req, res, next) => {
+module.exports.updateComment = (req, res, next) => {
 	const user = req.user;
 	const body = req.body;
-	Articles.updateArticles(user, body)
+	Comments.updateComment(user, body)
 	.then((Data) => {
 		res.json(Data)
 	}).catch((err) => next(err)) 
 }
 
-module.exports.deleteArticle = (req, res, next) => {
+module.exports.deleteComment = (req, res, next) => {
 	const user = req.user;
 	const body = req.body;
-	Articles.deleteArticle(user, body)
+	Comments.deleteComment(user, body)
 	.then((Data) => {
 		res.json(Data)
 	}).catch((err) => next(err)) 

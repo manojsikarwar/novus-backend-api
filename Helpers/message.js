@@ -27,8 +27,10 @@ const message = {
 	EMPTY 	        : {'success':false,'message':'Empty'},
 	PERMISSIONERROR : {'success':false,'message':'you dont have permission'},
 	NOTCREATED 	    : {'success':false,'message':'Not created'},
+	NOTUPDATED 	    : {'success':false,'message':'Not updated'},
 	ALREADYEXISTS 	: {'success':false,'message':'Already exists'},
 	NORDELETED     	: {'success':false,'message':'Can not deleted'},
+	IDNOTEXISTS     : {'success':false,'message':'Id not found'},
 
 	//======================== true ====================================
 

@@ -1,36 +1,36 @@
-const Articles = require('../Controller/articles');
+const Contants = require('../Controller/contants');
 
-module.exports.createArticle = (req, res ,next) => {
+module.exports.createContant = (req, res ,next) => {
 	const body = req.body;
 	const user = req.user;
-	Articles.createArticle(user, body)
+	Contants.createContant(user, body)
 	.then((Data) => {
 		res.json(Data)
 	}).catch((err) => next(err))
 }
 
-module.exports.Articles = (req, res, next) => {
+module.exports.contants = (req, res, next) => {
 	const user = req.user;
-	const subcatId = req.body.subcat_id;
-	Articles.Articles(user, subcatId)
+	const info = req.body;
+	Contants.contants(user, info)
 	.then((Data) => {
 		res.json(Data)
 	}).catch((err) => next(err))
 }
 
-module.exports.updateArticles = (req, res, next) => {
+module.exports.updateContant = (req, res, next) => {
 	const user = req.user;
 	const body = req.body;
-	Articles.updateArticles(user, body)
+	Contants.updateContant(user, body)
 	.then((Data) => {
 		res.json(Data)
 	}).catch((err) => next(err)) 
 }
 
-module.exports.deleteArticle = (req, res, next) => {
+module.exports.deleteContant = (req, res, next) => {
 	const user = req.user;
 	const body = req.body;
-	Articles.deleteArticle(user, body)
+	Contants.deleteContant(user, body)
 	.then((Data) => {
 		res.json(Data)
 	}).catch((err) => next(err)) 
