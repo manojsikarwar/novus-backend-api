@@ -10,5 +10,7 @@ CREATE TABLE bi_contant(
    resume VARCHAR (800),
    comment VARCHAR (50),
    updated_at timestamp without time zone,
-   status VARCHAR (10)
+   status VARCHAR (10),
+   created_by integer,
+   pdf VARCHAR(150)
 );
