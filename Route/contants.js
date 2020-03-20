@@ -35,3 +35,12 @@ module.exports.deleteContant = (req, res, next) => {
 		res.json(Data)
 	}).catch((err) => next(err)) 
 }
+
+module.exports.active_content = (req, res, next) => {
+	const user = req.user;
+	const body = req.body;
+	Contants.active_content(user, body)
+	.then((Data) => {
+		res.json(Data)
+	}).catch((err) => next(err)) 
+}

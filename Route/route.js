@@ -98,6 +98,7 @@ router.post('/createContant',[userAuthenticator], Contant.createContant);
 router.post('/contants',[userAuthenticator], Contant.contants);
 router.put('/updateContant',[userAuthenticator], Contant.updateContant);
 router.delete('/deleteContant',[userAuthenticator], Contant.deleteContant);
+router.put('/active_content',[userAuthenticator], Contant.active_content);
 
 
 //========================== Novus BI Comment ========================
