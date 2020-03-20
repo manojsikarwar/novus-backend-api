@@ -10,59 +10,113 @@ const redisClient   = redis.createClient(6379, 'localhost');
 module.exports.createContant = (user, info) => {
 	return new Promise((resolve, reject) => {
 		try{
-			// resolve(user.id)
 			if (user.role_id == 1) {
-				const status = '1';
-				const Chkcontant = `SELECT * FROM bi_contant WHERE title = '${info.title}'`;
-				client.query(Chkcontant, (err1, res1) => {
-					if(err1){
-						resolve(message.SOMETHINGWRONG);
-					}else{
-						const cat_value =  JSON.stringify(info.category)
-						if (res1.rows == '') {	
-						    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf) VALUES ('${info.title}','${info.content}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${status}','${user.id}','${info.pdf}')RETURNING contant_id`;
-						    client.query(sql, (error, result) => {
-						    	// resolve(sql)
-								if(error){
-									resolve(message.SOMETHINGWRONG);
-								}else{
-									if (result != '') {
-										const redata = {
-											contant_id	  : result.rows[0].contant_id,
-											title  		  : info.title,
-											contant  	  : cat_value,
-											type  		  : info.type,
-											categories    : info.categories,
-											date  		  : info.date,
-											author 		  : info.author,
-											higlight 	  : info.heighlight,
-											resume 		  : info.resume,
-											comment 	  : info.comment,
-											status	      : status,
-											created_by    : user.id,
-											pdf			  : info.pdf
-										}
-										redisClient.hmset('bi_contant', info.title, JSON.stringify(redata), function (err, data) {
-										    if(err){
-										    	resolve(message.SOMETHINGWRONG);
-										    }else{
-										    	if(data == 'OK'){
-											    	resolve(message.CREATEDSUCCESS);
-										    	}else{
-											    	resolve(message.SOMETHINGWRONG);
-										    	}
-										    }
-										})
-									}else{
-										resolve(message.NOTCREATED);
-									}
-								}
-							})
+				if(info.content == "" || info.title == "" || info.category == ""){
+					const Chkcontant = `SELECT * FROM bi_contant WHERE title = '${info.title}'`;
+				
+					client.query(Chkcontant, (err1, res1) => {
+						if(err1){
+							resolve(message.SOMETHINGWRONG);
 						}else{
-							resolve(message.ALREADYEXISTS);
-						}
-					}	
-				});
+							const cat_value =  JSON.stringify(info.category)
+							if (res1.rows == '') {	
+							    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf) VALUES ('${info.title}','${info.content}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'draft'}','${user.id}','${info.pdf}')RETURNING contant_id`;
+							    client.query(sql, (error, result) => {
+							    	// resolve(sql)
+									if(error){
+										resolve(message.SOMETHINGWRONG);
+									}else{
+										if (result != '') {
+											const redata = {
+												contant_id	  : result.rows[0].contant_id,
+												title  		  : info.title,
+												contant  	  : cat_value,
+												type  		  : info.type,
+												categories    : info.categories,
+												date  		  : info.date,
+												author 		  : info.author,
+												higlight 	  : info.heighlight,
+												resume 		  : info.resume,
+												comment 	  : info.comment,
+												status	      : 'draft',
+												created_by    : user.id,
+												pdf			  : info.pdf
+											}
+											redisClient.hmset('bi_contant', info.title, JSON.stringify(redata), function (err, data) {
+											    if(err){
+											    	resolve(message.SOMETHINGWRONG);
+											    }else{
+											    	if(data == 'OK'){
+												    	resolve(message.CREATEDSUCCESS);
+											    	}else{
+												    	resolve(message.SOMETHINGWRONG);
+											    	}
+											    }
+											})
+										}else{
+											resolve(message.NOTCREATED);
+										}
+									}
+								})
+							}else{
+								resolve(message.ALREADYEXISTS);
+							}
+						}	
+					});
+				}else {
+					const Chkcontant = `SELECT * FROM bi_contant WHERE title = '${info.title}'`;
+				
+					client.query(Chkcontant, (err1, res1) => {
+						if(err1){
+							resolve(message.SOMETHINGWRONG);
+						}else{
+							const cat_value =  JSON.stringify(info.category)
+							if (res1.rows == '') {	
+							    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf) VALUES ('${info.title}','${info.content}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'pennding'}','${user.id}','${info.pdf}')RETURNING contant_id`;
+							    client.query(sql, (error, result) => {
+							    	// resolve(sql)
+									if(error){
+										resolve(message.SOMETHINGWRONG);
+									}else{
+										if (result != '') {
+											const redata = {
+												contant_id	  : result.rows[0].contant_id,
+												title  		  : info.title,
+												contant  	  : cat_value,
+												type  		  : info.type,
+												categories    : info.categories,
+												date  		  : info.date,
+												author 		  : info.author,
+												higlight 	  : info.heighlight,
+												resume 		  : info.resume,
+												comment 	  : info.comment,
+												status	      : 'pennding',
+												created_by    : user.id,
+												pdf			  : info.pdf
+											}
+											redisClient.hmset('bi_contant', info.title, JSON.stringify(redata), function (err, data) {
+											    if(err){
+											    	resolve(message.SOMETHINGWRONG);
+											    }else{
+											    	if(data == 'OK'){
+												    	resolve(message.CREATEDSUCCESS);
+											    	}else{
+												    	resolve(message.SOMETHINGWRONG);
+											    	}
+											    }
+											})
+										}else{
+											resolve(message.NOTCREATED);
+										}
+									}
+								})
+							}else{
+								resolve(message.ALREADYEXISTS);
+							}
+						}	
+					});
+				}
+
 			}else{
 				resolve(message.PERMISSIONERROR);
 			}			
