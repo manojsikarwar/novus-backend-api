@@ -17,6 +17,14 @@ module.exports.Categories = (req, res, next) => {
 	}).catch((err) => next(err))
 }
 
+module.exports.Categories_list = (req, res, next) => {
+	const user = req.user;
+	Categories.Categories_list(user)
+	.then((Data) => {
+		res.json(Data)
+	}).catch((err) => next(err))
+}
+
 module.exports.updateCategories = (req, res, next) => {
 	const user = req.user;
 	const body = req.body;

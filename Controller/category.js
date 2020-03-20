@@ -111,41 +111,7 @@ module.exports.Categories = (user) => {
 						'status': false,
 						'message': 'You have not permission'
 					}
-					resolve(errmessage)
-					// const sql = `SELECT * FROM bi_categories WHERE is_status = '${1}' AND created_by = '${userId}'`;
-					// client.query(sql, (error, result) => {
-					// 	if(error){
-					// 		resolve(message.SOMETHINGWRONG);
-					// 	}else{
-					// 		if(result.rows != ''){
-					// 			for(let dat of result.rows)
-					// 			{
-					// 				const data = {
-					// 					cat_id		    : dat.cat_id,
-					// 			        category_name	: dat.category_name.trim(),
-					// 					icon	        : dat.icon.trim(),
-					// 				}
-					// 				catArray.push(data);
-					// 			}
-					// 			const response = {
-					// 				success : true,
-					// 				message : 'list of categories',
-					// 				data     : catArray
-					// 			}
-					// 			redisClient.hgetall('bi_categories', function (err, data) {
-					// 			    if(err){
-					// 			    	resolve(message.SOMETHINGWRONG);
-					// 			    }else{
-								    	
-					// 					resolve(response)
-					// 			    }
-					// 			})	
-					// 			//resolve(response)
-					// 		}else{
-					// 			resolve(message.EMPTY)			
-					// 		}
-					// 	}
-					// });
+					resolve(errmessage);
 				}
 			}
 		}catch(error){
@@ -154,6 +120,63 @@ module.exports.Categories = (user) => {
 	})
 }
 
+/** Categories and sub categories list ***/
+module.exports.Categories_list = (user) => {
+	return new Promise((resolve, reject) => {
+		try{
+			const role_id = user.role_id;
+			if (user.role > 2 ) {
+				resolve(message.PERMISSIONERROR);
+			}else{
+				const catArray = [];
+				if (role_id == 1) {
+					const list = `SELECT * FROM bi_categories WHERE is_status = '${1}'`;
+					client.query(list, (listerr, listress) => {
+						if(listerr){
+							resolve(message.SOMETHINGWRONG);
+						}else{
+							if(listress.rows != ''){
+								for(let dat of listress.rows)
+								{
+									const data = {
+										id 			: dat.cat_id,
+								        name		: dat.category_name.trim(),
+								        parent_id 	: dat.parant_id,
+								        icon	    : dat.icon.trim()
+									}
+									catArray.push(data);
+								}
+								const response = {
+									success : true,
+									message : 'list of categories and subcategories',
+									data     : catArray
+								}
+								redisClient.hgetall('bi_categories', function (err, data) {
+								    if(err){
+								    	resolve(message.SOMETHINGWRONG);
+								    }else{
+								    	
+										resolve(response)
+								    }
+								})	
+							}else{
+								resolve(message.EMPTY)			
+							}
+						}
+					});
+				}else{
+					const errmessage = {
+						'status': false,
+						'message': 'You have not permission'
+					}
+					resolve(errmessage);
+				}
+			}
+		}catch(error){
+			resolve(error)
+		}
+	})
+}
 
 /*** Update Categories ***/
 module.exports.updateCategories = (user, info) => {

@@ -94,10 +94,13 @@ module.exports.contants = (user, info) => {
 
 									const arr1  = catId.split(',');
 									for(let key of arr1){
-
-                                       if(key == info.cat_id){
-                                       		arr2.push(catdata)
-                                       }
+										if(key == ''){
+											resolve(message.DATANOTFOUND)
+										}else{
+	                                       if(key == info.cat_id){
+	                                       		arr2.push(catdata)
+	                                       }
+										}
 									}
 									const successmessage = {
 										'status': true,

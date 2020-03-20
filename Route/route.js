@@ -81,6 +81,7 @@ router.post('/city_list',List.city_list);
 
 router.post('/createCategories',[userAuthenticator],Category.createCategories);
 router.get('/Categories',[userAuthenticator],Category.Categories);
+router.get('/Categories_list',[userAuthenticator],Category.Categories_list);
 router.put('/updateCategories',[userAuthenticator],Category.updateCategories);
 router.delete('/deleteCategories',[userAuthenticator],Category.deleteCategories);
 
