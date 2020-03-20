@@ -1,23 +1,23 @@
 const {Client} 	= require('pg');
 
 
-const client = new Client({
-    user	:'postgres',
-	password:'postgres',
-	host	:'localhost',
-	port 	: 5432,
-	database:'redis',
-	ssl		: false
-})
-
 // const client = new Client({
 //     user	:'postgres',
-// 	password:'admin',
+// 	password:'postgres',
 // 	host	:'localhost',
 // 	port 	: 5432,
 // 	database:'redis',
 // 	ssl		: false
 // })
+
+const client = new Client({
+    user	:'postgres',
+	password:'admin',
+	host	:'localhost',
+	port 	: 5432,
+	database:'redis',
+	ssl		: false
+})
 
 
 // if(client._connected == false){
@@ -25,6 +25,7 @@ const client = new Client({
 // 		console.log('Connection not found');
 // }else{
 	client.connect().then((conn)=>{
+		// console.log(conn)
 		console.log('Connection Successfully');
 
 	})

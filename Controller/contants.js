@@ -78,7 +78,7 @@ module.exports.contants = (user, info) => {
 	return new Promise((resolve, reject) => {
 		try{
 			const role_id = user.role_id;
-			const Array = [];
+			const arr2 = [];
 			if(role_id == 1){
 				if(info.cat_id != ''){
 					const searchcat = `select * from bi_contant`;
@@ -92,11 +92,18 @@ module.exports.contants = (user, info) => {
 								for(let catdata of searchcatress.rows){
 									const catId = catdata.categories;
 
-									var datacat = Object.values(catId).filter(vals => vals === info.cat_id)
-									if(datacat.length > 0){
-										Array.push(catdata)
+									const arr1  = catId.split(',');
+									for(let key of arr1){
+
+                                       if(key == info.cat_id){
+                                       		arr2.push(catdata)
+                                       }
 									}
-									resolve(Array)
+									const successmessage = {
+										'status': true,
+										'data':arr2
+									}
+									resolve(successmessage)
 								}
 							}
 						}
