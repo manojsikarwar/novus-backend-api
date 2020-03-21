@@ -19,7 +19,7 @@ module.exports.createContant = (user, info) => {
 						if(err1){
 							resolve(message.SOMETHINGWRONG);
 						}else{
-							const cat_value =  JSON.stringify(info.category)
+							const cat_value =  info.category
 							if (res1.rows == '') {	
 							    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name) VALUES ('${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'draft'}','${user.id}','${info.pdf}','${info.categories_name}')RETURNING contant_id`;
 							    client.query(sql, (error, result) => {
@@ -72,7 +72,7 @@ module.exports.createContant = (user, info) => {
 						if(err1){
 							resolve(message.SOMETHINGWRONG);
 						}else{
-							const cat_value =  JSON.stringify(info.category)
+							const cat_value =  info.category
 							if (res1.rows == '') {	
 							    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name) VALUES ('${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'pendding'}','${user.id}','${info.pdf}','${info.categories_name}')RETURNING contant_id`;
 							    client.query(sql, (error, result) => {
@@ -147,14 +147,17 @@ module.exports.contants = (user, info) => {
 							}else {
 								for(let catdata of searchcatress.rows){
 									const catId = catdata.categories;
-
 									const arr1  = catId.split(',');
 									for(let key of arr1){
 										if(key == ''){
 											resolve(message.DATANOTFOUND)
 										}else{
 	                                       if(key == info.cat_id){
-	                                       		arr2.push(catdata)
+	                                       		if(catdata.status != 'trace'){
+	                                       			arr2.push(catdata)
+	                                       		}else{
+	                                       			arr2.push('already deleted')
+	                                       		}
 	                                       }
 										}
 									}
@@ -168,6 +171,7 @@ module.exports.contants = (user, info) => {
 						}
 					})
 				}else {
+					const arrtrace = [];
 					const searchcat = `select * from bi_contant`;
 					client.query(searchcat, (searchcaterr, searchcatress) => {
 						if(searchcaterr){
@@ -176,11 +180,16 @@ module.exports.contants = (user, info) => {
 							if(searchcatress.rows == ''){
 								resolve(message.DATANOTFOUND);
 							}else {
-								const successmessage = {
-									'status': true,
-									'data': searchcatress.rows
+								for(let checktrace of searchcatress.rows){
+									if(checktrace.status != 'trace'){
+										arrtrace.push(checktrace);
+									}
 								}
-								resolve(successmessage);
+										const successmessage = {
+											'status': true,
+											'data': arrtrace
+										}
+										resolve(successmessage);
 							}
 						}
 					})
@@ -319,7 +328,6 @@ module.exports.deleteContant = (user, info) => {
 														    	resolve(message.SOMETHINGWRONG);
 														    }else{
 														    	if(data == 'OK'){
-															    	// resolve(message.CREATEDSUCCESS);
 																	resolve(message.DELETEDSUCCESS);
 														    	}else{
 															    	resolve(message.SOMETHINGWRONG);
