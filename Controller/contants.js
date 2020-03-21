@@ -21,7 +21,7 @@ module.exports.createContant = (user, info) => {
 						}else{
 							const cat_value =  JSON.stringify(info.category)
 							if (res1.rows == '') {	
-							    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf) VALUES ('${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'draft'}','${user.id}','${info.pdf}')RETURNING contant_id`;
+							    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name) VALUES ('${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'draft'}','${user.id}','${info.pdf}','${info.categories_name}')RETURNING contant_id`;
 							    client.query(sql, (error, result) => {
 							    	// resolve(sql)
 									if(error){
@@ -41,7 +41,8 @@ module.exports.createContant = (user, info) => {
 												comment 	  : info.comment,
 												status	      : 'draft',
 												created_by    : user.id,
-												pdf			  : info.pdf
+												pdf			  : info.pdf,
+												categories_name: info.categories_name
 											}
 											redisClient.hmset('bi_contant', info.title, JSON.stringify(redata), function (err, data) {
 											    if(err){
@@ -73,9 +74,8 @@ module.exports.createContant = (user, info) => {
 						}else{
 							const cat_value =  JSON.stringify(info.category)
 							if (res1.rows == '') {	
-							    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf) VALUES ('${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'pennding'}','${user.id}','${info.pdf}')RETURNING contant_id`;
+							    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name) VALUES ('${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'pendding'}','${user.id}','${info.pdf}','${info.categories_name}')RETURNING contant_id`;
 							    client.query(sql, (error, result) => {
-							    	// resolve(sql)
 									if(error){
 										resolve(message.SOMETHINGWRONG);
 									}else{
@@ -91,9 +91,10 @@ module.exports.createContant = (user, info) => {
 												higlight 	  : info.heighlight,
 												resume 		  : info.resume,
 												comment 	  : info.comment,
-												status	      : 'pennding',
+												status	      : 'pendding',
 												created_by    : user.id,
-												pdf			  : info.pdf
+												pdf			  : info.pdf,
+												categories_name: info.categories_name
 											}
 											redisClient.hmset('bi_contant', info.title, JSON.stringify(redata), function (err, data) {
 											    if(err){
@@ -273,30 +274,75 @@ module.exports.updateContant = (user, info) => {
 module.exports.deleteContant = (user, info) => {
 	return new Promise((resolve, reject) => {
 		try{
+			const contant_id = info.contant_id
 			if (user.role_id > 2) {
 				resolve(message.PERMISSIONERROR);
 			}else{
-				const sql  = `DELETE FROM bi_contant WHERE id = '${info.id}'RETURNING title`;
-				client.query(sql, (error, result) =>{
-					if (error) {
-						resolve(message.SOMETHINGWRONG);
-					}else{
-						if(result) {
-							const contant_title = result.rows[0].title.trim();
-                            redisClient.hdel('bi_contant',contant_title,function(err,redisdata){
-								if(err){
-									resolve(message.SOMETHINGWRONG);
+				if(contant_id != ''){
+					const deldata = `select * from bi_contant where contant_id = '${contant_id}'`;
+					client.query(deldata, (deldataerr, deldataress) =>{
+						if(deldataerr){
+							resolve(message.SOMETHINGWRONG);
+						}else{
+							if(deldataress.rows != ''){
+								if(deldataress.rows[0].status == 'trace'){
+									resolve(message.ALREADYDEL)
 								}else{
-									if(redisdata == 1){
-										resolve(message.DELETEDSUCCESS);
-									}else{
-										resolve(message.NORDELETED);
-									}
+									const sql  = `update bi_contant set status = '${'trace'}' where contant_id = '${contant_id}'`;
+									client.query(sql, (error, result) =>{
+										if (error) {
+											resolve(message.SOMETHINGWRONG);
+										}else{
+											const contant_title = deldataress.rows[0].title.trim();
+				                            redisClient.hdel('bi_contant',contant_title,function(err,redisdata){
+												if(err){
+													resolve(message.SOMETHINGWRONG);
+												}else{
+													if(redisdata == 1){
+														const redata = {
+															contant_id	  : deldataress.rows[0].contant_id,
+															title  		  : deldataress.rows[0].title,
+															contant  	  : deldataress.rows[0].contant,
+															type  		  : deldataress.rows[0].type,
+															categories    : deldataress.rows[0].categories,
+															date  		  : deldataress.rows[0].date,
+															author 		  : deldataress.rows[0].author,
+															higlight 	  : deldataress.rows[0].heighlight,
+															resume 		  : deldataress.rows[0].resume,
+															comment 	  : deldataress.rows[0].comment,
+															status	      : 'trace',
+															deleted_by    : user.id,
+															pdf			  : deldataress.rows[0].pdf
+														}
+														redisClient.hmset('bi_contant', info.title, JSON.stringify(redata), function (err, data) {
+														    if(err){
+														    	resolve(message.SOMETHINGWRONG);
+														    }else{
+														    	if(data == 'OK'){
+															    	// resolve(message.CREATEDSUCCESS);
+																	resolve(message.DELETEDSUCCESS);
+														    	}else{
+															    	resolve(message.SOMETHINGWRONG);
+														    	}
+														    }
+														})
+													}else{
+														resolve(message.NORDELETED);
+													}
+												}
+											})
+										}
+									})
+									
 								}
-							})
+							}else{
+								resolve(message.DATANOTFOUND);
+							}
 						}
-					}
-				})
+					})
+				}else {
+					resolve(message.FILEDS);
+				}
 			}
 		}catch(error){
 			resolve(error)

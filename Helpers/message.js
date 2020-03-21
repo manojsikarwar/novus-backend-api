@@ -23,7 +23,7 @@ const message = {
 	APPLICATION		: {"success":false,"message":'Sorry, this application is already in use'},
 	PASSWORDNOTGEN	: {"success":false,"message":'password not generate'},
 	NOTDISAPPROVEUSER:{'success':false,'message':"User not deleted"},
-	ALREADYEMAIL	: {'success':false,'message':"Already exists"},
+	ALREADYDEL		: {'success':false,'message':"Already deleted"},
 	EMPTY 	        : {'success':false,'message':'Empty'},
 	PERMISSIONERROR : {'success':false,'message':'you dont have permission'},
 	NOTCREATED 	    : {'success':false,'message':'Not created'},
