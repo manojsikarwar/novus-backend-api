@@ -44,3 +44,12 @@ module.exports.active_content = (req, res, next) => {
 		res.json(Data)
 	}).catch((err) => next(err)) 
 }
+
+module.exports.tracecontant_list = (req, res, next) => {
+	const user = req.user;
+
+	Contants.tracecontant_list(user)
+	.then((Data) => {
+		res.json(Data)
+	}).catch((err) => next(err)) 
+}

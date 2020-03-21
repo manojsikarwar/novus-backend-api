@@ -397,3 +397,38 @@ module.exports.active_content = (user, body) => {
 		}
 	})
 }
+
+/** Trash contant list ***/
+
+module.exports.tracecontant_list = (user, body) =>{
+	return new Promise((resolve, reject)=>{
+		try{
+			const role_id = user.role_id;
+			const tracearry = [];
+
+			if(role_id == 1){
+				const searchtrace = `select * from bi_contant where status = '${'trace'}'`;
+				client.query(searchtrace, (searcherr, searchress) =>{
+					if(searcherr){
+						resolve(message.SOMETHINGWRONG);
+					}else{
+						if(searchress.rows == ''){
+							resolve(message.DATANOTFOUND);
+						}else{
+							for(let keydata of searchress.rows){
+								tracearry.push(keydata);
+							}
+							const successmessage = {
+								'status':true,
+								'data':tracearry
+							}
+							resolve(successmessage)
+						}
+					}
+				})
+			}
+		}catch(error){
+			resolve(error)
+		}
+	})
+}
