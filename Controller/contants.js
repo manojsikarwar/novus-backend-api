@@ -219,17 +219,17 @@ module.exports.updateContant = (user, info) => {
 					}else{
 						if (res.rows != '') {
 							const today = new Date();
-							const written_on_date = (today.getMonth()+1) +'/'+today.getDate()+'/'+today.getFullYear();
+							// const written_on_date = (today.getMonth()+1) +'/'+today.getDate()+'/'+today.getFullYear();
 							const sql  = `delete from bi_contant where contant_id = '${res.rows[0].contant_id}'`;
 
 							client.query(sql, (error, result) =>{
 								if (error) {
-									resolve(message.SOMETHINGWRONG);
+									resolve(message.SOMETHINGWRONG+'1');
 								}else{
 									const updatecontantdata = `INSERT INTO bi_contant(contant_id,title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name) VALUES ('${info.contant_id}','${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'pendig'}','${user.id}','${info.pdf}','${info.categories_name}')RETURNING contant_id`;
 							    client.query(updatecontantdata, (updateerror, updateresult) => {
 									if(updateerror){
-										resolve(message.SOMETHINGWRONG);
+										resolve(message.SOMETHINGWRONG+'2');
 									}else{
 										if (result != '') {
 											const redata = {
@@ -296,7 +296,15 @@ module.exports.deleteContant = (user, info) => {
 						}else{
 							if(deldataress.rows != ''){
 								if(deldataress.rows[0].status == 'trace'){
-									resolve(message.ALREADYDEL)
+									// resolve(message.ALREADYDEL)
+									const deltetrace = `delete from bi_contant where contant_id = '${contant_id}'`
+									client.query(deltetrace, (traceerr, traceress)=>{
+										if(traceerr){
+											resolve(message.SOMETHINGWRONG);
+										}else{
+											resolve(message.DELETEDSUCCESS);
+										}
+									})
 								}else{
 									const sql  = `update bi_contant set status = '${'trace'}' where contant_id = '${contant_id}'`;
 									client.query(sql, (error, result) =>{
@@ -381,7 +389,33 @@ module.exports.active_content = (user, body) => {
 									if(contanterr){
 										resolve(message.SOMETHINGWRONG)
 									}else{
-										resolve(message.UPDATEDSUCCESS);
+										// resolve(message.UPDATEDSUCCESS);
+										const redata = {
+											contant_id	  : contentress.rows[0].contant_id,
+											title  		  : contentress.rows[0].title,
+											contant  	  : contentress.rows[0].contant,
+											type  		  : contentress.rows[0].type,
+											categories    : contentress.rows[0].categories,
+											date  		  : contentress.rows[0].date,
+											author 		  : contentress.rows[0].author,
+											higlight 	  : contentress.rows[0].heighlight,
+											resume 		  : contentress.rows[0].resume,
+											comment 	  : contentress.rows[0].comment,
+											status	      : 'trace',
+											deleted_by    : user.id,
+											pdf			  : contentress.rows[0].pdf
+										}
+										redisClient.hmset('bi_contant', info.title, JSON.stringify(redata), function (err, data) {
+										    if(err){
+										    	resolve(message.SOMETHINGWRONG);
+										    }else{
+										    	if(data == 'OK'){
+													resolve(message.DELETEDSUCCESS);
+										    	}else{
+											    	resolve(message.SOMETHINGWRONG);
+										    	}
+										    }
+										})
 									}
 								})
 							}
