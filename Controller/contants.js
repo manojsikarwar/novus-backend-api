@@ -74,7 +74,7 @@ module.exports.createContant = (user, info) => {
 						}else{
 							const cat_value =  info.category
 							if (res1.rows == '') {	
-							    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name) VALUES ('${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'pendding'}','${user.id}','${info.pdf}','${info.categories_name}')RETURNING contant_id`;
+							    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name) VALUES ('${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'pending'}','${user.id}','${info.pdf}','${info.categories_name}')RETURNING contant_id`;
 							    client.query(sql, (error, result) => {
 									if(error){
 										resolve(message.SOMETHINGWRONG);
@@ -91,7 +91,7 @@ module.exports.createContant = (user, info) => {
 												higlight 	  : info.heighlight,
 												resume 		  : info.resume,
 												comment 	  : info.comment,
-												status	      : 'pendding',
+												status	      : 'pending',
 												created_by    : user.id,
 												pdf			  : info.pdf,
 												categories_name: info.categories_name
@@ -210,64 +210,65 @@ module.exports.updateContant = (user, info) => {
 			if (user.role_id > 2) {
 				resolve(message.PERMISSIONERROR);
 			}else{	
-
-				const checksql = `SELECT * FROM bi_contant WHERE id = '${info.id}'`;
+				const contantdat = JSON.stringify(info.content);
+				const cat_value =  info.category
+				const checksql = `SELECT * FROM bi_contant WHERE contant_id = '${info.contant_id}'`;
 				client.query(checksql, (err, res) =>{
 					if (err) {
 						resolve(message.SOMETHINGWRONG);
 					}else{
-						if (res.rows[0] != '') {
+						if (res.rows != '') {
 							const today = new Date();
 							const written_on_date = (today.getMonth()+1) +'/'+today.getDate()+'/'+today.getFullYear();
-
-							const sql  = `UPDATE bi_contant SET 
-									title  		= '${info.title}',
-									written_on  = '${written_on_date}',
-									auther  	= '${info.auther}',
-									description = '${info.description}',
-									editor  	= '${info.editor}',
-									image  		= '${info.image}', 
-									embed 		= '${info.embed}',
-									quotations  = '${info.quotations}',
-									subcat_id   = '${info.subcat_id}',
-									audio       = '${info.audio}' WHERE id = '${info.id}'`;
+							const sql  = `delete from bi_contant where contant_id = '${res.rows[0].contant_id}'`;
 
 							client.query(sql, (error, result) =>{
 								if (error) {
 									resolve(message.SOMETHINGWRONG);
 								}else{
-									if (result) {
-										const resdata = {
-											id	  		  : res.rows[0].id,
-											title 		  : info.title,
-											written_on    : written_on_date,
-											auther 		  : info.auther,
-											description   : info.description,
-											editor        : info.editor,
-											image         : info.image,
-											embed    	  : info.embed,
-											quotations    : info.quotations,
-											subcat_id     : info.subcat_id,
-											cat_id        : info.cat_id,
-											audio         : info.audio
-
-										}
-										redisClient.hmset('bi_contant', res.rows[0].title, JSON.stringify(resdata), function (err, data) {
-										    if(err){
-										    	resolve(message.SOMETHINGWRONG);
-										    }else{
-										    	if(data == 'OK'){
-											    	resolve(message.UPDATEDSUCCESS);
-										    	}else{
-											    	resolve(message.NOTUPDATED);
-										    	}
-										    }
-										})		
+									const updatecontantdata = `INSERT INTO bi_contant(contant_id,title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name) VALUES ('${info.contant_id}','${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'pendig'}','${user.id}','${info.pdf}','${info.categories_name}')RETURNING contant_id`;
+							    client.query(updatecontantdata, (updateerror, updateresult) => {
+									if(updateerror){
+										resolve(message.SOMETHINGWRONG);
 									}else{
-										resolve(message.NOTUPDATED);
+										if (result != '') {
+											const redata = {
+												contant_id	  : info.contant_id,
+												title  		  : info.title,
+												contant  	  : cat_value,
+												type  		  : info.type,
+												categories    : info.categories,
+												date  		  : info.date,
+												author 		  : info.author,
+												higlight 	  : info.heighlight,
+												resume 		  : info.resume,
+												comment 	  : info.comment,
+												status	      : 'pending',
+												created_by    : user.id,
+												pdf			  : info.pdf,
+												categories_name: info.categories_name
+											}
+											redisClient.hmset('bi_contant', info.title, JSON.stringify(redata), function (err, data) {
+											    if(err){
+											    	resolve(message.SOMETHINGWRONG);
+											    }else{
+											    	if(data == 'OK'){
+												    	resolve(message.UPDATEDSUCCESS);
+											    	}else{
+												    	resolve(message.SOMETHINGWRONG);
+											    	}
+											    }
+											})
+										}else{
+											resolve(message.NOTCREATED);
+										}
 									}
+								})
+									
 								}
 							})	
+						}else{
+							resolve(message.DATANOTFOUND)
 						}
 					}
 				})
