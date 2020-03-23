@@ -224,7 +224,7 @@ module.exports.updateContant = (user, info) => {
 								if (error) {
 									resolve('something went wrong 1');
 								}else{
-									const updatecontantdata = `INSERT INTO bi_contant(contant_id,title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name) VALUES ('${info.contant_id}','${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'pendig'}','${user.id}','${info.pdf}','${info.categories_name}')RETURNING contant_id`;
+									const updatecontantdata = `INSERT INTO bi_contant(contant_id,title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name) VALUES ('${info.contant_id}','${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'pending'}','${user.id}','${info.pdf}','${info.categories_name}')RETURNING contant_id`;
 							    client.query(updatecontantdata, (updateerror, updateresult) => {
 									if(updateerror){
 										resolve('something went wrong 2');
