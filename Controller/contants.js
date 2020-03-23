@@ -219,17 +219,15 @@ module.exports.updateContant = (user, info) => {
 					}else{
 						if (res.rows != '') {
 							const today = new Date();
-							// const written_on_date = (today.getMonth()+1) +'/'+today.getDate()+'/'+today.getFullYear();
 							const sql  = `delete from bi_contant where contant_id = '${res.rows[0].contant_id}'`;
-
 							client.query(sql, (error, result) =>{
 								if (error) {
-									resolve(message.SOMETHINGWRONG+'1');
+									resolve('something went wrong 1');
 								}else{
 									const updatecontantdata = `INSERT INTO bi_contant(contant_id,title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name) VALUES ('${info.contant_id}','${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'pendig'}','${user.id}','${info.pdf}','${info.categories_name}')RETURNING contant_id`;
 							    client.query(updatecontantdata, (updateerror, updateresult) => {
 									if(updateerror){
-										resolve(message.SOMETHINGWRONG+'2');
+										resolve('something went wrong 2');
 									}else{
 										if (result != '') {
 											const redata = {
