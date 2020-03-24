@@ -137,7 +137,7 @@ module.exports.application_list = (user) =>{
 		try{
 			const role_id = user.role_id;
 			const Array = [];
-			if(role_id == 1){
+			if(role_id == 1 || role_id == 2 || role_id == 4){
 				const applist = `select * from application_management order by application_id desc`;
 				client.query(applist, (applisterr, applistress) => {
 					if(applisterr){
@@ -208,7 +208,7 @@ module.exports.admin_delete_application = (body, user) => {
                                         } else {
                                            const applicationName = searchress.rows[0].application_name;
                                            redisClient.hdel('application',applicationName,function(err,redisdata){
-                                           	console.log(redisdata)
+                                           	// console.log(redisdata)
 												if(err){
 													resolve(message.SOMETHINGWRONG);
 												}else{
@@ -378,7 +378,7 @@ module.exports.admin_check_user = (body, user) => {
 			}
 			
 		}catch(error){
-			console.log(error)
+			resolve(error)
 		}
 	})
 }
@@ -587,7 +587,6 @@ module.exports.AppUserApprove = (body, user) => {
 		const id = body.user_id;
 		const userArray = JSON.stringify(body.create_user);
 	    if(role_id < 3){
-	    	console.log(userArray);
 	    	// console.log(body);
 	    	 const getUser = `select * from signup where user_id = '${id}'`;
                 client.query(getUser, (emailerr, emailress) => { 

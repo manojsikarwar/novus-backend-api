@@ -221,7 +221,7 @@ module.exports.deleteComment = (user, info) => {
 			}else{
 				const sql  = `DELETE FROM bi_comment WHERE comment_id = '${info.comment_id}' AND user_id = '${info.user_id}'RETURNING comment_id`;
 				client.query(sql, (error, result) =>{
-					console.log(result);
+					// console.log(result);
 					if (error) {
 						resolve(message.SOMETHINGWRONG);
 					}else{
