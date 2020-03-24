@@ -937,24 +937,67 @@ module.exports.user_forget_password = (email) => {
 
 module.exports.ValidateUser = (body) => {
     return new Promise((resolve, reject) => {
-       try {    		
-    		const URL = 'http://137.117.80.211/node/express/myapp/api/login';
-			var options = {
-			url: URL,
-			method: 'POST',
-			form: {
-					"UserName": body.UserName,
-				  }
-			};
+       try {
+       	const ApplicationName = body.ApplicationName;
+       		const searchapp = `select * from application_management where application_name = '${ApplicationName}' `
+       		client.query(searchapp, (searcherr, searchress) => {
+       			if(searcherr){
+       				resolve(message.SOMETHINGWRONG);
 
-			request(options, (error, response, body)=>{
-				if (error) {
-					resolve(message.SOMETHINGWRONG);
-				}else{
-					const result = JSON.parse(body)
-					resolve(result);
-				}
-			});
+       			}else{
+       				if(searchress.rows != ''){
+       					// resolve(searchress.rows)
+       					for(let key of searchress.rows){
+       						if(key.application_name == 'NovusBI'){
+       							// resolve('NovusBId')
+       							// const URL = 'http://13.90.215.196:3000/novusapp/appuser_login';
+       							const URL = 'http://localhost:3000/novusapp/appuser_login';
+								var options = {
+								url: URL,
+								method: 'POST',
+								form: {
+										"username": body.username,
+										"ApplicationName": body.ApplicationName,
+										"ApplicationId " : body.ApplicationId 
+									  }
+								};
+								// resolve(options)
+								request(options, (error, response, body)=>{
+									if (error) {
+										resolve(message.SOMETHINGWRONG);
+									}else{
+										const result = JSON.parse(body)
+										resolve(result);
+									}
+								});
+       						}else{
+
+					    		const URL = 'http://137.117.80.211/node/express/myapp/api/login';
+								var options = {
+								url: URL,
+								method: 'POST',
+								form: {
+										"UserName": body.username,
+										"ApplicationName": body.ApplicationName,
+										"ApplicationId " : body.ApplicationId 
+									  }
+								};
+
+								request(options, (error, response, body)=>{
+									if (error) {
+										resolve(message.SOMETHINGWRONG);
+									}else{
+										const result = JSON.parse(body)
+										resolve(result);
+									}
+								});
+       						}
+       					}
+       				}else{
+       					resolve(message.DATANOTFOUND);
+       				}
+       			}
+       		}) 		
 
 		 } catch (error) {
             const errMessage = {
