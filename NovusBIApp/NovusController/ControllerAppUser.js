@@ -132,7 +132,7 @@ module.exports.appuser_login = (body) => {
                                 username: getuserress.rows[0].user_name,
                                 application_id : getuserress.rows[0].application_id,
                                 status:getuserress.rows[0].status
-                            }, 'secretKey', {
+                            }, 'secret', {
 	                                expiresIn: "12hr"
 	                            });
 							const successmessage = {

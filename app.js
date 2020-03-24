@@ -52,6 +52,8 @@ app.use((req, res, next) => {
                 }else{
                     req.user = {
                         id      : userData.id,
+                        username: userData.user_name,
+                        application_id  : userData.application_id,
                         email   : userData.email.trim(),
                         role_id : userData.role_id,
                         company : userData.company,
@@ -70,31 +72,30 @@ app.use((req, res, next) => {
 
 // =============== Novus BI App =====================
 
-app.use((req, res, next) => {
-    if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
-        const token = req.headers.authorization.split(' ')[1]; 
-        if (token) {
-            return jwt.verify(token,'secretKey', (err, userData) => {  
-                if(err){
-                     res.status(401).json(err);
-                }else{
-                    req.user = {
-                        id      : userData.id,
-                        email   : userData.email.trim(),
-                        role_id : userData.role_id,
-                        company : userData.company,
-                        status  : userData.status,
-                        token   : token,
-                        exp     : userData.exp
-                    }
-                }
-                return next();
-            });
-        }
-        return res.unauthorized();
-    }
-    next();
-});
+// app.use((req, res, next) => {
+//     if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+//         const token = req.headers.authorization.split(' ')[1]; 
+//         if (token) {
+//             return jwt.verify(token,'secretKey', (err, userData) => {  
+//                 if(err){
+//                      res.status(401).json(err);
+//                 }else{
+//                     req.user = {
+//                          id             : getuserress.rows[0].user_id,
+                        
+                        
+//                         status          :getuserress.rows[0].status,
+//                         // token           : token,
+//                         exp             : userData.exp
+//                     }
+//                 }
+//                 return next();
+//             });
+//         }
+//         return res.unauthorized();
+//     }
+//     next();
+// });
 
 redisClient.on('ready',function(err, data) {
 	if(err){
