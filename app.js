@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const env = require('dotenv').config();
 const api = require('./Route/route');
+const novusapp = require('./NovusBIApp/NovusRoute/AppRoute');
 const jwt = require('jsonwebtoken');
 var redis = require('redis');
 var cors  = require('cors')
@@ -67,6 +68,34 @@ app.use((req, res, next) => {
     next();
 });
 
+// =============== Novus BI App =====================
+
+app.use((req, res, next) => {
+    if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+        const token = req.headers.authorization.split(' ')[1]; 
+        if (token) {
+            return jwt.verify(token,'secretKey', (err, userData) => {  
+                if(err){
+                     res.status(401).json(err);
+                }else{
+                    req.user = {
+                        id      : userData.id,
+                        email   : userData.email.trim(),
+                        role_id : userData.role_id,
+                        company : userData.company,
+                        status  : userData.status,
+                        token   : token,
+                        exp     : userData.exp
+                    }
+                }
+                return next();
+            });
+        }
+        return res.unauthorized();
+    }
+    next();
+});
+
 redisClient.on('ready',function(err, data) {
 	if(err){
 		console.log("Error in Redis");
@@ -76,5 +105,6 @@ redisClient.on('ready',function(err, data) {
 });
 
 app.use('/api',api);
+app.use('/novusapp',novusapp);
 
 app.listen(3000,console.log('Server Run 3000'))

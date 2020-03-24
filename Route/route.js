@@ -135,6 +135,5 @@ router.delete('/deleteNews',[userAuthenticator], News.deleteNews);
 
 
 
-
 module.exports = router;
 
