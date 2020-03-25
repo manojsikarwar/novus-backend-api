@@ -10,7 +10,7 @@ module.exports.createSubCategories = (user, info) => {
 		try{
 			const subcategory_name = info.subcategory_name;
 			const parant_id = info.cat_id;
-			if (user.role_id == 1) {
+			if (user.role_id == 1 || user.role_id == 2 || user.role_id == 4) {
 				const max = `select max(subcategory_id) from bi_categories `
 				client.query(max, (maxerr, maxress)=>{
 					if(maxerr){

@@ -135,7 +135,7 @@ module.exports.contants = (user, info) => {
 		try{
 			const role_id = user.role_id;
 			const arr2 = [];
-			if(role_id == 1){
+			if(role_id == 1 || role_id == 2 || role_id == 4){
 				if(info.cat_id != ''){
 					const searchcat = `select * from bi_contant`;
 					client.query(searchcat, (searchcaterr, searchcatress) => {

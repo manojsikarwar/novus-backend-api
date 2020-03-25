@@ -7,7 +7,7 @@ const redisClient   = redis.createClient(6379, 'localhost');
 module.exports.createComment = (user, info) => {
 	return new Promise((resolve, reject) => {
 		try{
-			if (user.role_id == 1) {
+			if (user.role_id == 1 || user.role_id == 2 || user.role_id == 4) {
 				// const ChkComment = `SELECT * FROM bi_comment WHERE contant_id = '${info.contant_id}'`;
 				// client.query(ChkComment, (err1, res1) => {
 				// 	if(err1){
