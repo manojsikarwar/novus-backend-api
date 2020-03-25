@@ -125,9 +125,9 @@ module.exports.Categories_list = (user) => {
 	return new Promise((resolve, reject) => {
 		try{
 			const role_id = user.role_id;
-			if (user.role > 2 ) {
-				resolve(message.PERMISSIONERROR);
-			}else{
+			// if (user.role > 2 ) {
+			// 	resolve(message.PERMISSIONERROR);
+			// }else{
 				const catArray = [];
 				if (role_id != '') {
 					const list = `SELECT * FROM bi_categories WHERE is_status = '${1}'`;
@@ -171,7 +171,7 @@ module.exports.Categories_list = (user) => {
 					}
 					resolve(errmessage);
 				}
-			}
+			// }
 		}catch(error){
 			resolve(error)
 		}
