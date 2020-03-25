@@ -142,37 +142,56 @@ module.exports.updateSubCategories = (user, info) => {
 		try{
 			if (user.role_id > 2) {
 				resolve(message.PERMISSIONERROR);
-			}else{				
-				const sql  = `UPDATE bi_subcategories SET subcategory_name = '${info.subcategory_name}', cat_id = '${info.cat_id}', icon = '${info.icon}' WHERE subcat_id = '${info.subcat_id}'RETURNING subcat_id`;
-				client.query(sql, (error, result) =>{
-					// console.log(result);
-					if (error) {
-						resolve(message.SOMETHINGWRONG);
+			}else{
+			const findsubcat = `select * from bi_categories where cat_id = '${info.subcat_id}' `;
+			client.query(findsubcat, (finderr, findress) => {
+				if(finderr){
+					resolve(message.SOMETHINGWRONG)
+				}else{
+					if(findress.rows == ''){
+						resolve(message.DATANOTFOUND)
 					}else{
-						if (result) {
-							const resdata = {
-								subcat_id 	  : result.rows[0].subcat_id,
-								category_name : info.subcategory_name,
-								subcat_id 	  : info.subcat_id,
-								icon 		  : info.icon,
-								is_status	  : 1,
-								created_by    : user.id
-							}
-							redisClient.hmset('bi_subcategories', info.subcategory_name, JSON.stringify(resdata), function (err, data) {
-							    if(err){
-							    	resolve(message.SOMETHINGWRONG);
-							    }else{
-							    	if(data == 'OK'){
-								    	resolve(message.UPDATEDSUCCESS);
-							    	}else{
-								    	resolve(message.NOTUPDATED);
-							    	}
-							    }
+						const parant_id = findress.rows[0].parant_id;
+						if(parant_id != 0){
+							const sql  = `UPDATE bi_categories SET category_name = '${info.subcategory_name}',icon = '${info.icon}' WHERE cat_id = '${info.subcat_id}'RETURNING cat_id`;
+							client.query(sql, (error, result) =>{
+								if (error) {
+									resolve(message.SOMETHINGWRONG);
+								}else{
+									if (result) {
+										const resdata = {
+											subcat_id 	  : result.rows[0].cat_id,
+											category_name : info.subcategory_name,
+											icon 		  : info.icon,
+											is_status	  : 1,
+											created_by    : user.id
+										}
+										redisClient.hmset('bi_subcategories', info.subcategory_name, JSON.stringify(resdata), function (err, data) {
+										    if(err){
+										    	resolve(message.SOMETHINGWRONG);
+										    }else{
+										    	if(data == 'OK'){
+											    	resolve(message.UPDATEDSUCCESS);
+										    	}else{
+											    	resolve(message.NOTUPDATED);
+										    	}
+										    }
+										})
+										//resolve(message.UPDATEDSUCCESS);
+									}
+								}
 							})
-							//resolve(message.UPDATEDSUCCESS);
+						}else{
+							const errmessage = {
+								'status':false,
+								'message':'this is not a subcategories'
+							}
+							resolve(errmessage)
 						}
 					}
-				})
+				}
+			})		
+				
 			}
 		}catch(error){
 			resolve(error)
