@@ -28,11 +28,11 @@ module.exports.updateSubCategories = (req, res, next) => {
 	}).catch((err) => next(err)) 
 }
 
-module.exports.deleteSubCategories = (req, res, next) => {
-	const user = req.user;
-	const body = req.body;
-	Subcategories.deleteSubCategories(user, body)
-	.then((Data) => {
-		res.json(Data)
-	}).catch((err) => next(err)) 
-}
+// module.exports.deleteSubCategories = (req, res, next) => {
+// 	const user = req.user;
+// 	const body = req.body;
+// 	Subcategories.deleteSubCategories(user, body)
+// 	.then((Data) => {
+// 		res.json(Data)
+// 	}).catch((err) => next(err)) 
+// }

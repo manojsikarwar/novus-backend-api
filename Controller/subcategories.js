@@ -201,50 +201,50 @@ module.exports.updateSubCategories = (user, info) => {
 
 
 /***  Delete SubCategories ***/
-module.exports.deleteSubCategories = (user, info) => {
-	return new Promise((resolve, reject) => {
-		try{
-			if (user.role_id > 2) {
-				resolve(message.PERMISSIONERROR);
-			}else{
-				const chksql  = `SELECT * FROM bi_subcategories WHERE subcat_id = '${info.subcat_id}'`;
-				client.query(chksql, (chkerr, chkres) =>{
-					if (chkerr) {
-						resolve(message.SOMETHINGWRONG);
-					}else{
-						if (chkres.rows == '') {
-							resolve(message.DATANOTFOUND)
-						}else{
-							const sql  = `DELETE FROM bi_subcategories WHERE subcat_id = '${info.subcat_id}'`;
-							client.query(sql, (error, result) =>{
-								if (error) {
-									resolve(message.SOMETHINGWRONG);
-								}else{
-									if(result) {
-										const subcategoryname = chkres.rows[0].subcategory_name.trim();
-			                            redisClient.hdel('bi_subcategories',subcategoryname,function(err,redisdata){
-											if(err){
-												resolve(message.SOMETHINGWRONG);
-											}else{
-												if(redisdata == 1){
-													resolve(message.DELETEDSUCCESS);
-												}else{
-													resolve(message.NORDELETED);
-												}
-											}
-										})
-										//resolve(message.DELETEDSUCCESS);
-									}else{		
-										resolve(message.NORDELETED);
-									}
-								}
-							})
-						}
-					}
-				})	
-			}
-		}catch(error){
-			resolve(error)
-		}
-	})
-}
+// module.exports.deleteSubCategories = (user, info) => {
+// 	return new Promise((resolve, reject) => {
+// 		try{
+// 			if (user.role_id > 2) {
+// 				resolve(message.PERMISSIONERROR);
+// 			}else{
+// 				const chksql  = `SELECT * FROM bi_subcategories WHERE subcat_id = '${info.subcat_id}'`;
+// 				client.query(chksql, (chkerr, chkres) =>{
+// 					if (chkerr) {
+// 						resolve(message.SOMETHINGWRONG);
+// 					}else{
+// 						if (chkres.rows == '') {
+// 							resolve(message.DATANOTFOUND)
+// 						}else{
+// 							const sql  = `DELETE FROM bi_subcategories WHERE subcat_id = '${info.subcat_id}'`;
+// 							client.query(sql, (error, result) =>{
+// 								if (error) {
+// 									resolve(message.SOMETHINGWRONG);
+// 								}else{
+// 									if(result) {
+// 										const subcategoryname = chkres.rows[0].subcategory_name.trim();
+// 			                            redisClient.hdel('bi_subcategories',subcategoryname,function(err,redisdata){
+// 											if(err){
+// 												resolve(message.SOMETHINGWRONG);
+// 											}else{
+// 												if(redisdata == 1){
+// 													resolve(message.DELETEDSUCCESS);
+// 												}else{
+// 													resolve(message.NORDELETED);
+// 												}
+// 											}
+// 										})
+// 										//resolve(message.DELETEDSUCCESS);
+// 									}else{		
+// 										resolve(message.NORDELETED);
+// 									}
+// 								}
+// 							})
+// 						}
+// 					}
+// 				})	
+// 			}
+// 		}catch(error){
+// 			resolve(error)
+// 		}
+// 	})
+// }

@@ -90,7 +90,7 @@ router.delete('/deleteCategories',[userAuthenticator],Category.deleteCategories)
 router.post('/createSubCategories',[userAuthenticator], Subcategory.createSubCategories);
 router.post('/SubCategories',[userAuthenticator], Subcategory.SubCategories);
 router.put('/updateSubCategories',[userAuthenticator], Subcategory.updateSubCategories);
-router.delete('/deleteSubCategories',[userAuthenticator], Subcategory.deleteSubCategories);
+// router.delete('/deleteSubCategories',[userAuthenticator], Subcategory.deleteSubCategories);
 
 
 //========================== Novus BI Contant ========================

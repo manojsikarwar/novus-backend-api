@@ -13,7 +13,7 @@ module.exports.createCategories = (user, info) => {
 				const ChkCategory = `SELECT * FROM bi_categories WHERE category_name = '${info.category_name}'`;
 				client.query(ChkCategory, (err1, res1) => {
 					if(err1){
-						resolve(message.SOMETHINGWRONG+"01");
+						resolve(message.SOMETHINGWRONG);
 					}else{
 						if (res1.rows == '') {
 								const sql = `INSERT INTO bi_categories(category_name,icon,is_status,created_by,parant_id) VALUES ('${info.category_name}','${info.icon}','${1}','${user.id}','${parant_id}')RETURNING cat_id`;
@@ -47,7 +47,7 @@ module.exports.createCategories = (user, info) => {
 									}
 								})
 						}else{
-							resolve(message.ALREADYEMAIL);
+							resolve(message.ALREADYEXISTS);
 						}
 					}	
 				});	
@@ -238,46 +238,47 @@ module.exports.updateCategories = (user, info) => {
 module.exports.deleteCategories = (user, info) => {
 	return new Promise((resolve, reject) => {
 		try{
-			if (user.role > 2) {
-				resolve(message.PERMISSIONERROR);
-			}else{
-				const chksql  = `SELECT * FROM bi_categories WHERE cat_id = '${info.cat_id}'`;
-				client.query(chksql, (chkerror, chkresult) =>{
-					if (chkerror) {
-						resolve(message.SOMETHINGWRONG);
-					}else{
-						if (chkresult.rows == '') {
-							resolve(message.DATANOTFOUND);
+			if(info.id != ''){
+				if(user.role_id == 1 || user.role_id == 2 || user.role_id == 4 ){
+					const chksql  = `SELECT * FROM bi_categories WHERE cat_id = '${info.id}'`;
+					client.query(chksql, (chkerror, chkresult) =>{
+						if (chkerror) {
+							resolve(message.SOMETHINGWRONG);
 						}else{
-							const sql  = `DELETE FROM bi_categories WHERE cat_id = '${info.cat_id}'`;
-							client.query(sql, (error, result) =>{
-								if (error) {
-									resolve(message.SOMETHINGWRONG);
-								}else{
-									if(result) {
-									   const categoryname = chkresult.rows[0].category_name.trim();
-			                           redisClient.hdel('bi_categories',categoryname,function(err,redisdata){
-											if(err){
-												resolve(message.SOMETHINGWRONG);
-											}else{
-												if(redisdata == 1){
-													resolve(message.DELETEDSUCCESS);
+							if (chkresult.rows == '') {
+								resolve(message.DATANOTFOUND);
+							}else{
+								const sql  = `DELETE FROM bi_categories WHERE cat_id = '${info.id}'`;
+								client.query(sql, (error, result) =>{
+									if (error) {
+										resolve(message.SOMETHINGWRONG);
+									}else{
+										if(result) {
+										   const categoryname = chkresult.rows[0].category_name.trim();
+				                           redisClient.hdel('bi_categories',categoryname,function(err,redisdata){
+												if(err){
+													resolve(message.SOMETHINGWRONG);
 												}else{
-													resolve(message.NORDELETED);
+													if(redisdata == 1){
+														resolve(message.DELETEDSUCCESS);
+													}else{
+														resolve(message.NORDELETED);
+													}
 												}
-											}
-										})
-									}else{		
-										resolve(message.NOTDELETED);
+											})
+										}else{		
+											resolve(message.NOTDELETED);
+										}
 									}
-								}
-							})	
+								})	
+							}
 						}
-					}
-				})	
-
-
-				
+					})	
+				}else{
+					resolve(message.PERMISSIONERROR)
+				}
+			}else{
+				resolve(message.FILEDS)
 			}
 		}catch(error){
 			resolve(error)
