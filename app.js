@@ -54,7 +54,7 @@ app.use((req, res, next) => {
                         id      : userData.id,
                         username: userData.user_name,
                         application_id  : userData.application_id,
-                        email   : userData.email.trim(),
+                        email   : userData.email,
                         role_id : userData.role_id,
                         company : userData.company,
                         status  : userData.status,
