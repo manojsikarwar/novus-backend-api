@@ -70,7 +70,7 @@ module.exports.Categories = (user) => {
 				resolve(message.PERMISSIONERROR);
 			}else{
 				const catArray = [];
-				if (role_id == 1) {
+				if (role_id == 1 || role_id == 4 ) {
 					const sql = `SELECT * FROM bi_categories WHERE is_status = '${1}' and parant_id = '${0}'`;
 					client.query(sql, (error, result) => {
 						if(error){
@@ -129,7 +129,7 @@ module.exports.Categories_list = (user) => {
 				resolve(message.PERMISSIONERROR);
 			}else{
 				const catArray = [];
-				if (role_id == 1) {
+				if (role_id != '') {
 					const list = `SELECT * FROM bi_categories WHERE is_status = '${1}'`;
 					client.query(list, (listerr, listress) => {
 						if(listerr){
