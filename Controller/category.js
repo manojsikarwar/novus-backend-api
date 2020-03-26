@@ -182,9 +182,7 @@ module.exports.Categories_list = (user) => {
 module.exports.updateCategories = (user, info) => {
 	return new Promise((resolve, reject) => {
 		try{
-			if (user.role > 2) {
-				resolve(message.PERMISSIONERROR);
-			}else{		
+			if (user.role_id == 1 || user.role_id == 2 ) {
 				const match = `SELECT * FROM bi_categories WHERE category_name = '${info.category_name}'`;
 		    	client.query(match, (matcherr, matchress) => {
 		    		if(matcherr){
@@ -223,11 +221,10 @@ module.exports.updateCategories = (user, info) => {
 
 		    			}
 		    		}
-		    	})			
-
-
-				
-			}
+		    	})
+			}else{	
+				resolve(message.PERMISSIONERROR);	
+		    }		
 		}catch(error){
 			resolve(error)
 		}

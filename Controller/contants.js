@@ -3,7 +3,7 @@ const message 		= require("../Helpers/message");
 const redis 	    = require('redis');
 const moment 		= require('moment');
 const date   		= new Date();
-const myDate 		= moment(date).format('L');
+const myDate 		= moment(date).format('l');
 const redisClient   = redis.createClient(6379, 'localhost');
 
 /*** Create Contant ***/

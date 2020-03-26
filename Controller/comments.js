@@ -8,49 +8,56 @@ module.exports.createComment = (user, info) => {
 	return new Promise((resolve, reject) => {
 		try{
 			if (user.role_id == 1 || user.role_id == 2 || user.role_id == 4) {
-				// const ChkComment = `SELECT * FROM bi_comment WHERE contant_id = '${info.contant_id}'`;
-				// client.query(ChkComment, (err1, res1) => {
-				// 	if(err1){
-				// 		resolve(message.SOMETHINGWRONG);
-				// 	}else{
-						// if (res1.rows == '') {	
-								const today = new Date();
-							    const sql = `INSERT INTO bi_comment(comment,contant_id,user_id,is_status,created_on) VALUES ('${info.comment}','${info.contant_id}','${info.user_id}','${1}','${today}')RETURNING comment_id`;
-								client.query(sql, (error, result) => {
-									if(error){
-										resolve(message.SOMETHINGWRONG);
-									}else{
-										if (result != '') {
-											const redata = {
-												comment_id 	  : result.rows[0].comment_id,
-												comment  	  : info.comment,
-												contant_id 	  : info.contant_id,
-												user_id 	  : info.user_id,
-												description   : info.description,
-												is_status	  : 1,
-												created_on    : today
-											}
-											redisClient.hmset('bi_comment', result.rows[0].comment_id, JSON.stringify(redata), function (err, data) {
-											    if(err){
-											    	resolve(message.SOMETHINGWRONG);
-											    }else{
-											    	if(data == 'OK'){
-												    	resolve(message.CREATEDSUCCESS);
-											    	}else{
-												    	resolve(message.SOMETHINGWRONG);
-											    	}
-											    }
-											})
-										}else{
-											resolve(message.NOTCREATED);
-										}
+				// resolve(user.id)
+				const today = new Date();
+				const findcommet = `select * from bi_contant where contant_id = '${info.contant_id}' `
+				client.query(findcommet, (commeterr, commentress) => {
+					if(commeterr){
+						resolve(message.SOMETHINGWRONG)
+					}else{
+						if(commentress.rows != ''){
+					    const sql = `INSERT INTO bi_comment(comment,contant_id,user_id,is_status,created_on) VALUES ('${info.comment}','${info.contant_id}','${user.id}','${1}','${today}')RETURNING comment_id`;
+						client.query(sql, (error, result) => {
+							if(error){
+								resolve(message.SOMETHINGWRONG);
+							}else{
+								if (result != '') {
+									const redata = {
+										comment_id 	  : result.rows[0].comment_id,
+										comment  	  : info.comment,
+										contant_id 	  : info.contant_id,
+										user_id 	  : user.id,
+										description   : info.description,
+										is_status	  : 1,
+										created_on    : today
 									}
-								})
-						// }else{
-						// 	resolve(message.ALREADYEXISTS);
-						// }
-				// 	}	
-				// });	
+									redisClient.hmset('bi_comment', result.rows[0].comment_id, JSON.stringify(redata), function (err, data) {
+									    if(err){
+									    	resolve(message.SOMETHINGWRONG);
+									    }else{
+									    	if(data == 'OK'){
+										    	resolve(message.CREATEDSUCCESS);
+									    	}else{
+										    	resolve(message.SOMETHINGWRONG);
+									    	}
+									    }
+									})
+								}else{
+									resolve(message.NOTCREATED);
+								}
+							}
+						})
+
+						}else{
+							const errmessage = {
+								'status':false,
+								'message':'this contant id not found'
+							}
+							resolve(errmessage)	
+						}
+					}
+				})
+			
 			}else{
 				resolve(message.PERMISSIONERROR);
 			}			
