@@ -166,29 +166,29 @@ module.exports.comments = (user, contantId) => {
 module.exports.updateComment = (user, info) => {
 	return new Promise((resolve, reject) => {
 		try{
-			if (user.role_id > 2) {
+			if (user.role_id != 4) {
 				resolve(message.PERMISSIONERROR);
 			}else{	
 
-				const checksql = `SELECT * FROM bi_comment WHERE comment_id = '${info.comment_id}' AND user_id = '${info.user_id}'`;
+				const checksql = `SELECT * FROM bi_comment WHERE comment_id = '${info.comment_id}' AND user_id = '${user.id}'`;
 				client.query(checksql, (err, res) =>{
 					if (err) {
 						resolve(message.SOMETHINGWRONG);
 					}else{
 						if (res.rows[0] != '') {
-							const sql  = `UPDATE bi_comment SET comment = '${info.comment}' WHERE comment_id = '${info.comment_id}' AND  user_id = '${info.user_id}'`;
+							const sql  = `UPDATE bi_comment SET comment = '${info.comment}' WHERE comment_id = '${info.comment_id}' AND  user_id = '${user.id}'`;
 
 							client.query(sql, (error, result) =>{
 								if (error) {
 									resolve(message.SOMETHINGWRONG);
 								}else{
-									if (result) {
+									if (result.rowCount >= 1) {
 										const today = new Date();
 										const resdata = {
 											comment_id	  : res.rows[0].comment_id,
 											comment 	  : info.comment,
 											contant_id    : res.rows[0].contant_id,
-											user_id 	  : res.rows[0].user_id,
+											user_id 	  : user.id,
 											is_status     : res.rows[0].is_status,
 											created_on    : today
 										}
@@ -223,30 +223,44 @@ module.exports.updateComment = (user, info) => {
 module.exports.deleteComment = (user, info) => {
 	return new Promise((resolve, reject) => {
 		try{
-			if (user.role_id > 2) {
+			if (user.role_id != 4) {
 				resolve(message.PERMISSIONERROR);
 			}else{
-				const sql  = `DELETE FROM bi_comment WHERE comment_id = '${info.comment_id}' AND user_id = '${info.user_id}'RETURNING comment_id`;
-				client.query(sql, (error, result) =>{
-					// console.log(result);
-					if (error) {
-						resolve(message.SOMETHINGWRONG);
+				const findcommet = `select * from bi_comment where comment_id = '${info.comment_id}' and user_id = '${user.id}'`;
+				client.query(findcommet, (commenterr, commentress) => {
+					if(commenterr){
+						resolve(message.SOMETHINGWRONG)
 					}else{
-						if(result) {
-							const commentId = result.rows[0].comment_id;
-                            redisClient.hdel('bi_comment',commentId,function(err,redisdata){
-								if(err){
+						if(commentress.rows != ''){
+							const sql  = `DELETE FROM bi_comment WHERE comment_id = '${info.comment_id}' AND user_id = '${user.id}'RETURNING comment_id`;
+							client.query(sql, (error, result) =>{
+								if (error) {
 									resolve(message.SOMETHINGWRONG);
 								}else{
-									if(redisdata == 1){
-										resolve(message.DELETEDSUCCESS);
-									}else{
+									if(result) {
+										const commentId = result.rows[0].comment_id;
+			                            redisClient.hdel('bi_comment',commentId,function(err,redisdata){
+											if(err){
+												resolve(message.SOMETHINGWRONG);
+											}else{
+												if(redisdata == 1){
+													resolve(message.DELETEDSUCCESS);
+												}else{
+													resolve(message.NORDELETED);
+												}
+											}
+										})
+									}else{		
 										resolve(message.NORDELETED);
 									}
 								}
 							})
-						}else{		
-							resolve(message.NORDELETED);
+						}else{
+							const errmessage = {
+								'status' : false,
+								'message': 'You can not delete this comment'
+							}
+							resolve(errmessage);
 						}
 					}
 				})
