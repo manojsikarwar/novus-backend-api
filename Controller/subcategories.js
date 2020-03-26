@@ -86,7 +86,7 @@ module.exports.SubCategories = (user, catId) => {
 			// resolve(user)
 			const subcatArray = [];
 			if (role_id == 1 || role_id == 2 || role_id == 4) {
-				const sql = `SELECT * FROM bi_categories WHERE cat_id = '${cat_id}' AND is_status = '${1}'`;
+				const sql = `SELECT * FROM bi_categories WHERE cat_id = '${catId}' AND is_status = '${1}'`;
 				client.query(sql, (error, result) => {
 					if(error){
 						resolve(message.SOMETHINGWRONG);
