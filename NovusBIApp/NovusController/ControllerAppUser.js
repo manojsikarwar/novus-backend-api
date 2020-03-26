@@ -121,17 +121,18 @@ module.exports.appuser_login = (body) => {
 		try{
 			const username = body.username;
 			if(username != ''){
-				const getuser = `select * from app_user where user_name = '${username}'`
+				const getuser = `select * from novus_app_user where username = '${username}' `
 				client.query(getuser, (getusererr, getuserress) => {
 					if(getusererr){
 						resolve(message.SOMETHINGWRONG)
 					}else{
+						// resolve(getuserress.rows)?
 						if(getuserress.rows != ''){
 							var token = jwt.sign({
-                                id: getuserress.rows[0].user_id,
-                                username: getuserress.rows[0].user_name,
-                                application_id : getuserress.rows[0].application_id,
-                                status:getuserress.rows[0].status
+                                id: getuserress.rows[0].userid,
+                                username: getuserress.rows[0].username,
+                                status:getuserress.rows[0].status,
+                                role_id : getuserress.rows[0].role_id
                             }, 'secret', {
 	                                expiresIn: "12hr"
 	                            });

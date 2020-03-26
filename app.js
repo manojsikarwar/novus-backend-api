@@ -47,6 +47,7 @@ app.use((req, res, next) => {
         const token = req.headers.authorization.split(' ')[1]; 
         if (token) {
             return jwt.verify(token,'secret', (err, userData) => {  
+                // console.log(userData)
                 if(err){
                      res.status(401).json(err);
                 }else{

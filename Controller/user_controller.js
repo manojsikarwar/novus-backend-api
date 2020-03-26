@@ -972,7 +972,7 @@ module.exports.ValidateUser = (body) => {
 								});
        						}else{
 
-					    		const URL = 'http://137.117.80.211/node/express/myapp/api/login';
+					    		const URL = 'http://animalhealth.novusint.com:3000/api/login';
 								var options = {
 								url: URL,
 								method: 'POST',

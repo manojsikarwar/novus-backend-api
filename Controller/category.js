@@ -142,7 +142,8 @@ module.exports.Categories_list = (user) => {
 										id 			: dat.cat_id,
 								        name		: dat.category_name.trim(),
 								        parent_id 	: dat.parant_id,
-								        icon	    : dat.icon.trim()
+								        icon	    : dat.icon.trim(),
+								        cat_id 		: dat.cat_id
 									}
 									catArray.push(data);
 								}
