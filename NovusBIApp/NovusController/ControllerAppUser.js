@@ -138,7 +138,7 @@ module.exports.appuser_login = (body) => {
 	                            });
 							const successmessage = {
 								'status':true,
-								'username':getuserress.rows[0].user_name,
+								'username':getuserress.rows[0].username,
 								'token':token
 							}
 							resolve(successmessage)
