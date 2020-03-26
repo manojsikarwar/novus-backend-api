@@ -961,7 +961,6 @@ module.exports.ValidateUser = (body) => {
 										"ApplicationId " : body.ApplicationId 
 									  }
 								};
-								// resolve(options)
 								request(options, (error, response, body)=>{
 									if (error) {
 										resolve(message.SOMETHINGWRONG);
