@@ -126,7 +126,7 @@ module.exports.appuser_login = (body) => {
 					if(getusererr){
 						resolve(message.SOMETHINGWRONG)
 					}else{
-						// resolve(getuserress.rows)?
+						// resolve(getuserress.rows)
 						if(getuserress.rows != ''){
 							var token = jwt.sign({
                                 id: getuserress.rows[0].userid,

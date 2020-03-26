@@ -54,6 +54,7 @@ app.use((req, res, next) => {
                     req.user = {
                         id      : userData.id,
                         username: userData.user_name,
+                        user_name: userData.username,
                         application_id  : userData.application_id,
                         email   : userData.email,
                         role_id : userData.role_id,
