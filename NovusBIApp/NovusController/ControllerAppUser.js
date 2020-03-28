@@ -24,25 +24,23 @@ module.exports.NovusUser = (body) => {
 
 			const checkuser = `select * from novus_app_user where username = '${username}' `;
 			client.query(checkuser, (checkusererr, checkuserress) => {
-				// resolve(checkuser)
 				if(checkusererr){
 					resolve(message.SOMETHINGWRONG);
 				}else{
 					if(checkuserress.rows != ''){
 						resolve(message.ALREADYEXISTS)
 					}else{
-						const insertuser = `insert into novus_app_user(username,status) values('${username}','${status}') RETURNING userID`
+						const insertuser = `insert into novus_app_user(username,status,role_id) values('${username}','${status}','${4}') RETURNING userID`
 						client.query(insertuser, (insertusererr, insertuserress) => {
 							if(insertusererr){
 								resolve(message.SOMETHINGWRONG);
 							}else{
-								// resolve(message.CREATED);
 								const userID = insertuserress.rows[0].userid
-								// resolve(userID)
 								let redata = {
 	                        		userID 		: userID,
 									username 	: username,
-									status 		: status
+									status 		: status,
+									role_id 	: 4
 								}
 
 								if (app_user.length > 0) {
@@ -55,8 +53,7 @@ module.exports.NovusUser = (body) => {
 										    	// sendEmailToSignup(email, company, fullname);
 									    		for(let appData of app_user){
 									    			
-									    			const sqlApp = `insert into app_user(application_id,user_name,user_id,status) values('${appData.application_id}','${appData.user_name}','${userID}','${0}')RETURNING app_id`;
-													// resolve(sqlApp)
+									    			const sqlApp = `insert into app_user(application_id,user_name,user_id,status,role_id) values('${appData.application_id}','${appData.user_name}','${userID}','${0}','${role_id}')RETURNING app_id`;
 													client.query(sqlApp, (err1, res1) => {
 														if (err1) {
 															resolve(message.SOMETHINGWRONG);
@@ -66,7 +63,8 @@ module.exports.NovusUser = (body) => {
 																user_name	   : appData.user_name,
 																user_id		   : userID,
 																app_id    	   : res1.rows[0].app_id,
-																status 			: 0
+																status 		   : 0,
+																role_id 	   : role_id
 															}
 															//console.log(AppRedis)
 
