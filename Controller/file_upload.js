@@ -48,7 +48,7 @@ module.exports.file_upload = (req, res) => {
             var imagename = req.files;
             const path = imagename[0].filename;
             const map1 = imagename.map(data => {
-                var imageurl = "http://13.90.215.196:3000/"+path;
+                var imageurl = "http://3.132.68.85:3000/"+path;
                 // var imageurl = "http://localhost:3000/"+path;
                 // var imageurl = process.env.IMG+':'+process.env.PORT+'/'+path;
                 
