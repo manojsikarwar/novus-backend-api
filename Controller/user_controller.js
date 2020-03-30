@@ -351,7 +351,7 @@ module.exports.login = (body) => {
     })
 }
 
-// ====================== userlogin ========================= //
+// ====================== superlogin ========================= //
 //post
 /***
 Function: For superlogin for admin 
