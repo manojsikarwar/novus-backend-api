@@ -388,44 +388,68 @@ module.exports.superlogin = (email, password) => {
                                                 }, 'secret', {
                                                     expiresIn: "12hr"
                                                 });
-                                                redisClient.hget('super', email, function (err, reply){
-								            		const data = JSON.parse(reply)
-								            		// resolve(data)
-								            		if(reply == null){
-								                        resolve(message.INVALIDEMAIL);
-								            		}else{
-									            		bcrypt.compare(password, key.password.trim(), (err, isMatch) => {
-									            			if (isMatch == true) {
-				                                                const superdata = {
-				                                                	"id":key.super_id,
-			                                                       "fullname":data.fullname ,
-																    "email": data.email,
-																    "zipcode": data.zipcode,
-																    "role_id":data.role_id,
-																    "status":data.status,
-																    "created_date":data.created_date
-				                                                }
-				                                                const tokenData = {
-				                                                    'success': true,
-				                                                    'message': "Superadmin Log in successfully",
-				                                                    'Status': 200,
-				                                                    'token': token,
-				                                                    'data': superdata
-				                                                }
-				                                                resolve(tokenData)
-									            			}else{
-	                                                			resolve(message.PASSWORD)
-									            			}
-									            		})
-								            		}
-								            	})
+                                                bcrypt.compare(password, key.password.trim(), (err, isMatch) => {
+							            			if (isMatch == true) {
+		                                                const superdata = {
+		                                                	"id":key.super_id,
+	                                                       "fullname":superresult.rows[0].fullname ,
+														    "email": superresult.rows[0].email,
+														    "zipcode": superresult.rows[0].zipcode,
+														    "role_id":superresult.rows[0].role_id,
+														    "status":superresult.rows[0].status,
+														    "created_date":superresult.rows[0].created_date
+		                                                }
+		                                                const tokenData = {
+		                                                    'success': true,
+		                                                    'message': "Superadmin Log in successfully",
+		                                                    'Status': 200,
+		                                                    'token': token,
+		                                                    'data': superdata
+		                                                }
+		                                                resolve(tokenData);
+							            			}else{
+                                            			resolve(message.PASSWORD);
+							            			}
+							            		})
+                    //                             redisClient.hget('super', email, function (err, reply){
+								            // 		const data = JSON.parse(reply)
+								            // 		// resolve(data)
+								            // 		if(reply == null){
+								            //             // resolve(message.INVALIDEMAIL);
+
+								            // 		}else{
+									           //  		bcrypt.compare(password, key.password.trim(), (err, isMatch) => {
+									           //  			if (isMatch == true) {
+				                //                                 const superdata = {
+				                //                                 	"id":key.super_id,
+			                 //                                       "fullname":data.fullname ,
+																    // "email": data.email,
+																    // "zipcode": data.zipcode,
+																    // "role_id":data.role_id,
+																    // "status":data.status,
+																    // "created_date":data.created_date
+				                //                                 }
+				                //                                 const tokenData = {
+				                //                                     'success': true,
+				                //                                     'message': "Superadmin Log in successfully",
+				                //                                     'Status': 200,
+				                //                                     'token': token,
+				                //                                     'data': superdata
+				                //                                 }
+				                //                                 resolve(tokenData)
+									           //  			}else{
+	                   //                              			resolve(message.PASSWORD)
+									           //  			}
+									           //  		})
+								            // 		}
+								            // 	})
                                             } else {
-                                                resolve(message.PASSWORD)
+                                                resolve(message.PASSWORD);
                                             }
                                         });
                                     } else {
                   
-                                        resolve(message.ACCOUNT)
+                                        resolve(message.ACCOUNT);
                                     }
 	                            }
 	                        } else {
