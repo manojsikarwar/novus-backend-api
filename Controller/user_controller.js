@@ -982,7 +982,7 @@ module.exports.ValidateUser = (body) => {
 								form: {
 										"username": body.username,
 										"ApplicationName": body.ApplicationName,
-										"ApplicationId " : body.ApplicationId 
+										"ApplicationId" : body.ApplicationId 
 									  }
 								};
 								request(options, (error, response, body)=>{

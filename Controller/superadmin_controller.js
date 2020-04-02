@@ -62,6 +62,7 @@ Process:
 module.exports.user_list = (body,user) => {
 	return new Promise((resolve, reject)=>{
 		try{
+			// console.log(user)
 			const email = body.email;
 			const role_id = user.role_id;
 			const status = body.status;

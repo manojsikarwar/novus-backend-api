@@ -60,6 +60,7 @@ app.use((req, res, next) => {
                         role_id : userData.role_id,
                         company : userData.company,
                         status  : userData.status,
+                        application_id: userData.application_id,
                         token   : token,
                         exp     : userData.exp
                     }

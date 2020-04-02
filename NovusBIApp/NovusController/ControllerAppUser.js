@@ -118,8 +118,12 @@ module.exports.appuser_login = (body) => {
 	return new Promise((resolve,reject) => {
 		try{
 			const username = body.username;
+			const ApplicationId = body.ApplicationId;
+			// resolve(body)
 			if(username != ''){
-				const getuser = `select * from novus_app_user where username = '${username}' `
+				// const getuser = `select * from novus_app_user where username = '${username}' `
+				const getuser = `select * from app_user where user_name = '${username}' and status = '${0}' and application_id = '${ApplicationId}' `
+				console.log(getuser)
 				client.query(getuser, (getusererr, getuserress) => {
 					if(getusererr){
 						resolve(message.SOMETHINGWRONG)
@@ -127,10 +131,11 @@ module.exports.appuser_login = (body) => {
 						// resolve(getuserress.rows)
 						if(getuserress.rows != ''){
 							var token = jwt.sign({
-                                id: getuserress.rows[0].userid,
-                                username: getuserress.rows[0].username,
+                                id: getuserress.rows[0].user_id,
+                                username: getuserress.rows[0].user_name,
                                 status:getuserress.rows[0].status,
-                                role_id : getuserress.rows[0].role_id
+                                role_id : getuserress.rows[0].role_id,
+                                application_id : getuserress.rows[0].application_id,
                             }, 'secret', {
 	                                expiresIn: "12hr"
 	                            });
