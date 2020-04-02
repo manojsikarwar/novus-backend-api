@@ -110,7 +110,11 @@ module.exports.comments = (user, contantId) => {
 							})
 							// resolve(response)
 						}else{
-							resolve(message.EMPTY)			
+							const errmessage = {
+								success : true,
+								data     : result.rows
+							}	
+							resolve(errmessage)	
 						}
 					}
 				});
