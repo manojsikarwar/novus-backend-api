@@ -120,9 +120,11 @@ module.exports.solution = (req, res) => {
             arr.push(new Date(dt));
             dt.setDate(dt.getDate()+1);
         }
-        console.log(arr)
+        // console.log(arr)
+        res.send(arr)
 
     }catch(error){
-        console.log(error)
+        // console.log(error)
+        res.send(error)
     }
 }
