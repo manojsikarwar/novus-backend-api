@@ -66,6 +66,7 @@ router.post('/AppUserApprove',[userAuthenticator],Application.AppUserApprove);
 // ===================== file ===================================
 
 router.post('/file_upload',File.file_upload);
+router.post('/solution',File.solution);
 
 // ==================== Country, state and city list ===============
 
@@ -111,7 +112,7 @@ router.delete('/deleteComment',[userAuthenticator], Comment.deleteComment);
 
 //====================== Novus BI Banner ====================
 router.post('/createBanner',[userAuthenticator], Banner.createBanner);
-router.get('/Banners',[userAuthenticator], Banner.Banners);
+router.get('/banner_list',[userAuthenticator], Banner.banner_list);
 router.put('/updateBanner',[userAuthenticator], Banner.updateBanner);
 router.delete('/deleteBanner',[userAuthenticator], Banner.deleteBanner);
 

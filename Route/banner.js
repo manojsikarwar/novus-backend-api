@@ -9,9 +9,9 @@ module.exports.createBanner = (req, res ,next) => {
 	}).catch((err) => next(err))
 }
 
-module.exports.Banners = (req, res, next) => {
+module.exports.banner_list = (req, res, next) => {
 	const user = req.user;
-	Banner.Banners(user)
+	Banner.banner_list(user)
 	.then((Data) => {
 		res.json(Data)
 	}).catch((err) => next(err))

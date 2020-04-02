@@ -1,36 +1,57 @@
 const client=require("../db")
 const message=require("../Helpers/message")
-
+const redis 	   = require('redis');
+const redisClient  = redis.createClient(6379, 'localhost');
 
 /*** Create Banner ***/
 module.exports.createBanner = (user, info) => {
 	return new Promise((resolve, reject) => {
 		try{
 			if (user.role_id == 1) {
-				// const ChkBanner = `SELECT * FROM tbl_banner WHERE title = '${info.title}'`;
-				// client.query(ChkBanner, (err1, res1) => {
-				// 	if(err1){
-				// 		resolve(message.SOMETHINGWRONG);
-				// 	}else{
-				// 		if (res1.rows == '') {
-							
-							    const sql = `INSERT INTO bi_banner(title,description,banner_image,is_status,created_by) VALUES ('${info.title}','${info.description}','${info.banner_image}','${1}','${user.id}')`;
-								client.query(sql, (error, result) => {
-									if(error){
-										resolve(message.SOMETHINGWRONG);
-									}else{
-										if (result != '') {
-											resolve(message.CREATEDSUCCESS);
-										}else{
-											resolve(message.NOTCREATED);
+				const ChkBanner = `SELECT * FROM bi_banner WHERE title = '${info.title}'`;
+				client.query(ChkBanner, (err1, res1) => {
+						console.log(res1.rows)
+					if(err1){
+						resolve(message.SOMETHINGWRONG);
+					}else{
+						if (res1.rows == '') {
+						    const sql = `INSERT INTO bi_banner(title,description,banner_image,is_status,created_by) VALUES ('${info.title}','${info.description}','${info.banner_image}','${1}','${user.id}') RETURNING banner_id`;
+							client.query(sql, (error, result) => {
+								if(error){
+									resolve(message.SOMETHINGWRONG);
+								}else{
+									if (result != '') {
+										// resolve(message.CREATEDSUCCESS);
+										const redata = {
+											banner_id 	  : result.rows[0].banner_id,
+											title 		  : info.title,
+											description   : info.description,
+											banner_image  : info.banner_image,
+											is_status	  : 1,
+											created_by    : user.id,
 										}
+										redisClient.hmset('bi_banner', info.title, JSON.stringify(redata), function (err, data) {
+										    if(err){
+										    	resolve(message.SOMETHINGWRONG);
+										    }else{
+										    	if(data == 'OK'){
+											    	resolve(message.CREATEDSUCCESS);
+										    	}else{
+											    	resolve(message.SOMETHINGWRONG);
+										    	}
+										    }
+										})
+
+									}else{
+										resolve(message.NOTCREATED);
 									}
-								})
-						// }else{
-							// resolve(message.ALREADYEXISTS);
-						// }
-					// }	
-				// });	
+								}
+							})
+						}else{
+							resolve(message.ALREADYEXISTS);
+						}
+					}	
+				});	
 			}else{
 				resolve(message.PERMISSIONERROR);
 			}			
@@ -42,7 +63,7 @@ module.exports.createBanner = (user, info) => {
 
 
 /*** Banner list ***/
-module.exports.Banners = (user) => {
+module.exports.banner_list = (user) => {
 	return new Promise((resolve, reject) => {
 		try{
 			const userId = user.id;
@@ -69,8 +90,7 @@ module.exports.Banners = (user) => {
 								}
 								const response = {
 									success : true,
-									message : 'list of banners',
-									data     : banArray
+									data    : banArray
 								}
 								resolve(response)
 							}else{
@@ -121,14 +141,45 @@ module.exports.updateBanner = (user, info) => {
 		try{
 			if (user.role_id > 2) {
 				resolve(message.PERMISSIONERROR);
-			}else{				
-				const sql  = `UPDATE bi_banner SET title = '${info.title}', description = '${info.description}', banner_image = '${info.banner_image}'  WHERE banner_id = '${info.banner_id}'`;
-				client.query(sql, (error, result) =>{
-					if (error) {
-						resolve(message.SOMETHINGWRONG);
+			}else{
+				const updatebanner = `select * from bi_banner where banner_id = '${info.banner_id}' `
+				client.query(updatebanner, (bannererr, bannerresult) => {
+					if(bannererr){
+						resolve(message.SOMETHINGWRONG)
 					}else{
-						if (result) {
-							resolve(message.UPDATEDSUCCESS);
+						if(bannerresult.rows != ''){
+							// resolve(bannerresult.rows)
+							const sql  = `UPDATE bi_banner SET title = '${info.title}', description = '${info.description}', banner_image = '${info.banner_image}'  WHERE banner_id = '${info.banner_id}'`;
+							client.query(sql, (error, result) =>{
+								if (error) {
+									resolve(message.SOMETHINGWRONG);
+								}else{
+									if (result) {
+										// resolve(message.UPDATEDSUCCESS);
+										const redata = {
+											banner_id 	  : bannerresult.rows[0].banner_id,
+											title 		  : info.title,
+											description   : info.description,
+											banner_image  : info.banner_image,
+											is_status	  : 1,
+											created_by    : user.id,
+										}
+										redisClient.hmset('bi_banner', info.title, JSON.stringify(redata), function (err, data) {
+										    if(err){
+										    	resolve(message.SOMETHINGWRONG);
+										    }else{
+										    	if(data == 'OK'){
+											    	resolve(message.UPDATEDSUCCESS);
+										    	}else{
+											    	resolve(message.SOMETHINGWRONG);
+										    	}
+										    }
+										})
+									}
+								}
+							})
+						}else{
+							resolve(message.DATANOTFOUND);
 						}
 					}
 				})
@@ -164,3 +215,11 @@ module.exports.deleteBanner = (user, info) => {
 		}
 	})
 }
+
+//========================= demo ================================
+
+// module.exports.solution = (D) => {
+// 	return new Promise((resolve, reject)=>{
+// 		resolve(D)	
+// 	})
+// }
