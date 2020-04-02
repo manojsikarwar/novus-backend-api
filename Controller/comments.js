@@ -72,88 +72,50 @@ module.exports.createComment = (user, info) => {
 module.exports.comments = (user, contantId) => {
 	return new Promise((resolve, reject) => {
 		try{
+			// console.log(user)
 			const userId = user.id;
-			if (user.role_id > 2 ) {
-				resolve(message.PERMISSIONERROR);
-			}else{
+			if (user.role_id == 1 || user.role_id == 2 || user.role_id == 4 ) {
+				
 				const commentArray = [];
-				if (userId == 1) {
-					const sql = `SELECT * FROM bi_comment WHERE contant_id = '${contantId}' AND is_status = '${1}'`;
-					client.query(sql, (error, result) => {
-						if(error){
-							resolve(message.SOMETHINGWRONG);
-						}else{
-							if(result.rows != ''){
-								for(let dat of result.rows)
-								{
-									const data = {
-										comment_id		 : dat.comment_id,
-								        comment 		 : dat.comment.trim(),
-								        contant_id		 : dat.contant_id,
-								        user_id		 	 : dat.user_id,
-								        is_status		 : dat.is_status,								 
-								        created_on		 : dat.created_on.trim(),
-									}
-									commentArray.push(data);
+				const sql = `SELECT * FROM bi_comment WHERE contant_id = '${contantId}' AND is_status = '${1}'`;
+				client.query(sql, (error, result) => {
+					if(error){
+						resolve(message.SOMETHINGWRONG);
+					}else{
+						if(result.rows != ''){
+							for(let dat of result.rows)
+							{
+								const data = {
+									comment_id		 : dat.comment_id,
+							        comment 		 : dat.comment.trim(),
+							        contant_id		 : dat.contant_id,
+							        user_id		 	 : dat.user_id,
+							        is_status		 : dat.is_status,								 
+							        created_on		 : dat.created_on.trim(),
 								}
-								const response = {
-									success : true,
-									message : 'list of comments',
-									data     : commentArray
-								}
-								redisClient.hgetall('bi_comment', function (err, data) {
-								    if(err){
-								    	resolve(message.SOMETHINGWRONG);
-								    }else{
-								    	
-										resolve(response)
-								    }
-								})
-								// resolve(response)
-							}else{
-								resolve(message.EMPTY)			
+								commentArray.push(data);
 							}
-						}
-					});
-				}else{
-					const sql = `SELECT * FROM bi_comment WHERE contant_id = '${contantId}' AND is_status = '${1}'`;
-					client.query(sql, (error, result) => {
-						if(error){
-							resolve(message.SOMETHINGWRONG);
-						}else{
-							if(result.rows != ''){
-								for(let dat of result.rows)
-								{
-									const data = {
-										comment_id		 : dat.comment_id,
-								        comment 		 : dat.comment.trim(),
-								        contant_id		 : dat.contant_id,
-								        user_id		 	 : dat.user_id,
-								        is_status		 : dat.is_status,								 
-								        created_on		 : dat.created_on.trim(),
-									}
-									commentArray.push(data);
-								}
-								const response = {
-									success : true,
-									message : 'list of comments',
-									data     : commentArray
-								}
-								redisClient.hgetall('bi_comment', function (err, data) {
-								    if(err){
-								    	resolve(message.SOMETHINGWRONG);
-								    }else{
-								    	
-										resolve(response)
-								    }
-								})
-								//resolve(response)
-							}else{
-								resolve(message.EMPTY)			
+							const response = {
+								success : true,
+								message : 'list of comments',
+								data     : commentArray
 							}
+							redisClient.hgetall('bi_comment', function (err, data) {
+							    if(err){
+							    	resolve(message.SOMETHINGWRONG);
+							    }else{
+							    	
+									resolve(response)
+							    }
+							})
+							// resolve(response)
+						}else{
+							resolve(message.EMPTY)			
 						}
-					});
-				}
+					}
+				});
+			}else{
+				resolve(message.PERMISSIONERROR);
 			}
 		}catch(error){
 			resolve(error)
