@@ -121,9 +121,9 @@ module.exports.appuser_login = (body) => {
 			const ApplicationId = body.ApplicationId;
 			// resolve(body)
 			if(username != ''){
-				// const getuser = `select * from novus_app_user where username = '${username}' `
-				const getuser = `select * from app_user where user_name = '${username}' and status = '${0}' and application_id = '${ApplicationId}' `
-				console.log(getuser)
+				const getuser = `select * from novus_app_user where username = '${username}' `
+				// const getuser = `select * from app_user where user_name = '${username}' and status = '${0}' and application_id = '${ApplicationId}' `
+				// console.log(getuser)
 				client.query(getuser, (getusererr, getuserress) => {
 					if(getusererr){
 						resolve(message.SOMETHINGWRONG)
