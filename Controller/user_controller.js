@@ -713,7 +713,7 @@ module.exports.user_update_profile = (user,body) => {
 										    	resolve(message.SOMETHINGWRONG);
 										    }else{
 										    	if(data == 'OK'){
-											    	resolve(message.PROFILEUPDATE)
+											    	resolve(message.USERUPDATE)
 										    	}else{
 											    	resolve(message.NOTUPDATE)
 										    	}

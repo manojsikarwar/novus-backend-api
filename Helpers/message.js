@@ -43,6 +43,7 @@ const message = {
 	REGISTRATION 		: {'success':true,'message':'Registration sucessfully'},
 	CREATED 	    	: {'success':true,'message':'Created sucessfully'},
 	PROFILEUPDATE 		: {'success':true,'message':'Profile updated sucessfully'},
+	USERUPDATE			: {'success':true,'message':'User details udpated successfully'},
 	CHANGEPASSWORD 		: {'success':true,'message':'Successfuly Change Password'},
 	CORRECTPASSWORD		: {'success':true,'message':'Please Enter Correct Password'},
 	RESETPASSWORDSUCCESS: {'success':true,'message':'Reset password sucessfully'},

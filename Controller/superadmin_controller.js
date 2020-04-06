@@ -68,7 +68,7 @@ module.exports.user_list = (body,user) => {
 			const status = body.status;
 			const UserArray = [];
 			if(role_id == 1 ){
-				const listuser = `select * from signup where role_id = '${4}'`;
+				const listuser = `SELECT * FROM signup where role_id = '${4}' ORDER BY user_id DESC;`;
 				client.query(listuser,(listerr, listress)=>{
 					if(listerr){
 						resolve(message.SOMETHINGWRONG);
@@ -132,7 +132,7 @@ module.exports.user_list = (body,user) => {
 				})
 			}else if(role_id == 2 ){
 
-				const listuser = `select * from signup where role_id = '${4}' and created_by = '${user.id}'`;
+				const listuser = `select * from signup where role_id = '${4}' and created_by = '${user.id}' ORDER BY user_id DESC;`;
 				client.query(listuser,(listerr, listress)=>{
 					if(listerr){
 						resolve(message.SOMETHINGWRONG);

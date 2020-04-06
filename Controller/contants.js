@@ -137,7 +137,7 @@ module.exports.contants = (user, info) => {
 			const arr2 = [];
 			if(role_id == 1 || role_id == 2 || role_id == 4){
 				if(info.cat_id != ''){
-					const searchcat = `select * from bi_contant`;
+					const searchcat = `select * from bi_contant ORDER BY contant_id DESC`;
 					client.query(searchcat, (searchcaterr, searchcatress) => {
 						if(searchcaterr){
 							resolve(message.SOMETHINGWRONG);
@@ -178,7 +178,11 @@ module.exports.contants = (user, info) => {
 							resolve(message.SOMETHINGWRONG);
 						}else{
 							if(searchcatress.rows == ''){
-								resolve(message.DATANOTFOUND);
+								const successmessage = {
+											'status': true,
+											'data': arrtrace
+										}
+										resolve(successmessage);
 							}else {
 								for(let checktrace of searchcatress.rows){
 									if(checktrace.status != 'trace'){

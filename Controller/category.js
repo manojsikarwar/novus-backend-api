@@ -71,7 +71,7 @@ module.exports.Categories = (user) => {
 			}else{
 				const catArray = [];
 				if (role_id == 1 || role_id == 4 ) {
-					const sql = `SELECT * FROM bi_categories WHERE is_status = '${1}' and parant_id = '${0}'`;
+					const sql = `SELECT * FROM bi_categories where is_status = '${1}' and parant_id = '${0}' ORDER BY cat_id DESC`;
 					client.query(sql, (error, result) => {
 						if(error){
 							resolve(message.SOMETHINGWRONG);
@@ -130,7 +130,7 @@ module.exports.Categories_list = (user) => {
 			// }else{
 				const catArray = [];
 				if (role_id != '') {
-					const list = `SELECT * FROM bi_categories WHERE is_status = '${1}'`;
+					const list = `SSELECT * FROM bi_categories where is_status = '${1}' ORDER BY cat_id DESC`;
 					client.query(list, (listerr, listress) => {
 						if(listerr){
 							resolve(message.SOMETHINGWRONG);
