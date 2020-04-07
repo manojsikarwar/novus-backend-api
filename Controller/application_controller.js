@@ -483,7 +483,7 @@ module.exports.createUser = (body, user) => {
 																		    	resolve(message.SOMETHINGWRONG);
 																		    }else{
 																		    	if(data1 == 'OK'){
-																			    	resolve(message.REGISTRATION);
+																			    	resolve(message.USERCREATE);
 																			    	//sendEmailToSignup(email, company, fullname);
 																		    	}else{
 																			    	resolve(message.SOMETHINGWRONG);

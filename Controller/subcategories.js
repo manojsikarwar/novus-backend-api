@@ -5,77 +5,77 @@ const redisClient  = redis.createClient(6379, 'localhost');
 
 
 /*** Create SubCategories ***/
-module.exports.createSubCategories = (user, info) => {
-	return new Promise((resolve, reject) => {
-		try{
-			const subcategory_name = info.subcategory_name;
-			const parant_id = info.cat_id;
-			if (user.role_id == 1 || user.role_id == 2 || user.role_id == 4) {
-				const max = `select max(subcategory_id) from bi_categories `
-				client.query(max, (maxerr, maxress)=>{
-					if(maxerr){
-						resolve('error in max')
-					}else{
-						if(maxress.rows == ''){
-							resolve('blank max')
-						}else{
-							var subcategory_id = maxress.rows[0].max
+// module.exports.createSubCategories = (user, info) => {
+// 	return new Promise((resolve, reject) => {
+// 		try{
+// 			const subcategory_name = info.subcategory_name;
+// 			const parant_id = info.cat_id;
+// 			if (user.role_id == 1 || user.role_id == 2 || user.role_id == 4) {
+// 				const max = `select max(subcategory_id) from bi_categories `
+// 				client.query(max, (maxerr, maxress)=>{
+// 					if(maxerr){
+// 						resolve('error in max')
+// 					}else{
+// 						if(maxress.rows == ''){
+// 							resolve('blank max')
+// 						}else{
+// 							var subcategory_id = maxress.rows[0].max
 
-							// resolve(maxress.rows[0].max)
-							const ChkCategory = `SELECT * FROM bi_categories WHERE subcategory_name = '${info.subcategory_name}' AND parant_id = '${parant_id}' `
-							client.query(ChkCategory, (err1, res1) => {
-								if(err1){
-									resolve(message.SOMETHINGWRONG);
-								}else{
-									if (res1.rows == '') {	
-										   const sql = `INSERT INTO bi_categories(category_name,icon,is_status,created_by,subcategory_name,parant_id,subcategory_id) VALUES ('${'none'}','${info.icon}','${1}','${user.id}','${subcategory_name}','${parant_id}','${subcategory_id+1}')RETURNING subcategory_id`;
-											client.query(sql, (error, result) => {
-												if(error){
-													resolve(message.SOMETHINGWRONG);
-												}else{
-													if (result != '') {
-														const redata = {
-															cat_id 	 	  : result.rows[0].subcategory_id,
-															category_name : 'none',
-															icon 		  : info.icon,
-															is_status	  : 1,
-															created_by    : user.id,
-															subcategory_name:subcategory_name,
-															parant_id 	  : parant_id,
-															subcategory_id: subcategory_id+1
-														}
-														redisClient.hmset('bi_categories', parant_id, JSON.stringify(redata), function (err, data) {
-														    if(err){
-														    	resolve(message.SOMETHINGWRONG);
-														    }else{
-														    	if(data == 'OK'){
-															    	resolve(message.CREATED);
-														    	}else{
-															    	resolve(message.SOMETHINGWRONG);
-														    	}
-														    }
-														})
-													}else{
-														resolve(message.NOTCREATED);
-													}
-												}
-											})
-									}else{
-										resolve(message.ALREADYEXISTS);
-									}
-								}	
-							});	
-						}
-					}
-				})
-			}else{
-				resolve(message.PERMISSIONERROR);
-			}			
-		}catch(error){
-			resolve(error);
-		}
-	})
-}
+// 							// resolve(maxress.rows[0].max)
+// 							const ChkCategory = `SELECT * FROM bi_categories WHERE subcategory_name = '${info.subcategory_name}' AND parant_id = '${parant_id}' `
+// 							client.query(ChkCategory, (err1, res1) => {
+// 								if(err1){
+// 									resolve(message.SOMETHINGWRONG);
+// 								}else{
+// 									if (res1.rows == '') {	
+// 										   const sql = `INSERT INTO bi_categories(category_name,icon,is_status,created_by,subcategory_name,parant_id,subcategory_id) VALUES ('${'none'}','${info.icon}','${1}','${user.id}','${subcategory_name}','${parant_id}','${subcategory_id+1}')RETURNING subcategory_id`;
+// 											client.query(sql, (error, result) => {
+// 												if(error){
+// 													resolve(message.SOMETHINGWRONG);
+// 												}else{
+// 													if (result != '') {
+// 														const redata = {
+// 															cat_id 	 	  : result.rows[0].subcategory_id,
+// 															category_name : 'none',
+// 															icon 		  : info.icon,
+// 															is_status	  : 1,
+// 															created_by    : user.id,
+// 															subcategory_name:subcategory_name,
+// 															parant_id 	  : parant_id,
+// 															subcategory_id: subcategory_id+1
+// 														}
+// 														redisClient.hmset('bi_categories', parant_id, JSON.stringify(redata), function (err, data) {
+// 														    if(err){
+// 														    	resolve(message.SOMETHINGWRONG);
+// 														    }else{
+// 														    	if(data == 'OK'){
+// 															    	resolve(message.CREATED);
+// 														    	}else{
+// 															    	resolve(message.SOMETHINGWRONG);
+// 														    	}
+// 														    }
+// 														})
+// 													}else{
+// 														resolve(message.NOTCREATED);
+// 													}
+// 												}
+// 											})
+// 									}else{
+// 										resolve(message.ALREADYEXISTS);
+// 									}
+// 								}	
+// 							});	
+// 						}
+// 					}
+// 				})
+// 			}else{
+// 				resolve(message.PERMISSIONERROR);
+// 			}			
+// 		}catch(error){
+// 			resolve(error);
+// 		}
+// 	})
+// }
 
 
 /*** SubCategories list ***/

@@ -130,7 +130,7 @@ module.exports.Categories_list = (user) => {
 			// }else{
 				const catArray = [];
 				if (role_id != '') {
-					const list = `SSELECT * FROM bi_categories where is_status = '${1}' ORDER BY cat_id DESC`;
+					const list = `SELECT * FROM bi_categories where is_status = '${1}' ORDER BY cat_id DESC`;
 					client.query(list, (listerr, listress) => {
 						if(listerr){
 							resolve(message.SOMETHINGWRONG);

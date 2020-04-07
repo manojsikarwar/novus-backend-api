@@ -40,6 +40,7 @@ const message = {
 	ADMINDISAPPROVE     : {'success':true,'message': "Admin disapproved sucessfully"},
 	ACTIVEACCOUNT   	: {'success':true,'message': "User activated sucessfully"},
 	ACTIVEACCOUNT   	: {'success':true,'message': "User activated sucessfully"},
+	USERCREATE 			: {'success':true,'message': "User created successfully"},
 	REGISTRATION 		: {'success':true,'message':'Registration sucessfully'},
 	CREATED 	    	: {'success':true,'message':'Created sucessfully'},
 	PROFILEUPDATE 		: {'success':true,'message':'Profile updated sucessfully'},
