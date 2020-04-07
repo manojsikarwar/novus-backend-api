@@ -463,7 +463,7 @@ module.exports.createUser = (body, user) => {
 													    	// sendEmailToSignup(email, company, fullname);
 												    		for(let appData of app_user){
 												    			
-												    			const sqlApp = `insert into app_user(application_id,user_name,user_id,status) values('${appData.application_id}','${appData.user_name}','${userId}','${0}')RETURNING app_id`;
+												    			const sqlApp = `insert into app_user(application_id,user_name,user_id,status,role_id) values('${appData.application_id}','${appData.user_name}','${userId}','${0}','${4}')RETURNING app_id`;
 												
 																client.query(sqlApp, (err1, res1) => {
 																	if (err1) {
@@ -474,7 +474,8 @@ module.exports.createUser = (body, user) => {
 																			user_name	   : appData.user_name,
 																			user_id		   : userId,
 																			app_id    	   : res1.rows[0].app_id,
-																			status 			: 0
+																			status 			: 0,
+																			role_id 		: 4
 																		}
 																		//console.log(AppRedis)
 

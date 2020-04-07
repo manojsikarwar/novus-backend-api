@@ -82,13 +82,17 @@ const redisClient  = redis.createClient(6379, 'localhost');
 module.exports.SubCategories = (user, catId) => {
 	return new Promise((resolve, reject) => {
 		try{
+			// console.log(user)
 			const role_id = user.role_id;
-			// resolve(user)
 			const subcatArray = [];
 			if (role_id == 1 || role_id == 2 || role_id == 4) {
+				if(catId != '' ){
+
+				}else{
+					resolve(message.FILEDS)
+				}
 				const searchsub = `select * from bi_categories where cat_id = '${catId}' `
 				client.query(searchsub, (searcherr, searchress) => {
-					// resolve(searchress.rows)
 					if(searcherr){
 						resolve(message.SOMETHINGWRONG)
 					}else{
