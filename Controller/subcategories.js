@@ -96,52 +96,56 @@ module.exports.SubCategories = (user, catId) => {
 					if(searcherr){
 						resolve(message.SOMETHINGWRONG)
 					}else{
-						if(searchress.rows[0].parant_id == 0){
-							const sql = `SELECT * FROM bi_categories WHERE parant_id = '${catId}' AND is_status = '${1}' ORDER BY  cat_id DESC`;
-							client.query(sql, (error, result) => {
-								if(error){
-									resolve(message.SOMETHINGWRONG);
-								}else{
-									if(result.rows != ''){
-										for(let dat of result.rows)
-										{
-											const data = {
-												subcat_id		 : dat.cat_id,
-										        subcategory_name : dat.category_name.trim(),
-										        cat_id		     : dat.parant_id,
-										        icon			 : dat.icon.trim()
-											}
-											subcatArray.push(data);
-										}
-										const response = {
-											success : true,
-											message : 'list of subcategories',
-											data     : subcatArray
-										}
-										redisClient.hgetall('bi_subcategories', function (err, data) {
-										    if(err){
-										    	resolve(message.SOMETHINGWRONG);
-										    }else{
-										    	
-												resolve(response)
-										    }
-										})
+						if(searchress.rows != ''){
+							if(searchress.rows[0].parant_id == 0){
+								const sql = `SELECT * FROM bi_categories WHERE parant_id = '${catId}' AND is_status = '${1}' ORDER BY  cat_id DESC`;
+								client.query(sql, (error, result) => {
+									if(error){
+										resolve(message.SOMETHINGWRONG);
 									}else{
-										const errmessage = {
-											'status':true,
-											'data': result.rows
+										if(result.rows != ''){
+											for(let dat of result.rows)
+											{
+												const data = {
+													subcat_id		 : dat.cat_id,
+											        subcategory_name : dat.category_name.trim(),
+											        cat_id		     : dat.parant_id,
+											        icon			 : dat.icon.trim()
+												}
+												subcatArray.push(data);
+											}
+											const response = {
+												success : true,
+												message : 'list of subcategories',
+												data     : subcatArray
+											}
+											redisClient.hgetall('bi_subcategories', function (err, data) {
+											    if(err){
+											    	resolve(message.SOMETHINGWRONG);
+											    }else{
+											    	
+													resolve(response)
+											    }
+											})
+										}else{
+											const errmessage = {
+												'status':true,
+												'data': result.rows
+											}
+											resolve(errmessage)
 										}
-										resolve(errmessage)
 									}
-								}
-							});
+								});
 
-						}else{
-							const errmessage = {
-								'status':true,
-								"message":'this is not category'
+							}else{
+								const errmessage = {
+									'status':true,
+									"message":'this is not category'
+								}
+								resolve(errmessage)
 							}
-							resolve(errmessage)
+						}else{
+							resolve(message.DATANOTFOUND)
 						}
 					}
 				})
