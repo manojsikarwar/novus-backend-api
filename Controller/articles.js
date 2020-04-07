@@ -73,11 +73,8 @@ module.exports.Articles = (user, subcatId) => {
 	return new Promise((resolve, reject) => {
 		try{
 			const userId = user.id;
-			if (user.role_id > 2 ) {
-				resolve(message.PERMISSIONERROR);
-			}else{
-				const articlesArray = [];
-				if (userId == 1) {
+			if (user.role_id == 2 || user.role_id == 3 ||user.role_id == 4 ) {
+					const articlesArray = [];
 					const sql = `SELECT * FROM bi_articles WHERE subcat_id = '${subcatId}' AND is_status = '${1}'`;
 					client.query(sql, (error, result) => {
 						if(error){
@@ -118,56 +115,66 @@ module.exports.Articles = (user, subcatId) => {
 								})
 								// resolve(response)
 							}else{
-								resolve(message.EMPTY)			
-							}
-						}
-					});
-				}else{
-					const sql = `SELECT * FROM bi_articles WHERE subcat_id = '${subcatId}' AND is_status = '${1}' AND created_by = '${userId}'`;
-					client.query(sql, (error, result) => {
-						if(error){
-							resolve(message.SOMETHINGWRONG);
-						}else{
-							if(result.rows != ''){
-								for(let dat of result.rows)
-								{
-									const data = {
-										article_id		 : dat.article_id,
-								        title 			 : dat.title.trim(),
-								        written_on		 : dat.written_on.trim(),
-								        auther		 	 : dat.auther.trim(),
-								        description		 : dat.description.trim(),
-								        editor	 		 : dat.editor.trim(),
-								        image	 		 : dat.image.trim(),
-								        embed	 		 : dat.embed.trim(),
-								        quotations	 	 : dat.quotations.trim(),
-								        subcat_id		 : dat.subcat_id,
-								        is_status		 : dat.is_status,
-								        created_by		 : dat.created_by,
-								        created_on		 : dat.created_on.trim(),
-									}
-									articlesArray.push(data);
-								}
 								const response = {
 									success : true,
 									message : 'list of articles',
-									data     : articlesArray
-								}
-								redisClient.hgetall('bi_articles', function (err, data) {
-								    if(err){
-								    	resolve(message.SOMETHINGWRONG);
-								    }else{
-								    	
-										resolve(response)
-								    }
-								})
-								//resolve(response)
-							}else{
-								resolve(message.EMPTY)			
+									data     : result.rows
+								}	
+								resolve(response)	
 							}
 						}
 					});
-				}
+			}else{
+				resolve(message.PERMISSIONERROR);
+
+				// if (userId == 1) {
+				// }
+				// else{
+				// 	const sql = `SELECT * FROM bi_articles WHERE subcat_id = '${subcatId}' AND is_status = '${1}' AND created_by = '${userId}'`;
+				// 	client.query(sql, (error, result) => {
+				// 		if(error){
+				// 			resolve(message.SOMETHINGWRONG);
+				// 		}else{
+				// 			if(result.rows != ''){
+				// 				for(let dat of result.rows)
+				// 				{
+				// 					const data = {
+				// 						article_id		 : dat.article_id,
+				// 				        title 			 : dat.title.trim(),
+				// 				        written_on		 : dat.written_on.trim(),
+				// 				        auther		 	 : dat.auther.trim(),
+				// 				        description		 : dat.description.trim(),
+				// 				        editor	 		 : dat.editor.trim(),
+				// 				        image	 		 : dat.image.trim(),
+				// 				        embed	 		 : dat.embed.trim(),
+				// 				        quotations	 	 : dat.quotations.trim(),
+				// 				        subcat_id		 : dat.subcat_id,
+				// 				        is_status		 : dat.is_status,
+				// 				        created_by		 : dat.created_by,
+				// 				        created_on		 : dat.created_on.trim(),
+				// 					}
+				// 					articlesArray.push(data);
+				// 				}
+				// 				const response = {
+				// 					success : true,
+				// 					message : 'list of articles',
+				// 					data     : articlesArray
+				// 				}
+				// 				redisClient.hgetall('bi_articles', function (err, data) {
+				// 				    if(err){
+				// 				    	resolve(message.SOMETHINGWRONG);
+				// 				    }else{
+								    	
+				// 						resolve(response)
+				// 				    }
+				// 				})
+				// 				//resolve(response)
+				// 			}else{
+				// 				resolve(message.EMPTY)			
+				// 			}
+				// 		}
+				// 	});
+				// }
 			}
 		}catch(error){
 			resolve(error)
