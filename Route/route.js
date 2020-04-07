@@ -101,6 +101,7 @@ router.put('/updateContant',[userAuthenticator], Contant.updateContant);
 router.delete('/deleteContant',[userAuthenticator], Contant.deleteContant);
 router.put('/active_content',[userAuthenticator], Contant.active_content);
 router.get('/tracecontant_list',[userAuthenticator], Contant.tracecontant_list);
+router.get('/latestArtical',[userAuthenticator], Contant.latestArtical);
 
 
 //========================== Novus BI Comment ========================
@@ -126,7 +127,6 @@ router.post('/createArticle',[userAuthenticator], Article.createArticle);
 router.post('/Articles',[userAuthenticator], Article.Articles);
 router.put('/updateArticles',[userAuthenticator], Article.updateArticles);
 router.delete('/deleteArticle',[userAuthenticator], Article.deleteArticle);
-router.get('/latestArtical',[userAuthenticator], Article.latestArtical);
 
 
 //====================== Novus BI News ====================

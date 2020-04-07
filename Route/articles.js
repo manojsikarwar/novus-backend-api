@@ -36,10 +36,4 @@ module.exports.deleteArticle = (req, res, next) => {
 	}).catch((err) => next(err)) 
 }
 
-module.exports.latestArtical = (req, res, next) => {
-	const user = req.user;
-	Articles.latestArtical(user)
-	.then((Data) => {
-		res.json(Data)
-	}).catch((err) => next(err)) 
-}
+

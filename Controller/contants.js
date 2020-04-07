@@ -469,3 +469,44 @@ module.exports.tracecontant_list = (user, body) =>{
 		}
 	})
 }
+
+/** latestArtical ***/
+
+module.exports.latestArtical = (user) => {
+	return new Promise((resolve, reject) => {
+		try{
+			if (user.role_id == 2 || user.role_id == 3 ||user.role_id == 4 ) {
+				const arrtrace = [];
+				const searchcat = `select * from bi_contant`;
+				client.query(searchcat, (searchcaterr, searchcatress) => {
+					if(searchcaterr){
+						resolve(message.SOMETHINGWRONG);
+					}else{
+						if(searchcatress.rows == ''){
+							const successmessage = {
+										'status': true,
+										'data': arrtrace
+									}
+									resolve(successmessage);
+						}else {
+							for(let checktrace of searchcatress.rows){
+								if(checktrace.status != 'trace'){
+									arrtrace.push(checktrace);
+								}
+							}
+									const successmessage = {
+										'status': true,
+										'data': arrtrace
+									}
+									resolve(successmessage);
+						}
+					}
+				})
+			}else{
+				resolve(message.PERMISSIONERROR);
+			}
+		}catch(error){
+			resolve(error)
+		}
+	})
+}
