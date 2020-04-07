@@ -126,6 +126,7 @@ router.post('/createArticle',[userAuthenticator], Article.createArticle);
 router.post('/Articles',[userAuthenticator], Article.Articles);
 router.put('/updateArticles',[userAuthenticator], Article.updateArticles);
 router.delete('/deleteArticle',[userAuthenticator], Article.deleteArticle);
+router.get('/latestArtical',[userAuthenticator], Article.latestArtical);
 
 
 //====================== Novus BI News ====================

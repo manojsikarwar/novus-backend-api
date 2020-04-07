@@ -319,3 +319,67 @@ module.exports.deleteArticle = (user, info) => {
 		}
 	})
 }
+
+/*** latestArtical ***/
+module.exports.latestArtical = (user) => {
+	return new Promise((resolve, reject) => {
+		try{
+			if (user.role_id == 2 || user.role_id == 3 ||user.role_id == 4 ) {
+					const articlesArray = [];
+					const sql = `SELECT * FROM bi_articles WHERE is_status = '${1}'`;
+					client.query(sql, (error, result) => {
+						if(error){
+							resolve(message.SOMETHINGWRONG);
+						}else{
+							if(result.rows != ''){
+								for(let dat of result.rows)
+								{
+									const data = {
+										article_id		 : dat.article_id,
+								        title 			 : dat.title.trim(),
+								        written_on		 : dat.written_on.trim(),
+								        auther		 	 : dat.auther.trim(),
+								        description		 : dat.description.trim(),
+								        editor	 		 : dat.editor.trim(),
+								        image	 		 : dat.image.trim(),
+								        embed	 		 : dat.embed.trim(),
+								        quotations	 	 : dat.quotations.trim(),
+								        subcat_id		 : dat.subcat_id,
+								        is_status		 : dat.is_status,
+								        created_by		 : dat.created_by,
+								        created_on		 : dat.created_on.trim(),
+									}
+									articlesArray.push(data);
+								}
+								const response = {
+									success : true,
+									message : 'list of articles',
+									data     : articlesArray
+								}
+								redisClient.hgetall('bi_articles', function (err, data) {
+								    if(err){
+								    	resolve(message.SOMETHINGWRONG);
+								    }else{
+								    	
+										resolve(response)
+								    }
+								})
+								// resolve(response)
+							}else{
+								const response = {
+									success : true,
+									message : 'list of articles',
+									data     : result.rows
+								}	
+								resolve(response)	
+							}
+						}
+					});
+			}else{
+				resolve(message.PERMISSIONERROR);
+			}
+		}catch(error){
+			resolve(error)
+		}
+	})
+}
