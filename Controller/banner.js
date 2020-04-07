@@ -89,12 +89,16 @@ module.exports.banner_list = (user) => {
 									banArray.push(data);
 								}
 								const response = {
-									success : true,
-									data    : banArray
+									'success' : true,
+									'data'    : banArray
 								}
 								resolve(response)
 							}else{
-								resolve(message.EMPTY)			
+								const response = {
+									'success' : true,
+									'data'    : result.rows
+								}
+								resolve(response)		
 							}
 						}
 					});
@@ -122,7 +126,11 @@ module.exports.banner_list = (user) => {
 								}
 								resolve(response)
 							}else{
-								resolve(message.EMPTY)			
+								const response = {
+									'success' : true,
+									'data'    : result.rows
+								}
+								resolve(response)				
 							}
 						}
 					});
