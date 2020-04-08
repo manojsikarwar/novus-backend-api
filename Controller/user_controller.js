@@ -65,90 +65,86 @@ var sendEmailToSignup = (email, company, fullname) => {
         });
     });
 }
+
 module.exports.signup = (body) => {
     return new Promise((resolve, reject) => {
         try {
-        	const role_id =  '4'; //user.role_id;
-        	// if(role_id == 1){
-				const password = body.password;
+			const password = body.password;
 
-	        	bcrypt.hash(password,10,function(err,hash){
-		    		const fullname = body.fullname;
-					const email = body.email;
-					const company = body.company;
-					const address1 = body.address1;
-					const address2 = body.address2;
-					const country = body.country;
-					const state = body.state;
-					const city = body.city;
-					const zipcode = body.zipcode;
-					const rollid = '4';
-					const created_by = ''; //user.id;
-					const device_type = 'null';
-					const device_token = 'null';
-					const app_user = 'null';
+        	bcrypt.hash(password,10,function(err,hash){
+	    		const fullname = body.fullname;
+				const email = body.email;
+				const company = body.company;
+				const address1 = body.address1;
+				const address2 = body.address2;
+				const country = body.country;
+				const state = body.state;
+				const city = body.city;
+				const zipcode = body.zipcode;
+				const rollid = '4';
+				const created_by = ''; //user.id;
+				const device_type = 'null';
+				const device_token = 'null';
+				const app_user = 'null';
 
-		            if(fullname != '' && email != '' && password != '' && company != '' && address1 != '' && address2 != '' && country != '' && state != '' && city != '' && zipcode != '' ){
-		                if(fullname && email != '' && password != '' && company != '' && address1 != '' && address2 != '' && country != '' && state != '' && city != '' && zipcode != '' ){
-		                    const getemail = `select * from signup where email = '${email}'`;
-		                    client.query(getemail, (emailerr, emailress) => {
-		                        if (emailress.rows != '') {
-		                            resolve(message.ALREADYUSE);
-		                        } else {
-		                            const sql = `insert into signup(fullname,email,password,company,address1,address2,country,state,city,zipcode,status,created_by,created_date,role_id,device_type,device_token,app_user) values('${fullname}','${email}','${hash}','${company}','${address1}','${address2}','${country}','${state}','${city}','${zipcode}','${1}','${created_by}','${myDate}','${rollid}','${device_type}','${device_token}','${app_user}')RETURNING user_id`;
-		                            client.query(sql, (usererr, userress) => {
-		                                if (usererr) {
-		                                    resolve(message.SOMETHINGWRONG);
-		                                } else {
-	                                		let redata = {
-				                        		user_id 	: userress.rows[0].user_id,
-												fullname 	: body.fullname,
-												email 		: body.email,
-												password 	: body.password,
-												company 	: body.company,
-												address1 	: body.address1,
-												address2 	: body.address2,
-												country 	: body.country,
-												state 		: body.state,
-												city 		: body.city,
-												zipcode 	: body.zipcode,
-												status 		: '1',
-												role_id 	: '4',
-												created_date: myDate,
-												created_by 	: 'NONE',
-												device_type  :device_type,
-												device_token : device_token,
-												app_user	 : 	'null'
-											}
-		                                	redisClient.hmset('user', email, JSON.stringify(redata), function (err, data) {
-											    if(err){
+	            if(fullname != '' && email != '' && password != '' && company != '' && address1 != '' && address2 != '' && country != '' && state != '' && city != '' && zipcode != '' ){
+	                if(fullname && email != '' && password != '' && company != '' && address1 != '' && address2 != '' && country != '' && state != '' && city != '' && zipcode != '' ){
+	                    const getemail = `select * from signup where email = '${email}'`;
+	                    client.query(getemail, (emailerr, emailress) => {
+	                        if (emailress.rows != '') {
+	                            resolve(message.ALREADYUSE);
+	                        } else {
+	                            const sql = `insert into signup(fullname,email,password,company,address1,address2,country,state,city,zipcode,status,created_by,created_date,role_id,device_type,device_token,app_user) values('${fullname}','${email}','${hash}','${company}','${address1}','${address2}','${country}','${state}','${city}','${zipcode}','${1}','${created_by}','${myDate}','${rollid}','${device_type}','${device_token}','${app_user}')RETURNING user_id`;
+	                            client.query(sql, (usererr, userress) => {
+	                                if (usererr) {
+	                                    resolve(message.SOMETHINGWRONG);
+	                                } else {
+                                		let redata = {
+			                        		user_id 	: userress.rows[0].user_id,
+											fullname 	: body.fullname,
+											email 		: body.email,
+											password 	: body.password,
+											company 	: body.company,
+											address1 	: body.address1,
+											address2 	: body.address2,
+											country 	: body.country,
+											state 		: body.state,
+											city 		: body.city,
+											zipcode 	: body.zipcode,
+											status 		: '1',
+											role_id 	: '4',
+											created_date: myDate,
+											created_by 	: 'NONE',
+											device_type  :device_type,
+											device_token : device_token,
+											app_user	 : 	'null'
+										}
+	                                	redisClient.hmset('user', email, JSON.stringify(redata), function (err, data) {
+										    if(err){
+										    	resolve(message.SOMETHINGWRONG);
+										    }else{
+										    	if(data == 'OK'){
+											    	resolve(message.REGISTRATION);
+											    	sendEmailToSignup(email, company, fullname);
+										    	}else{
 											    	resolve(message.SOMETHINGWRONG);
-											    }else{
-											    	if(data == 'OK'){
-												    	resolve(message.REGISTRATION);
-												    	sendEmailToSignup(email, company, fullname);
-											    	}else{
-												    	resolve(message.SOMETHINGWRONG);
-											    	}
-											    }
-											})
-		                                }
-		                            })
-		                        }
-		                    });
-		                }else{
-		                    resolve(message.PARAMETES);
-		                }
-		            } else {
-		                resolve(message.FILEDS);
-		            }
-	        	})   
+										    	}
+										    }
+										})
+	                                }
+	                            })
+	                        }
+	                    });
+	                }else{
+	                    resolve(message.PARAMETES);
+	                }
+	            } else {
+	                resolve(message.FILEDS);
+	            }
+        	})   
 
-        	// }else{
-        	// 	resolve(message.NOTPERMISSION)
-        	// }
         } catch (error) {
-	            resolve(message.ERROR); 
+	        resolve(message.ERROR); 
         }
     })
 }
@@ -173,10 +169,10 @@ Process:
 module.exports.login = (body) => {
     return new Promise((resolve, reject) => {
     	try{
-    			const email = body.email;
-				const password = body.password;
-				const device_type = body.device_type;
-				const device_token = body.device_token;
+			const email = body.email;
+			const password = body.password;
+			const device_type = body.device_type;
+			const device_token = body.device_token;
 
 	        if (email != '' && password != '') {
 	            if(email && password){

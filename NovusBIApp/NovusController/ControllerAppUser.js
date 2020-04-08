@@ -20,8 +20,6 @@ module.exports.NovusUser = (body) => {
 			const status  = 1;
 			const app_user = body.create_user;
 
-			// const appUser =  JSON.stringify(app_user);
-
 			const checkuser = `select * from novus_app_user where username = '${username}' `;
 			client.query(checkuser, (checkusererr, checkuserress) => {
 				if(checkusererr){
@@ -122,29 +120,32 @@ module.exports.appuser_login = (body) => {
 			// resolve(body)
 			if(username != ''){
 				// const getuser = `select * from novus_app_user where username = '${username}' `
-				const getuser = `select * from app_user where user_name = '${username}' and status = '${0}' and application_id = '${ApplicationId}' `
-				// console.log(getuser)
+				const getuser = `select * from app_user where user_name = '${username}' and application_id = '${ApplicationId}' `
 				client.query(getuser, (getusererr, getuserress) => {
 					if(getusererr){
 						resolve(message.SOMETHINGWRONG)
 					}else{
 						// resolve(getuserress.rows)
 						if(getuserress.rows != ''){
-							var token = jwt.sign({
-                                id: getuserress.rows[0].user_id,
-                                username: getuserress.rows[0].user_name,
-                                status:getuserress.rows[0].status,
-                                role_id : getuserress.rows[0].role_id,
-                                application_id : getuserress.rows[0].application_id,
-                            }, 'secret', {
-	                                expiresIn: "12hr"
-	                            });
-							const successmessage = {
-								'status':true,
-								'username':getuserress.rows[0].username,
-								'token':token
+							if(getuserress.rows[0].status == 0){
+								var token = jwt.sign({
+	                                id: getuserress.rows[0].user_id,
+	                                username: getuserress.rows[0].user_name,
+	                                status:getuserress.rows[0].status,
+	                                role_id : getuserress.rows[0].role_id,
+	                                application_id : getuserress.rows[0].application_id,
+	                            }, 'secret', {
+		                                expiresIn: "12hr"
+		                            });
+								const successmessage = {
+									'status':true,
+									'username':getuserress.rows[0].username,
+									'token':token
+								}
+								resolve(successmessage)
+							}else{
+								resolve(message.ACCOUNTNOTACTIVE)
 							}
-							resolve(successmessage)
 						}else{
 							resolve(message.DATANOTFOUND);
 						}

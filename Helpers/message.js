@@ -25,12 +25,13 @@ const message = {
 	NOTDISAPPROVEUSER:{'success':false,'message':"User not deleted"},
 	ALREADYDEL		: {'success':false,'message':"Already deleted"},
 	EMPTY 	        : {'success':false,'message':'Empty'},
-	PERMISSIONERROR : {'success':false,'message':'you dont have permission'},
+	PERMISSIONERROR : {'success':false,'message':"you don't have permission"},
 	NOTCREATED 	    : {'success':false,'message':'Not created'},
 	NOTUPDATED 	    : {'success':false,'message':'Not updated'},
 	ALREADYEXISTS 	: {'success':false,'message':'Already exists'},
 	NORDELETED     	: {'success':false,'message':'Can not deleted'},
 	IDNOTEXISTS     : {'success':false,'message':'Id not found'},
+	ACCOUNTNOTACTIVE: {'success':false,'message': "User not activated for this application"},
 
 	//======================== true ====================================
 
@@ -38,7 +39,6 @@ const message = {
 	DISAPPROVEUSER  	: {'success':true,'message': "User disapprove sucessfully"},
 	ADMINAPPROVE    	: {'success':true,'message': "Admin approved sucessfully"},
 	ADMINDISAPPROVE     : {'success':true,'message': "Admin disapproved sucessfully"},
-	ACTIVEACCOUNT   	: {'success':true,'message': "User activated sucessfully"},
 	ACTIVEACCOUNT   	: {'success':true,'message': "User activated sucessfully"},
 	USERCREATE 			: {'success':true,'message': "User created successfully"},
 	REGISTRATION 		: {'success':true,'message':'Registration sucessfully'},
