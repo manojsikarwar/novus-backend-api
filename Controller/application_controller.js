@@ -628,4 +628,3 @@ module.exports.AppUserApprove = (body, user) => {
 	   	}
 	})
 }
-

@@ -12,9 +12,8 @@ module.exports.createContant = (user, info) => {
 		try{
 			if (user.role_id == 1) {
 				const contantdat = JSON.stringify(info.content);
-				if(info.content == "" || info.title == "" || info.category == ""){
+				if(info.content == "" || info.category == ""){
 					const Chkcontant = `SELECT * FROM bi_contant WHERE title = '${info.title}'`;
-				
 					client.query(Chkcontant, (err1, res1) => {
 						if(err1){
 							resolve(message.SOMETHINGWRONG);
@@ -23,7 +22,6 @@ module.exports.createContant = (user, info) => {
 							if (res1.rows == '') {	
 							    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name) VALUES ('${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'draft'}','${user.id}','${info.pdf}','${info.categories_name}')RETURNING contant_id`;
 							    client.query(sql, (error, result) => {
-							    	// resolve(sql)
 									if(error){
 										resolve(message.SOMETHINGWRONG);
 									}else{
@@ -189,11 +187,11 @@ module.exports.contants = (user, info) => {
 										arrtrace.push(checktrace);
 									}
 								}
-										const successmessage = {
-											'status': true,
-											'data': arrtrace
-										}
-										resolve(successmessage);
+								const successmessage = {
+									'status': true,
+									'data': arrtrace
+								}
+								resolve(successmessage);
 							}
 						}
 					})
@@ -298,7 +296,6 @@ module.exports.deleteContant = (user, info) => {
 						}else{
 							if(deldataress.rows != ''){
 								if(deldataress.rows[0].status == 'trace'){
-									// resolve(message.ALREADYDEL)
 									const deltetrace = `delete from bi_contant where contant_id = '${contant_id}'`
 									client.query(deltetrace, (traceerr, traceress)=>{
 										if(traceerr){
@@ -477,28 +474,28 @@ module.exports.latestArtical = (user) => {
 		try{
 			if (user.role_id == 2 || user.role_id == 3 ||user.role_id == 4 ) {
 				const arrtrace = [];
-				const searchcat = `select * from bi_contant`;
+				const searchcat = `select * from bi_contant ORDER BY contant_id DESC limit 10`;
 				client.query(searchcat, (searchcaterr, searchcatress) => {
 					if(searchcaterr){
 						resolve(message.SOMETHINGWRONG);
 					}else{
 						if(searchcatress.rows == ''){
 							const successmessage = {
-										'status': true,
-										'data': arrtrace
-									}
-									resolve(successmessage);
+								'status': true,
+								'data': arrtrace
+							}
+							resolve(successmessage);
 						}else {
 							for(let checktrace of searchcatress.rows){
 								if(checktrace.status != 'trace'){
 									arrtrace.push(checktrace);
 								}
 							}
-									const successmessage = {
-										'status': true,
-										'data': arrtrace
-									}
-									resolve(successmessage);
+							const successmessage = {
+								'status': true,
+								'data': arrtrace
+							}
+							resolve(successmessage);
 						}
 					}
 				})
