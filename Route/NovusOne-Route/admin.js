@@ -1,4 +1,4 @@
-const AdminController 	= require('../Controller/admin_controller');
+const AdminController 	= require('../../Controller/NovusOne-Controller/admin_controller');
 
 
 module.exports.adminlogin = (req, res, next)=>{

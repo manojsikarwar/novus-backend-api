@@ -1,4 +1,4 @@
-const News = require('../Controller/news');
+const News = require('../../Controller/NovusBI-Controller/news');
 
 module.exports.createNews = (req, res ,next) => {
 	const body = req.body;

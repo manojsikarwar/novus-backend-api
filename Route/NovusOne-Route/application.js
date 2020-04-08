@@ -1,4 +1,4 @@
-const Appli	= require('../Controller/application_controller');
+const Appli	= require('../../Controller/NovusOne-Controller/application_controller');
 
 
 module.exports.application_management = (req, res, next)=>{

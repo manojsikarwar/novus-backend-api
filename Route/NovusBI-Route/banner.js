@@ -1,36 +1,35 @@
-const Comments = require('../Controller/comments');
+const Banner = require('../../Controller/NovusBI-Controller/banner');
 
-module.exports.createComment = (req, res ,next) => {
+module.exports.createBanner = (req, res ,next) => {
 	const body = req.body;
 	const user = req.user;
-	Comments.createComment(user, body)
+	Banner.createBanner(user, body)
 	.then((Data) => {
 		res.json(Data)
 	}).catch((err) => next(err))
 }
 
-module.exports.comments = (req, res, next) => {
+module.exports.banner_list = (req, res, next) => {
 	const user = req.user;
-	const contantId = req.body.contant_id;
-	Comments.comments(user, contantId)
+	Banner.banner_list(user)
 	.then((Data) => {
 		res.json(Data)
 	}).catch((err) => next(err))
 }
 
-module.exports.updateComment = (req, res, next) => {
+module.exports.updateBanner = (req, res, next) => {
 	const user = req.user;
 	const body = req.body;
-	Comments.updateComment(user, body)
+	Banner.updateBanner(user, body)
 	.then((Data) => {
 		res.json(Data)
 	}).catch((err) => next(err)) 
 }
 
-module.exports.deleteComment = (req, res, next) => {
+module.exports.deleteBanner = (req, res, next) => {
 	const user = req.user;
 	const body = req.body;
-	Comments.deleteComment(user, body)
+	Banner.deleteBanner(user, body)
 	.then((Data) => {
 		res.json(Data)
 	}).catch((err) => next(err)) 

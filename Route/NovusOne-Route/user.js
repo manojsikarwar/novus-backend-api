@@ -1,9 +1,8 @@
-const User 	= require('../Controller/user_controller');
+const User 	= require('../../Controller/NovusOne-Controller/user_controller');
 
 
 module.exports.signup = (req, res, next)=>{
 	const body = req.body;
-	// const user = req.user;
 
 	User.signup(body)
 	.then((Data)=>{

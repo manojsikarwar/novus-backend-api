@@ -1,5 +1,5 @@
-const client 	   = require("../db");
-const message 	   = require("../Helpers/message");
+const client 	   = require("../../db");
+const message 	   = require("../../Helpers/message");
 const redis 	   = require('redis');
 const redisClient  = redis.createClient(6379, 'localhost');
 

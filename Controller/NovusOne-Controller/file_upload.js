@@ -1,5 +1,5 @@
 const multer = require('multer');
-const client = require('../db');
+const client = require('../../db');
 var moment   = require('moment');
 var myDate   = new Date();
 var fs       = require('fs');

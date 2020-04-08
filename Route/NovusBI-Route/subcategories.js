@@ -1,4 +1,4 @@
-const Subcategories = require('../Controller/subcategories');
+const Subcategories = require('../../Controller/NovusBI-Controller/subcategories');
 
 // module.exports.createSubCategories = (req, res ,next) => {
 // 	const body = req.body;

@@ -1,5 +1,5 @@
-const client 	=	require("../db");
-const message	= 	require("../Helpers/message");
+const client 	=	require("../../db");
+const message	= 	require("../../Helpers/message");
 
 
 /*** Create Articles ***/

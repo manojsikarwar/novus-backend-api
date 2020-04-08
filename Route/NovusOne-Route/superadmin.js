@@ -1,4 +1,4 @@
-const Super = require('../Controller/superadmin_controller');
+const Super = require('../../Controller/NovusOne-Controller/superadmin_controller');
 
 
 module.exports.user_list = (req, res, next)=>{

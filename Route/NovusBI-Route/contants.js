@@ -1,4 +1,4 @@
-const Contants = require('../Controller/contants');
+const Contants = require('../../Controller/NovusBI-Controller/contants');
 
 module.exports.createContant = (req, res ,next) => {
 	const body = req.body;

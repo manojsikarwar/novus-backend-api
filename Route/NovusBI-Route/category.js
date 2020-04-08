@@ -1,4 +1,4 @@
-const Categories = require('../Controller/category');
+const Categories = require('../../Controller/NovusBI-Controller/category');
 
 module.exports.createCategories = (req, res ,next) => {
 	const body = req.body;

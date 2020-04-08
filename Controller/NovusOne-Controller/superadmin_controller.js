@@ -1,4 +1,4 @@
-const client 		= require('../db');
+const client 		= require('../../db');
 const bcrypt 		= require('bcrypt');
 const jwt			= require('jsonwebtoken');
 const moment 		= require('moment');
@@ -6,8 +6,8 @@ const date   		= new Date();
 const myDate 		= moment(date).format('L');
 var redis 			= require('redis');
 var redisClient 	= redis.createClient(6379, 'localhost');
-const message 		= require('../Helpers/message');
-const serverKey 	= require('../Helpers/serverKey');	
+const message 		= require('../../Helpers/message');
+const serverKey 	= require('../../Helpers/serverKey');	
 var randomToken     = require('random-token');
 const nodemailer 	= require('nodemailer');
 const generator 	= require('generate-password');

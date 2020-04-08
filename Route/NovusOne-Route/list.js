@@ -1,4 +1,4 @@
-const List	= require('../Controller/list_controller');
+const List	= require('../../Controller/NovusOne-Controller/list_controller');
 
 
 module.exports.country_list = (req, res, next)=>{
