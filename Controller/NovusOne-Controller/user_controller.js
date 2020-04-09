@@ -970,8 +970,8 @@ module.exports.ValidateUser = (body) => {
        					for(let key of searchress.rows){
        						if(key.application_name == 'NovusBI'){
        							// resolve('NovusBId')
-       							// const URL = 'http://3.132.68.85:3000/novusapp/appuser_login';
-       							const URL = 'http://localhost:3000/novusapp/appuser_login';
+       							const URL = 'http://3.132.68.85:3000/novusapp/appuser_login';
+       							// const URL = 'http://localhost:3000/novusapp/appuser_login';
 								var options = {
 								url: URL,
 								method: 'POST',
