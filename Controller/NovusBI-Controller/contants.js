@@ -366,6 +366,7 @@ module.exports.deleteContant = (user, info) => {
 	})
 }
 
+/***  Active Content  **/
 module.exports.active_content = (user, body) => {
 	return new Promise((resolve, reject) => {
 		try{
@@ -433,7 +434,6 @@ module.exports.active_content = (user, body) => {
 }
 
 /** Trash contant list ***/
-
 module.exports.tracecontant_list = (user, body) =>{
 	return new Promise((resolve, reject)=>{
 		try{
@@ -468,7 +468,6 @@ module.exports.tracecontant_list = (user, body) =>{
 }
 
 /** latestArtical ***/
-
 module.exports.latestArtical = (user) => {
 	return new Promise((resolve, reject) => {
 		try{

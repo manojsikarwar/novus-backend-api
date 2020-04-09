@@ -117,7 +117,6 @@ module.exports.appuser_login = (body) => {
 		try{
 			const username = body.username;
 			const ApplicationId = body.ApplicationId;
-			// resolve(body)
 			if(username != ''){
 				// const getuser = `select * from novus_app_user where username = '${username}' `
 				const getuser = `select * from app_user where user_name = '${username}' and application_id = '${ApplicationId}' `
@@ -125,6 +124,7 @@ module.exports.appuser_login = (body) => {
 					if(getusererr){
 						resolve(message.SOMETHINGWRONG)
 					}else{
+			console.log(getuserress.rows)
 						// resolve(getuserress.rows)
 						if(getuserress.rows != ''){
 							if(getuserress.rows[0].status == 0){
