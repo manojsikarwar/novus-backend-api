@@ -101,7 +101,11 @@ module.exports.Categories = (user) => {
 								})	
 								// resolve(response)
 							}else{
-								resolve(message.EMPTY)			
+								const response = {
+									success : true,
+									data     : result.rows
+								}
+								resolve(response)	
 							}
 						}
 					});
