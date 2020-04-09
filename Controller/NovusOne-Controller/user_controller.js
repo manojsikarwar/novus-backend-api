@@ -963,13 +963,10 @@ module.exports.ValidateUser = (body) => {
        		client.query(searchapp, (searcherr, searchress) => {
        			if(searcherr){
        				resolve(message.SOMETHINGWRONG);
-
        			}else{
        				if(searchress.rows != ''){
-       					// resolve(searchress.rows)
        					for(let key of searchress.rows){
-       						if(key.application_name == 'NovusBI'){
-       							// resolve('NovusBId')
+       						if(key.application_name == 'Novus BI' || key.application_name == 'NovusBI'){
        							const URL = 'http://3.132.68.85:3000/novusapp/appuser_login';
        							// const URL = 'http://localhost:3000/novusapp/appuser_login';
 								var options = {
