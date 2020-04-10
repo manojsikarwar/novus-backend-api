@@ -170,7 +170,7 @@ module.exports.contants = (user, info) => {
 					})
 				}else {
 					const arrtrace = [];
-					const searchcat = `select * from bi_contant`;
+					const searchcat = `select * from bi_contant ORDER BY contant_id DESC`;
 					client.query(searchcat, (searchcaterr, searchcatress) => {
 						if(searchcaterr){
 							resolve(message.SOMETHINGWRONG);
@@ -471,7 +471,7 @@ module.exports.tracecontant_list = (user, body) =>{
 module.exports.latestArtical = (user) => {
 	return new Promise((resolve, reject) => {
 		try{
-			if (user.role_id == 2 || user.role_id == 3 ||user.role_id == 4 ) {
+			if (user.role_id == 1 || user.role_id == 2 ||user.role_id == 4 ) {
 				const arrtrace = [];
 				const searchcat = `select * from bi_contant ORDER BY contant_id DESC limit 10`;
 				client.query(searchcat, (searchcaterr, searchcatress) => {

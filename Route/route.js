@@ -66,7 +66,7 @@ router.post('/AppUserApprove',[userAuthenticator],Application.AppUserApprove);
 // ===================== file ===================================
 
 router.post('/file_upload',File.file_upload);
-router.post('/solution',File.solution);
+// router.post('/solution',File.solution);
 
 // ==================== Country, state and city list ===============
 
@@ -76,7 +76,7 @@ router.post('/city_list',List.city_list);
 
 
 
-//====================== Start Routing for Novus BI =====================
+//====================== Start Routing for Novus BI ===================== //
 
 //======================== Novus BI Categories ==========================
 

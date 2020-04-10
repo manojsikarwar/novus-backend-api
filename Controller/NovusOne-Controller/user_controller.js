@@ -1010,7 +1010,12 @@ module.exports.ValidateUser = (body) => {
        						}
        					}
        				}else{
-       					resolve(message.DATANOTFOUND);
+       					// resolve(message.DATANOTFOUND);
+       					const errMessage = {
+       						'success':true,
+       						'message':'This application not found'
+       					}
+       					resolve(errMessage)
        				}
        			}
        		}) 		
