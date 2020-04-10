@@ -39,7 +39,13 @@ app.use((req, res, next) => {
             return jwt.verify(token,'secret', (err, userData) => {  
                 // console.log(userData)
                 if(err){
-                     res.status(401).json(err);
+                     // res.status(401).json(err);
+                     const errmessage = {
+                        "success":false,
+                        "message": "Token Expire Please Login",
+                        "status":401,
+                     }
+                     res.send(errmessage)
                 }else{
                     req.user = {
                         id      : userData.id,
