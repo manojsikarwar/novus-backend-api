@@ -15,6 +15,7 @@ const Contant       = require('./NovusBI-Route/contants');
 const Comment       = require('./NovusBI-Route/comments');
 const News          = require('./NovusBI-Route/news');
 const Banner        = require('./NovusBI-Route/banner');
+const Region 		= require('./NovusBI-Route/region_rout');
 const Audio 		= require('../Controller/NovusBI-Controller/audio');
 var cors   			= require('cors');
 
@@ -120,6 +121,10 @@ router.delete('/deleteBanner',[userAuthenticator], Banner.deleteBanner);
 
 //====================== Novus BI Audio ====================
 router.post('/uploadAudio',Audio.uploadAudio);
+
+//===================== Novus BI Region ====================
+
+router.post('/region',[userAuthenticator],Region.region); 
 
 
 //====================== Novus BI Articles ====================

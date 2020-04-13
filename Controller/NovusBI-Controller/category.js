@@ -67,7 +67,7 @@ module.exports.createCategories = (user, info) => {
 							}else{
 								const errMessage = {
 									'success':false,
-									'message':'This is not a parant ID '
+									'message':'This is not a parant ID'
 								}
 								resolve(errMessage)
 							}
