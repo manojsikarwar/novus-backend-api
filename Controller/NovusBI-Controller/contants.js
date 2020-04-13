@@ -13,7 +13,7 @@ module.exports.createContant = (user, info) => {
 			if (user.role_id == 1) {
 				const contantdat1 = info.content;
 				const contantdat = JSON.stringify(info.content);
-				// resolve(contantdat1)
+				// resolve(info.thumblain)
 				if(contantdat1[0].name == "" || info.category == ""){
 					const Chkcontant = `SELECT * FROM bi_contant WHERE title = '${info.title}'`;
 					client.query(Chkcontant, (err1, res1) => {
@@ -22,7 +22,7 @@ module.exports.createContant = (user, info) => {
 						}else{
 							const cat_value =  info.category
 							if (res1.rows == '') {	
-							    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name) VALUES ('${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'draft'}','${user.id}','${info.pdf}','${info.categories_name}')RETURNING contant_id`;
+							    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name,thumblain) VALUES ('${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'draft'}','${user.id}','${info.pdf}','${info.categories_name}','${info.thumblain}')RETURNING contant_id`;
 							    client.query(sql, (error, result) => {
 									if(error){
 										resolve(message.SOMETHINGWRONG);
@@ -42,7 +42,8 @@ module.exports.createContant = (user, info) => {
 												status	      : 'draft',
 												created_by    : user.id,
 												pdf			  : info.pdf,
-												categories_name: info.categories_name
+												categories_name: info.categories_name,
+												thumblain 	  : info.thumblain,
 											}
 											redisClient.hmset('bi_contant', info.title, JSON.stringify(redata), function (err, data) {
 											    if(err){
@@ -74,7 +75,7 @@ module.exports.createContant = (user, info) => {
 						}else{
 							const cat_value =  info.category
 							if (res1.rows == '') {	
-							    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name) VALUES ('${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'pending'}','${user.id}','${info.pdf}','${info.categories_name}')RETURNING contant_id`;
+							    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name,thumblain) VALUES ('${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'pending'}','${user.id}','${info.pdf}','${info.categories_name}','${info.thumblain}')RETURNING contant_id`;
 							    client.query(sql, (error, result) => {
 									if(error){
 										resolve(message.SOMETHINGWRONG);
@@ -94,7 +95,8 @@ module.exports.createContant = (user, info) => {
 												status	      : 'pending',
 												created_by    : user.id,
 												pdf			  : info.pdf,
-												categories_name: info.categories_name
+												categories_name: info.categories_name,
+												thumblain 	  : info.thumblain,
 											}
 											redisClient.hmset('bi_contant', info.title, JSON.stringify(redata), function (err, data) {
 											    if(err){
