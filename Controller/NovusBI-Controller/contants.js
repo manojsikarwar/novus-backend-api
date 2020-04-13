@@ -11,8 +11,10 @@ module.exports.createContant = (user, info) => {
 	return new Promise((resolve, reject) => {
 		try{
 			if (user.role_id == 1) {
+				const contantdat1 = JSON.parse(info.content);
 				const contantdat = JSON.stringify(info.content);
-				if(info.content == "" || info.category == ""){
+				// resolve(contantdat1[0].name)
+				if(contantdat1[0].name == "" || info.category == ""){
 					const Chkcontant = `SELECT * FROM bi_contant WHERE title = '${info.title}'`;
 					client.query(Chkcontant, (err1, res1) => {
 						if(err1){
