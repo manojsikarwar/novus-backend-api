@@ -9,47 +9,71 @@ module.exports.createCategories = (user, info) => {
 		try{
 			if (user.role_id== 1) {
 				const parant_id = info.parent_id;
-				const ChkCategory = `SELECT * FROM bi_categories WHERE category_name = '${info.category_name}'`;
-				client.query(ChkCategory, (err1, res1) => {
-					if(err1){
+				const checkID = `select * from bi_categories where cat_id = '${parant_id}' `
+				client.query(checkID, (checkerror, checkresutl) => {
+					// resolve(checkresutl.rows)?
+					if(checkerror){
 						resolve(message.SOMETHINGWRONG);
 					}else{
-						if (res1.rows == '') {
-							const sql = `INSERT INTO bi_categories(category_name,icon,is_status,created_by,parant_id) VALUES ('${info.category_name}','${info.icon}','${1}','${user.id}','${parant_id}')RETURNING cat_id`;
-							client.query(sql, (error, result) => {
-								if(error){
-									resolve(message.SOMETHINGWRONG);
-								}else{
-									if (result != '') {
-										const redata = {
-											cat_id 	 	  : result.rows[0].cat_id,
-											category_name : info.category_name,
-											icon 		  : info.icon,
-											is_status	  : 1,
-											created_by    : user.id,
-											parant_id 	  : parant_id
-										}
-										redisClient.hmset('bi_categories', info.category_name, JSON.stringify(redata), function (err, data) {
-										    if(err){
-										    	resolve(message.SOMETHINGWRONG);
-										    }else{
-										    	if(data == 'OK'){
-											    	resolve(message.CREATED);
-										    	}else{
-											    	resolve(message.SOMETHINGWRONG);
-										    	}
-										    }
-										})
-									}else{
-										resolve(message.NOTCREATED);
-									}
-								}
-							})
+						if(checkresutl.rows == ''){
+							const errMessage = {
+								'success':false,
+								'message':'This Parant ID not found'
+							}
+							resolve(errMessage)
 						}else{
-							resolve(message.ALREADYEXISTS);
+							if(checkresutl.rows[0].parant_id == 0){
+								const ChkCategory = `SELECT * FROM bi_categories WHERE category_name = '${info.category_name}'`;
+								client.query(ChkCategory, (err1, res1) => {
+									if(err1){
+										resolve(message.SOMETHINGWRONG);
+									}else{
+										if (res1.rows == '') {
+											const sql = `INSERT INTO bi_categories(category_name,icon,is_status,created_by,parant_id) VALUES ('${info.category_name}','${info.icon}','${1}','${user.id}','${parant_id}')RETURNING cat_id`;
+											client.query(sql, (error, result) => {
+												if(error){
+													resolve(message.SOMETHINGWRONG);
+												}else{
+													if (result != '') {
+														const redata = {
+															cat_id 	 	  : result.rows[0].cat_id,	
+															category_name : info.category_name,
+															icon 		  : info.icon,
+															is_status	  : 1,
+															created_by    : user.id,
+															parant_id 	  : parant_id
+														}
+														redisClient.hmset('bi_categories', info.category_name, JSON.stringify(redata), function (err, data) {
+														    if(err){
+														    	resolve(message.SOMETHINGWRONG);
+														    }else{
+														    	if(data == 'OK'){
+															    	resolve(message.CREATED);
+														    	}else{
+															    	resolve(message.SOMETHINGWRONG);
+														    	}
+														    }
+														})
+													}else{
+														resolve(message.NOTCREATED);
+													}
+												}
+											})
+										}else{
+											resolve(message.ALREADYEXISTS);
+										}
+									}	
+								});	
+							}else{
+								const errMessage = {
+									'success':false,
+									'message':'This is not a parant ID '
+								}
+								resolve(errMessage)
+							}
 						}
-					}	
-				});	
+					}
+				})
 			}else{
 				resolve(message.PERMISSIONERROR);
 			}			

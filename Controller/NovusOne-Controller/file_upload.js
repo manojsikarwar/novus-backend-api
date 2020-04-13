@@ -39,7 +39,6 @@ var upload = multer({
 }).any('');
 
 module.exports.file_upload = (req, res) => {
-
     upload(req, res, function(err) {
         if(err) {
             res.json(err)
