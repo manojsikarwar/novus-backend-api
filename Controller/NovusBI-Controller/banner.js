@@ -66,10 +66,9 @@ module.exports.createBanner = (user, info) => {
 module.exports.banner_list = (user) => {
 	return new Promise((resolve, reject) => {
 		try{
+			// resolve(user)
 			const userId = user.id;
-			// console.log(user)
-			if (user.role_id == 2 || user.role_id == 3 || user.role_id == 4) {
-				
+			if (user.role_id == 1 || user.role_id == 2 || user.role_id == 4) {
 				const banArray = [];
 					const sql = `SELECT * FROM bi_banner WHERE is_status = '${1}'`;
 					client.query(sql, (error, result) => {
@@ -103,41 +102,6 @@ module.exports.banner_list = (user) => {
 					});
 			}else{
 				resolve(message.PERMISSIONERROR);
-				// if (userId == 1) {
-				// }
-				// else{
-				// 	const sql = `SELECT * FROM bi_banner WHERE is_status = '${1}' AND created_by = '${userId}'`;
-				// 	client.query(sql, (error, result) => {
-				// 		if(error){
-				// 			resolve(message.SOMETHINGWRONG);
-				// 		}else{
-				// 			if(result.rows != ''){
-				// 				for(let dat of result.rows)
-				// 				{
-				// 					const data = {
-				// 						banner_id	  : dat.banner_id,
-				// 				        title	      : dat.title.trim(),
-				// 				        description	  : dat.description.trim(),
-				// 				        banner_image  : dat.banner_image.trim(),
-				// 					}
-				// 					banArray.push(data);
-				// 				}
-				// 				const response = {
-				// 					success : true,
-				// 					message : 'list of banners',
-				// 					data     : banArray
-				// 				}
-				// 				resolve(response)
-				// 			}else{
-				// 				const response = {
-				// 					'success' : true,
-				// 					'data'    : result.rows
-				// 				}
-				// 				resolve(response)				
-				// 			}
-				// 		}
-				// 	});
-				// }
 			}
 		}catch(error){
 			resolve(error)

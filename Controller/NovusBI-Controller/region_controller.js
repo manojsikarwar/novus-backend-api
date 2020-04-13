@@ -6,29 +6,28 @@ const date   		= new Date();
 const myDate 		= moment(date).format('l');
 const redisClient   = redis.createClient(6379, 'localhost');
 
+//=============== Add region ====================
+//post
 
-module.exports.region = (user,body) => {
+module.exports.region = (body) => {
 	return new Promise((resolve , reject) => {
-		const country = body.country;
-		// console.log(country.split(',')
-		// console.log(country)
 		const searchRegion = `select * from region where region_name = '${body.region_name}' `
 		client.query(searchRegion, (error, result) => {
 			if(error){
 				resolve(message.SOMETHINGWRONG)
 			}else{
 				if(result.rows == ''){
-					const insertRegion = `insert into region(region_name,country) values('${body.region_name}','${body.country}')`
+					const insertRegion = `insert into region(region_name,country) values('${body.region_name}','${body.country}')RETURNING region_id `
 					client.query(insertRegion, (insertError, insertResult) => {
 						if(insertError) {
 							resolve(message.SOMETHINGWRONG)
 						}else {
 							const redata = {
-								region_id 	  : result.rows[0].comment_id,
+								region_id 	  : insertResult.rows[0].region_id,
 								region_name	  : body.region_name,
 								country 	  : body.country,
 							}
-							redisClient.hmset('bi_comment', result.rows[0].comment_id, JSON.stringify(redata), function (err, data) {
+							redisClient.hmset('region', insertResult.rows[0].region_id, JSON.stringify(redata), function (err, data) {
 							    if(err){
 							    	resolve(message.SOMETHINGWRONG);
 							    }else{
@@ -53,3 +52,131 @@ module.exports.region = (user,body) => {
 		})
 	})
 }
+
+//============= Resion List ======================
+//get
+
+module.exports.regionList = () => {
+	return new Promise((resolve,reject)=>{
+	   	const reslist = `select * from region`;
+		client.query(reslist, (reserror,resresult)=>{
+			if(reserror){
+				resolve(message.SOMETHINGWRONG)
+			}else{
+				if(resresult.rows == ''){
+					resolve(message.NOTCOUNTIESLIST)
+				}else{
+					redisClient.hgetall('region', function (err, data) {
+					    if(err){
+					    	resolve(message.SOMETHINGWRONG);
+					    }else{
+							const successMessage = {
+								'success':true,
+								'RegionList':resresult.rows
+							}
+							resolve(successMessage);
+					    }
+					})
+				}
+			}
+	 	})
+	})
+}
+
+//===============  Delete Region =================
+//delete
+
+module.exports.deleteRegion = (info) => {
+	return new Promise((resolve, reject) => {
+		try{
+			// resolve(info)
+			const findregion = `select * from region where region_id = '${info.region_id}'`;
+			client.query(findregion, (regionError, regionResult) => {
+				if(regionError){
+					resolve(message.SOMETHINGWRONG)
+				}else{
+					// resolve(regionResult.rows)
+					if(regionResult.rows != ''){
+						const sql  = `DELETE FROM region WHERE region_id = '${info.region_id}'`;
+						client.query(sql, (error, result) =>{
+							if (error) {
+								resolve(message.SOMETHINGWRONG);
+							}else{
+								if(result) {
+									console.log(result)
+		                            redisClient.hdel('region',info.region_id,function(err,redisdata){
+										if(err){
+											resolve(message.SOMETHINGWRONG);
+										}else{
+											if(redisdata == 1){
+												resolve(message.DELETEDSUCCESS);
+											}else{
+												resolve(message.NORDELETED);
+											}
+										}
+									})
+								}else{		
+									resolve(message.NORDELETED);
+								}
+							}
+						})
+					}else{
+						resolve(message.ALREADYDEL);
+					}
+				}
+			})
+		}catch(error){
+			console.log(error)
+		}
+	})
+}
+
+//=============== Update Region ==================
+//put
+
+module.exports.updateRegion = (info) => {
+	return new Promise((resolve, reject) => {
+		try{
+			const checksql = `SELECT * FROM region WHERE region_id = '${info.region_id}'`;
+			client.query(checksql, (err, res) =>{
+				if (err) {
+					resolve(message.SOMETHINGWRONG);
+				}else{
+					// resolve(res.rows)
+					if (res.rows != '') {
+						const sql  = `UPDATE region SET region_name = '${info.region_name}',country = '${info.country}' WHERE region_id = '${info.region_id}'`;
+						client.query(sql, (error, result) =>{
+							if (error) {
+								resolve(message.SOMETHINGWRONG);
+							}else{
+								if (result.rowCount >= 1) {
+									const resdata = {
+										region_id	  	: res.rows[0].region_id,
+										region_name 	: info.region_name,
+										country   		: info.country,
+									}
+									redisClient.hmset('region', res.rows[0].region_id, JSON.stringify(resdata), function (err, data) {
+									    if(err){
+									    	resolve(message.SOMETHINGWRONG);
+									    }else{
+									    	if(data == 'OK'){
+										    	resolve(message.UPDATEDSUCCESS);
+									    	}else{
+										    	resolve(message.NOTUPDATED);
+									    	}
+									    }
+									})		
+								}else{
+									resolve(message.NOTUPDATED);
+								}
+							}
+						})	
+					}
+				}
+			})
+		}catch(error){
+			console.log(error)
+		}
+	})
+}
+

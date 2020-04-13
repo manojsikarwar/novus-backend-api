@@ -124,8 +124,10 @@ router.post('/uploadAudio',Audio.uploadAudio);
 
 //===================== Novus BI Region ====================
 
-router.post('/region',[userAuthenticator],Region.region); 
-
+router.post('/region',Region.region);
+router.get('/regionList',Region.regionList);
+router.delete('/deleteRegion',Region.deleteRegion);
+router.put('/updateRegion',Region.updateRegion);
 
 //====================== Novus BI Articles ====================
 router.post('/createArticle',[userAuthenticator], Article.createArticle);
