@@ -21,7 +21,7 @@ module.exports.createContant = (user, info) => {
 						}else{
 							const cat_value =  info.category
 							if (res1.rows == '') {	
-							    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name,thumbnail,created_at,region) VALUES ('${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'draft'}','${user.id}','${info.pdf}','${info.categories_name}','${info.thumbnail}','${myDate}','${region}')RETURNING contant_id`;
+							    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name,thumbnail,created_at,region) VALUES ('${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'draft'}','${user.id}','${info.pdf}','${info.categories_name}','${info.thumbnail}','${myDate}','${info.region}')RETURNING contant_id`;
 							    client.query(sql, (error, result) => {
 									if(error){
 										resolve(message.SOMETHINGWRONG);
@@ -44,7 +44,7 @@ module.exports.createContant = (user, info) => {
 												categories_name: info.categories_name,
 												thumbnail 	  : info.thumbnail,
 												created_at 	  : myDate,
-												region		  : region,
+												region		  : info.region,
 											}
 											redisClient.hmset('bi_contant', info.title, JSON.stringify(redata), function (err, data) {
 											    if(err){
@@ -76,7 +76,7 @@ module.exports.createContant = (user, info) => {
 						}else{
 							const cat_value =  info.category
 							if (res1.rows == '') {	
-							    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name,thumbnail,created_at,region) VALUES ('${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'pending'}','${user.id}','${info.pdf}','${info.categories_name}','${info.thumbnail}','${myDate}','${region}')RETURNING contant_id`;
+							    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name,thumbnail,created_at,region) VALUES ('${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'pending'}','${user.id}','${info.pdf}','${info.categories_name}','${info.thumbnail}','${myDate}','${info.region}')RETURNING contant_id`;
 							    client.query(sql, (error, result) => {
 									if(error){
 										resolve(message.SOMETHINGWRONG);
@@ -99,7 +99,7 @@ module.exports.createContant = (user, info) => {
 												categories_name: info.categories_name,
 												thumbnail 	  : info.thumbnail,
 												created_at 	  : myDate,
-												region 		  : region,
+												region 		  : info.region,
 											}
 											redisClient.hmset('bi_contant', info.title, JSON.stringify(redata), function (err, data) {
 											    if(err){
@@ -517,9 +517,9 @@ module.exports.latestArtical = (user,body) => {
 				// 				 		const RDATA = regionResult.rows[0].country;
 				// 				 		const regionData = RDATA.split(',');
 				// 				 		for(let key of regionData){
-				// 				 			console.log(body.id)
+				// 				 			console.log(country_id)
 				// 				 			if(key != ''){
-				// 				 				if(key === body.id){
+				// 				 				if(key === country_id){
 				// 				 					resolve('show')
 				// 				 				}else{
 				// 				 					resolve('not show')
@@ -535,6 +535,7 @@ module.exports.latestArtical = (user,body) => {
 				// 		})
 				// 	}
 				// })
+
 				const searchcat = `select * from bi_contant ORDER BY contant_id DESC limit 10`;
 				client.query(searchcat, (searchcaterr, searchcatress) => {
 					if(searchcaterr){
