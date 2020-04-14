@@ -542,61 +542,65 @@ module.exports.contentRegion = (user,body) => {
 					if(userError){
 						resolve(message.SOMETHINGWRONG)
 					}else {
-						const country_name = userResult.rows[0].country.trim();
-						const searchcountry = `select * from countries where country_name = '${country_name}'`
-						client.query(searchcountry, (countryError, countryResult) => {
-							if(countryError){
-								resolve(message.SOMETHINGWRONG)
-							}else {
-								const country_id = countryResult.rows[0].id;
-								const searchRegion = `select * from region_country where region_id = '${body.region_id}'`;
-								client.query(searchRegion, (regionError, regionResult) => {
-								 	if(regionError){
-								 		resolve(message.SOMETHINGWRONG)
-								 	}else {
-								 		if(body.region_id != ''){
-											const searchcat = `select * from bi_contant`;
-											client.query(searchcat, (searchcaterr, searchcatress) => {
-												if(searchcaterr){
-													resolve(message.SOMETHINGWRONG);
-												}else{
-													if(searchcatress.rows == ''){
-														resolve(message.DATANOTFOUND);
-													}else {
-														for(let data of regionResult.rows){
-															for(let catdata of searchcatress.rows){
-																const regnId = catdata.region;
-																const arr1  = regnId.split(',');
-																for(let key of arr1){
-																	if(key == ''){
-																		resolve(message.DATANOTFOUND)
-																	}else{
-								                                       if(key == data.country){
-								                                       		if(catdata.status != 'trace'){
-								                                       			arr2.push(catdata)
-								                                       		}else{
-								                                       			arr2.push('already deleted')
-								                                       		}
-								                                       }
+						if(userResult.rows != ''){
+							const country_name = userResult.rows[0].country.trim();
+							const searchcountry = `select * from countries where country_name = '${country_name}'`
+							client.query(searchcountry, (countryError, countryResult) => {
+								if(countryError){
+									resolve(message.SOMETHINGWRONG)
+								}else {
+									const country_id = countryResult.rows[0].id;
+									const searchRegion = `select * from region_country where region_id = '${body.region_id}'`;
+									client.query(searchRegion, (regionError, regionResult) => {
+									 	if(regionError){
+									 		resolve(message.SOMETHINGWRONG)
+									 	}else {
+									 		if(body.region_id != ''){
+												const searchcat = `select * from bi_contant`;
+												client.query(searchcat, (searchcaterr, searchcatress) => {
+													if(searchcaterr){
+														resolve(message.SOMETHINGWRONG);
+													}else{
+														if(searchcatress.rows == ''){
+															resolve(message.DATANOTFOUND);
+														}else {
+															for(let data of regionResult.rows){
+																for(let catdata of searchcatress.rows){
+																	const regnId = catdata.region;
+																	const arr1  = regnId.split(',');
+																	for(let key of arr1){
+																		if(key == ''){
+																			resolve(message.DATANOTFOUND)
+																		}else{
+									                                       if(key == data.country){
+									                                       		if(catdata.status != 'trace'){
+									                                       			arr2.push(catdata)
+									                                       		}else{
+									                                       			arr2.push('already deleted')
+									                                       		}
+									                                       }
+																		}
 																	}
 																}
+																const successmessage = {
+																	'status': true,
+																	'data':arr2
+																}
+																resolve(successmessage)
 															}
-															const successmessage = {
-																'status': true,
-																'data':arr2
-															}
-															resolve(successmessage)
 														}
 													}
-												}
-											})
-										}else {
-											resolve(message.FILEDS)
-										}
-								 	}	
-								})
-							}
-						})
+												})
+											}else {
+												resolve(message.FILEDS)
+											}
+									 	}	
+									})
+								}
+							})
+						}else{
+							resolve(message.DATANOTFOUND)
+						}
 					}
 				})
 			}else{
