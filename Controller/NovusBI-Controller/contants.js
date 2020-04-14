@@ -481,60 +481,12 @@ module.exports.tracecontant_list = (user, body) =>{
 }
 
 /** latestArtical ***/
-module.exports.latestArtical = (user,body) => {
+module.exports.latestArtical = (user) => {
 	return new Promise((resolve, reject) => {
 		try{
 			if (user.role_id == 1 || user.role_id == 2 ||user.role_id == 4 ) {
 				// console.log(user)
 				const arrtrace = [];
-				// const arry = [];
-				// const searchUser = `select * from signup where user_id = '${user.id}'`
-				// client.query(searchUser, (userError, userResult) => {
-				// 	if(userError){
-				// 		resolve(message.SOMETHINGWRONG)
-				// 	}else {
-				// 		const country_name = userResult.rows[0].country.trim();
-				// 		// resolve(country_name)
-				// 		const searchcountry = `select * from countries where country_name = '${country_name}'`
-				// 		client.query(searchcountry, (countryError, countryResult) => {
-				// 			if(countryError){
-				// 				resolve(message.SOMETHINGWRONG)
-				// 			}else {
-				// 				const country_id = countryResult.rows[0].id;
-				// 				// const data = `SELECT * FROM region WHERE country FIND_IN_SET(country, '101')`
-				// 		  //       client.query(data, (err, result) => {
-				// 		  //       		resolve(result)
-				// 		  //       	if(err){
-				// 		  //       		resolve(message.SOMETHINGWRONG)
-				// 		  //       	}else{
-				// 		  //       	}
-				// 		  //       })
-				// 				const searchRegion = `select * from region where region_id = '${body.region_id}'`;
-				// 				client.query(searchRegion, (regionError, regionResult) => {
-				// 				 	if(regionError){
-				// 				 		resolve(message.SOMETHINGWRONG)
-				// 				 	}else {
-				// 				 		const RDATA = regionResult.rows[0].country;
-				// 				 		const regionData = RDATA.split(',');
-				// 				 		for(let key of regionData){
-				// 				 			console.log(country_id)
-				// 				 			if(key != ''){
-				// 				 				if(key === country_id){
-				// 				 					resolve('show')
-				// 				 				}else{
-				// 				 					resolve('not show')
-				// 				 				}
-				// 				 			}else{
-				// 				 				resolve('not')
-				// 				 			}
-				// 				 		}
-
-				// 				 	}
-				// 				})
-				// 			}
-				// 		})
-				// 	}
-				// })
 
 				const searchcat = `select * from bi_contant ORDER BY contant_id DESC limit 10`;
 				client.query(searchcat, (searchcaterr, searchcatress) => {
@@ -574,6 +526,84 @@ module.exports.latestArtical = (user,body) => {
 			}
 		}catch(error){
 			console.log(error)
+		}
+	})
+}
+
+//================ content show region wise =========================
+
+module.exports.contentRegion = (user,body) => {
+	return new Promise((resolve, reject) => {
+		try{
+			const arr2 = [];
+			if (user.role_id == 1 || user.role_id == 2 ||user.role_id == 4 ) {
+				const searchUser = `select * from signup where user_id = '${user.id}'`
+				client.query(searchUser, (userError, userResult) => {
+					if(userError){
+						resolve(message.SOMETHINGWRONG)
+					}else {
+						const country_name = userResult.rows[0].country.trim();
+						const searchcountry = `select * from countries where country_name = '${country_name}'`
+						client.query(searchcountry, (countryError, countryResult) => {
+							if(countryError){
+								resolve(message.SOMETHINGWRONG)
+							}else {
+								const country_id = countryResult.rows[0].id;
+								const searchRegion = `select * from region_country where region_id = '${body.region_id}'`;
+								client.query(searchRegion, (regionError, regionResult) => {
+								 	if(regionError){
+								 		resolve(message.SOMETHINGWRONG)
+								 	}else {
+								 		if(body.region_id != ''){
+											const searchcat = `select * from bi_contant`;
+											client.query(searchcat, (searchcaterr, searchcatress) => {
+												if(searchcaterr){
+													resolve(message.SOMETHINGWRONG);
+												}else{
+													if(searchcatress.rows == ''){
+														resolve(message.DATANOTFOUND);
+													}else {
+														for(let data of regionResult.rows){
+															for(let catdata of searchcatress.rows){
+																const regnId = catdata.region;
+																const arr1  = regnId.split(',');
+																for(let key of arr1){
+																	if(key == ''){
+																		resolve(message.DATANOTFOUND)
+																	}else{
+								                                       if(key == data.country){
+								                                       		if(catdata.status != 'trace'){
+								                                       			arr2.push(catdata)
+								                                       		}else{
+								                                       			arr2.push('already deleted')
+								                                       		}
+								                                       }
+																	}
+																}
+															}
+															const successmessage = {
+																'status': true,
+																'data':arr2
+															}
+															resolve(successmessage)
+														}
+													}
+												}
+											})
+										}else {
+											resolve(message.FILEDS)
+										}
+								 	}	
+								})
+							}
+						})
+					}
+				})
+			}else{
+				resolve(message.PERMISSIONERROR);
+			}
+		}catch(error){
+			resolve(error)
 		}
 	})
 }

@@ -56,8 +56,16 @@ module.exports.tracecontant_list = (req, res, next) => {
 
 module.exports.latestArtical = (req, res, next) => {
 	const user = req.user;
+	Contants.latestArtical(user)
+	.then((Data) => {
+		res.json(Data)
+	}).catch((err) => next(err)) 
+}
+
+module.exports.contentRegion = (req, res, next) => {
+	const user = req.user;
 	const body = req.body;
-	Contants.latestArtical(user,body)
+	Contants.contentRegion(user,body)
 	.then((Data) => {
 		res.json(Data)
 	}).catch((err) => next(err)) 

@@ -103,6 +103,7 @@ router.delete('/deleteContant',[userAuthenticator], Contant.deleteContant);
 router.put('/active_content',[userAuthenticator], Contant.active_content);
 router.get('/tracecontant_list',[userAuthenticator], Contant.tracecontant_list);
 router.get('/latestArtical',[userAuthenticator], Contant.latestArtical);
+router.post('/contentRegion',[userAuthenticator], Contant.contentRegion);
 
 
 //========================== Novus BI Comment ========================

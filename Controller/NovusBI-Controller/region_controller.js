@@ -17,30 +17,58 @@ module.exports.region = (body) => {
 				resolve(message.SOMETHINGWRONG)
 			}else{
 				if(result.rows == ''){
-					const insertRegion = `insert into region(region_name,country) values('${body.region_name}','${body.country}')RETURNING region_id `
-					client.query(insertRegion, (insertError, insertResult) => {
-						if(insertError) {
-							resolve(message.SOMETHINGWRONG)
-						}else {
-							const redata = {
-								region_id 	  : insertResult.rows[0].region_id,
-								region_name	  : body.region_name,
-								country 	  : body.country,
-							}
-							redisClient.hmset('region', insertResult.rows[0].region_id, JSON.stringify(redata), function (err, data) {
-							    if(err){
-							    	resolve(message.SOMETHINGWRONG);
-							    }else{
-							    	if(data == 'OK'){
-								    	resolve(message.CREATEDSUCCESS);
-							    	}else{
+					const insertRegion = `insert into region(region_name) values('${body.region_name}')RETURNING region_id `
+						client.query(insertRegion, (insertError, insertResult) => {
+							if(insertError) {
+								resolve(message.SOMETHINGWRONG)
+							}else {
+								var region_id = insertResult.rows[0].region_id
+								const redata = {
+									region_id 	  : region_id,
+									region_name	  : body.region_name,
+									country 	  : body.country,
+								}
+								redisClient.hmset('region', insertResult.rows[0].region_id, JSON.stringify(redata), function (err, data) {
+								    if(err){
 								    	resolve(message.SOMETHINGWRONG);
-							    	}
-							    }
-							})
-							resolve(message.CREATED)
-						}
-					})
+								    }else{
+								    	if(data == 'OK'){
+									    	resolve(message.CREATEDSUCCESS);
+								    	}else{
+									    	resolve(message.SOMETHINGWRONG);
+								    	}
+								    }
+								})
+								// resolve(message.CREATED)
+								const ID1 = body.country;
+								const ConID = ID1.split(',');
+								for(let ContID of ConID){
+									const insertRegion = `insert into region_country(region_id,country) values('${region_id}','${ContID}')RETURNING r_id `
+									client.query(insertRegion, (insertError, insertResult) => {
+										if(insertError) {
+											resolve(message.SOMETHINGWRONG)
+										}else {
+											const redata = {
+												r_id 	  : insertResult.rows[0].r_id,
+												country   : ContID,
+											}
+											redisClient.hmset('region_country', insertResult.rows[0].r_id, JSON.stringify(redata), function (err, data) {
+											    if(err){
+											    	resolve(message.SOMETHINGWRONG);
+											    }else{
+											    	if(data == 'OK'){
+												    	resolve(message.CREATEDSUCCESS);
+											    	}else{
+												    	resolve(message.SOMETHINGWRONG);
+											    	}
+											    }
+											})
+											resolve(message.CREATED)
+										}
+									})
+								}
+							}
+						})
 				}else{
 					const errMessage = {
 						'success' : false,
