@@ -86,7 +86,7 @@ module.exports.region = (body) => {
 
 module.exports.regionList = () => {
 	return new Promise((resolve,reject)=>{
-	   	const reslist = `select * from region`;
+	   	const reslist = `select a.region_name,b.region_id,b.country from region as a inner join region_country as b on a.region_id = b.region_id`;
 		client.query(reslist, (reserror,resresult)=>{
 			if(reserror){
 				resolve(message.SOMETHINGWRONG)
