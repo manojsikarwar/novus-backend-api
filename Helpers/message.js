@@ -8,7 +8,7 @@ const message = {
 	FILEDS  		: {"success":false,"message":'Fill all fields'},
 	ERROR   		: {"success":false,"message":'Error'},
 	INVALIDEMAIL	: {"success":false,'message':'Invalid Email Id'},
-	INVALIDRESETTOKEN	: {"success":false,'message':'Invalid Reset Token'},
+	INVALIDRESETTOKEN: {"success":false,'message':'Invalid Reset Token'},
 	PASSWORD    	: {'success':false,'message':"Incorrect Password"},
 	USERCREATE    	: {'success':false,'message':"Your account is not activated by admin"},
 	ACCOUNT 	   	: {'success':false,'message':"Could not find your account"},
@@ -32,6 +32,7 @@ const message = {
 	NORDELETED     	: {'success':false,'message':'Can not deleted'},
 	IDNOTEXISTS     : {'success':false,'message':'Id not found'},
 	ACCOUNTNOTACTIVE: {'success':false,'message': "User not activated for this application"},
+	USERNOTFOUND 	: {'success':false,'message': "User not found"},
 
 	//======================== true ====================================
 
