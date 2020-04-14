@@ -13,7 +13,6 @@ module.exports.createContant = (user, info) => {
 			if (user.role_id == 1) {
 				const contantdat1 = info.content;
 				const contantdat = JSON.stringify(info.content);
-				// resolve(info.thumblain 	)
 				if(contantdat1[0].name == "" || info.category == ""){
 					const Chkcontant = `SELECT * FROM bi_contant WHERE title = '${info.title}'`;
 					client.query(Chkcontant, (err1, res1) => {
@@ -22,7 +21,7 @@ module.exports.createContant = (user, info) => {
 						}else{
 							const cat_value =  info.category
 							if (res1.rows == '') {	
-							    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name,thumbnail,created_at) VALUES ('${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'draft'}','${user.id}','${info.pdf}','${info.categories_name}','${info.thumbnail}','${myDate}')RETURNING contant_id`;
+							    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name,thumbnail,created_at,region) VALUES ('${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'draft'}','${user.id}','${info.pdf}','${info.categories_name}','${info.thumbnail}','${myDate}','${region}')RETURNING contant_id`;
 							    client.query(sql, (error, result) => {
 									if(error){
 										resolve(message.SOMETHINGWRONG);
@@ -45,6 +44,7 @@ module.exports.createContant = (user, info) => {
 												categories_name: info.categories_name,
 												thumbnail 	  : info.thumbnail,
 												created_at 	  : myDate,
+												region		  : region,
 											}
 											redisClient.hmset('bi_contant', info.title, JSON.stringify(redata), function (err, data) {
 											    if(err){
@@ -76,7 +76,7 @@ module.exports.createContant = (user, info) => {
 						}else{
 							const cat_value =  info.category
 							if (res1.rows == '') {	
-							    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name,thumbnail,created_at) VALUES ('${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'pending'}','${user.id}','${info.pdf}','${info.categories_name}','${info.thumbnail}','${myDate}')RETURNING contant_id`;
+							    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name,thumbnail,created_at,region) VALUES ('${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'pending'}','${user.id}','${info.pdf}','${info.categories_name}','${info.thumbnail}','${myDate}','${region}')RETURNING contant_id`;
 							    client.query(sql, (error, result) => {
 									if(error){
 										resolve(message.SOMETHINGWRONG);
@@ -99,6 +99,7 @@ module.exports.createContant = (user, info) => {
 												categories_name: info.categories_name,
 												thumbnail 	  : info.thumbnail,
 												created_at 	  : myDate,
+												region 		  : region,
 											}
 											redisClient.hmset('bi_contant', info.title, JSON.stringify(redata), function (err, data) {
 											    if(err){
@@ -458,11 +459,17 @@ module.exports.tracecontant_list = (user, body) =>{
 							for(let keydata of searchress.rows){
 								tracearry.push(keydata);
 							}
-							const successmessage = {
-								'status':true,
-								'data':tracearry
-							}
-							resolve(successmessage)
+							redisClient.hgetall('bi_contant', function (err, data) {
+							    if(err){
+							    	resolve(message.SOMETHINGWRONG);
+							    }else{
+									const successmessage = {
+										'status':true,
+										'data':tracearry
+									}
+									resolve(successmessage)
+							    }
+							})
 						}
 					}
 				})
@@ -474,11 +481,60 @@ module.exports.tracecontant_list = (user, body) =>{
 }
 
 /** latestArtical ***/
-module.exports.latestArtical = (user) => {
+module.exports.latestArtical = (user,body) => {
 	return new Promise((resolve, reject) => {
 		try{
 			if (user.role_id == 1 || user.role_id == 2 ||user.role_id == 4 ) {
+				// console.log(user)
 				const arrtrace = [];
+				// const arry = [];
+				// const searchUser = `select * from signup where user_id = '${user.id}'`
+				// client.query(searchUser, (userError, userResult) => {
+				// 	if(userError){
+				// 		resolve(message.SOMETHINGWRONG)
+				// 	}else {
+				// 		const country_name = userResult.rows[0].country.trim();
+				// 		// resolve(country_name)
+				// 		const searchcountry = `select * from countries where country_name = '${country_name}'`
+				// 		client.query(searchcountry, (countryError, countryResult) => {
+				// 			if(countryError){
+				// 				resolve(message.SOMETHINGWRONG)
+				// 			}else {
+				// 				const country_id = countryResult.rows[0].id;
+				// 				// const data = `SELECT * FROM region WHERE country FIND_IN_SET(country, '101')`
+				// 		  //       client.query(data, (err, result) => {
+				// 		  //       		resolve(result)
+				// 		  //       	if(err){
+				// 		  //       		resolve(message.SOMETHINGWRONG)
+				// 		  //       	}else{
+				// 		  //       	}
+				// 		  //       })
+				// 				const searchRegion = `select * from region where region_id = '${body.region_id}'`;
+				// 				client.query(searchRegion, (regionError, regionResult) => {
+				// 				 	if(regionError){
+				// 				 		resolve(message.SOMETHINGWRONG)
+				// 				 	}else {
+				// 				 		const RDATA = regionResult.rows[0].country;
+				// 				 		const regionData = RDATA.split(',');
+				// 				 		for(let key of regionData){
+				// 				 			console.log(body.id)
+				// 				 			if(key != ''){
+				// 				 				if(key === body.id){
+				// 				 					resolve('show')
+				// 				 				}else{
+				// 				 					resolve('not show')
+				// 				 				}
+				// 				 			}else{
+				// 				 				resolve('not')
+				// 				 			}
+				// 				 		}
+
+				// 				 	}
+				// 				})
+				// 			}
+				// 		})
+				// 	}
+				// })
 				const searchcat = `select * from bi_contant ORDER BY contant_id DESC limit 10`;
 				client.query(searchcat, (searchcaterr, searchcatress) => {
 					if(searchcaterr){
@@ -496,11 +552,19 @@ module.exports.latestArtical = (user) => {
 									arrtrace.push(checktrace);
 								}
 							}
-							const successmessage = {
-								'status': true,
-								'data': arrtrace
-							}
-							resolve(successmessage);
+							redisClient.hgetall('bi_contant', function (err, data) {
+							    if(err){
+							    	resolve(message.SOMETHINGWRONG);
+							    }else{
+							    	// JSON.parse(data.title3)
+									// resolve(data)
+									const successmessage = {
+										'status': true,
+										'data': arrtrace
+									}
+									resolve(successmessage);
+							    }
+							})
 						}
 					}
 				})
@@ -508,7 +572,19 @@ module.exports.latestArtical = (user) => {
 				resolve(message.PERMISSIONERROR);
 			}
 		}catch(error){
-			resolve(error)
+			console.log(error)
 		}
 	})
 }
+
+ //  redisClient.hdel('bi_categories',categoryname,function(err,redisdata){
+	// 	if(err){
+	// 		resolve(message.SOMETHINGWRONG);
+	// 	}else{
+	// 		if(redisdata == 1){
+	// 			resolve(message.DELETEDSUCCESS);
+	// 		}else{
+	// 			resolve(message.NORDELETED);
+	// 		}
+	// 	}
+	// })

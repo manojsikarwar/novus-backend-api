@@ -968,9 +968,9 @@ module.exports.ValidateUser = (body) => {
        					for(let key of searchress.rows){
        						if(key.application_name == 'Novus BI' || key.application_name == 'NovusBI'){
        							const URL = 'http://3.132.68.85:3000/novusapp/appuser_login';
-       							// const URL = 'http://localhost:3000/novusapp/appuser_login';
+       							const URL1 = 'http://localhost:3000/novusapp/appuser_login';
 								var options = {
-								url: URL,
+								url: URL1,
 								method: 'POST',
 								form: {
 										"username": body.username,
