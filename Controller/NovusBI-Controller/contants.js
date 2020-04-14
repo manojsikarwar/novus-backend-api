@@ -233,7 +233,8 @@ module.exports.updateContant = (user, info) => {
 								if (error) {
 									resolve('something went wrong 1');
 								}else{
-									const updatecontantdata = `INSERT INTO bi_contant(contant_id,title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name) VALUES ('${info.contant_id}','${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'pending'}','${user.id}','${info.pdf}','${info.categories_name}')RETURNING contant_id`;
+									const updatecontantdata = `INSERT INTO bi_contant(contant_id,title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name,thumbnail,created_at,region) VALUES ('${info.contant_id}','${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'pending'}','${user.id}','${info.pdf}','${info.categories_name}','${info.thumbnail}','${myDate}','${info.region}')RETURNING contant_id`;
+									// console.log(updatecontantdata)
 							    client.query(updatecontantdata, (updateerror, updateresult) => {
 									if(updateerror){
 										resolve('something went wrong 2');
@@ -253,7 +254,9 @@ module.exports.updateContant = (user, info) => {
 												status	      : 'pending',
 												created_by    : user.id,
 												pdf			  : info.pdf,
-												categories_name: info.categories_name
+												categories_name: info.categories_name,
+												thumbnail 	  : info.thumbnail,
+												region 		  : info.region,
 											}
 											redisClient.hmset('bi_contant', info.title, JSON.stringify(redata), function (err, data) {
 											    if(err){
