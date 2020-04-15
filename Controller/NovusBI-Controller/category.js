@@ -248,12 +248,11 @@ module.exports.updateCategories = (user, info) => {
 	return new Promise((resolve, reject) => {
 		try{
 			if (user.role_id == 1 || user.role_id == 2 ) {
-				const match = `SELECT * FROM bi_categories WHERE category_name = '${info.category_name}'`;
+				const match = `SELECT * FROM bi_categories WHERE cat_id= '${info.cat_id}'`;
 		    	client.query(match, (matcherr, matchress) => {
 		    		if(matcherr){
 						resolve(message.SOMETHINGWRONG);
 		    		}else{
-		    			// resolve(matchress.rows)
 		    			if(matchress.rows == ''){
 							resolve(message.DATANOTFOUND)
 		    			}else{
