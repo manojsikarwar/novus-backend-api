@@ -169,13 +169,8 @@ module.exports.contants = (user, info) => {
 	                                       }
 										}
 									}
-									// const successmessage = {
-									// 	'status': true,
-									// 	'data':arr2
-									// }
-									// resolve(successmessage)
 								}
-//===========================================================================================
+		//===========================================================================================
 				const searchUser = `select * from signup where user_id = '${user.id}'`
 				client.query(searchUser, (userError, userResult) => {
 					if(userError){
@@ -194,7 +189,7 @@ module.exports.contants = (user, info) => {
 									 	if(regionError){
 									 		resolve(message.SOMETHINGWRONG)
 									 	}else {
-									 		// resolve(arr2)
+									 		// resolve(regionResult.rows)
 									 		for(let data of regionResult.rows){
 												for(let catdata of arr2){
 													const regnId = catdata.region;
@@ -203,7 +198,7 @@ module.exports.contants = (user, info) => {
 														if(key == ''){
 															resolve(message.DATANOTFOUND)
 														}else{
-					                                       if(key == data.country){
+					                                       if(key == data.region_id){
 					                                       		if(catdata.status != 'trace'){
 					                                       			arr3.push(catdata)
 					                                       			// resolve(arr2)
