@@ -969,23 +969,44 @@ module.exports.ValidateUser = (body) => {
        						if(key.application_name == 'Novus BI' || key.application_name == 'NovusBI'){
        							const URL = 'http://3.132.68.85:3000/novusapp/appuser_login';
        							const URL1 = 'http://localhost:3000/novusapp/appuser_login';
-								var options = {
-								url: URL1,
-								method: 'POST',
-								form: {
-										"username": body.username,
-										"ApplicationName": body.ApplicationName,
-										"ApplicationId" : body.ApplicationId 
-									  }
-								};
-								request(options, (error, response, body)=>{
-									if (error) {
-										resolve(message.SOMETHINGWRONG);
-									}else{
-										const result = JSON.parse(body)
-										resolve(result);
-									}
-								});
+       							if(URL){
+									var options = {
+									url: URL,
+									method: 'POST',
+									form: {
+											"username": body.username,
+											"ApplicationName": body.ApplicationName,
+											"ApplicationId" : body.ApplicationId 
+										  }
+									};
+									request(options, (error, response, body)=>{
+										if (error) {
+											resolve(message.SOMETHINGWRONG);
+										}else{
+											const result = JSON.parse(body)
+											resolve(result);
+										}
+									});
+       							}
+       							if(URL1){
+       								var options = {
+									url: URL1,
+									method: 'POST',
+									form: {
+											"username": body.username,
+											"ApplicationName": body.ApplicationName,
+											"ApplicationId" : body.ApplicationId 
+										  }
+									};
+									request(options, (error, response, body)=>{
+										if (error) {
+											resolve(message.SOMETHINGWRONG);
+										}else{
+											const result = JSON.parse(body)
+											resolve(result);
+										}
+									});
+       							}
        						}else{
 
 					    		const URL = 'http://animalhealth.novusint.com:3000/api/login';
