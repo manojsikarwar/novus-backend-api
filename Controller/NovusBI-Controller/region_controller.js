@@ -17,7 +17,7 @@ module.exports.region = (body) => {
 				resolve(message.SOMETHINGWRONG)
 			}else{
 				if(result.rows == ''){
-					const insertRegion = `insert into region(region_name) values('${body.region_name}')RETURNING region_id `
+					const insertRegion = `insert into region(region_name,country) values('${body.region_name}','${body.country}')RETURNING region_id `
 						client.query(insertRegion, (insertError, insertResult) => {
 							if(insertError) {
 								resolve(message.SOMETHINGWRONG)
@@ -86,7 +86,7 @@ module.exports.region = (body) => {
 
 module.exports.regionList = () => {
 	return new Promise((resolve,reject)=>{
-	   	const reslist = `select a.region_name,b.region_id,b.country from region as a inner join region_country as b on a.region_id = b.region_id`;
+	   	const reslist = `select * from region `;
 		client.query(reslist, (reserror,resresult)=>{
 			if(reserror){
 				resolve(message.SOMETHINGWRONG)
