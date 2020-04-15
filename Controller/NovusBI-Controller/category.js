@@ -253,7 +253,8 @@ module.exports.updateCategories = (user, info) => {
 		    		if(matcherr){
 						resolve(message.SOMETHINGWRONG);
 		    		}else{
-		    			if(matchress.rows != ''){
+		    			// resolve(matchress.rows)
+		    			if(matchress.rows == ''){
 							resolve(message.DATANOTFOUND)
 		    			}else{
 		    				const sql  = `UPDATE bi_categories SET category_name = '${info.category_name}', icon = '${info.icon}'  WHERE cat_id = '${info.cat_id}'RETURNING cat_id`;
