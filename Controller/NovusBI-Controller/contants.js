@@ -546,7 +546,6 @@ module.exports.latestArtical = (user) => {
 	return new Promise((resolve, reject) => {
 		try{
 			if (user.role_id == 1 || user.role_id == 2 ||user.role_id == 4 ) {
-				// console.log(user)
 				const arrtrace = [];
 
 				const searchcat = `select * from bi_contant ORDER BY contant_id DESC limit 10`;
@@ -562,7 +561,8 @@ module.exports.latestArtical = (user) => {
 							resolve(successmessage);
 						}else {
 							for(let checktrace of searchcatress.rows){
-								if(checktrace.status != 'trace'){
+								if(checktrace.status != 'trace' && checktrace.categories_name != 'PODCASTS'){
+								console.log(checktrace.categories_name)
 									arrtrace.push(checktrace);
 								}
 							}
@@ -570,8 +570,6 @@ module.exports.latestArtical = (user) => {
 							    if(err){
 							    	resolve(message.SOMETHINGWRONG);
 							    }else{
-							    	// JSON.parse(data.title3)
-									// resolve(data)
 									const successmessage = {
 										'status': true,
 										'data': arrtrace

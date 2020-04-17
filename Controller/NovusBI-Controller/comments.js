@@ -77,7 +77,8 @@ module.exports.comments = (user, contantId) => {
 			if (user.role_id == 1 || user.role_id == 2 || user.role_id == 4 ) {
 				
 				const commentArray = [];
-				const sql = `SELECT * FROM bi_comment WHERE contant_id = '${contantId}' AND is_status = '${1}'`;
+				// const sql = `SELECT * FROM bi_comment WHERE contant_id = '${contantId}' AND is_status = '${1}'`;
+				const sql = `SELECT a.*,b.fullname FROM bi_comment as a inner join signup as b on a.user_id = b.user_id WHERE contant_id = '${contantId}' AND is_status = '${1}'`;
 				client.query(sql, (error, result) => {
 					if(error){
 						resolve(message.SOMETHINGWRONG);
@@ -90,6 +91,7 @@ module.exports.comments = (user, contantId) => {
 							        comment 		 : dat.comment.trim(),
 							        contant_id		 : dat.contant_id,
 							        user_id		 	 : dat.user_id,
+							        username 		 : dat.fullname.trim(),
 							        is_status		 : dat.is_status,								 
 							        created_on		 : dat.created_on.trim(),
 								}
