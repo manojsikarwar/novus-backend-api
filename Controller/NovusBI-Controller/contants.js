@@ -198,14 +198,13 @@ module.exports.contants = (user, info) => {
 													const arr1  = regnId.split(',');
 													for(let key of arr1){
 														if(key == ''){
-															resolve(message.DATANOTFOUND)
+															resolve(message.DATANOTFOUND);
 														}else{
 					                                       if(key == data.region_id){
 					                                       		if(catdata.status != 'trace'){
 					                                       			arr3.push(catdata)
-					                                       			// resolve(arr2)
 					                                       		}else{
-					                                       			arr1.push('already deleted')
+					                                       			arr1.push('already deleted');
 					                                       		}
 					                                       }
 														}
@@ -214,7 +213,7 @@ module.exports.contants = (user, info) => {
 													'status': true,
 													'data':arr3
 												}
-												resolve(successmessage)
+												resolve(successmessage);
 												}
 											}
 									 	}	
