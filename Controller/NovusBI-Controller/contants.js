@@ -193,8 +193,8 @@ module.exports.contants = (user, info) => {
 									 	}else {
 									 		// resolve(regionResult.rows)
 									 		for(let data of regionResult.rows){
+													console.log(arr2)
 												for(let catdata of arr2){
-													console.log(catdata)
 													const regnId = catdata.region;
 													const arr1  = regnId.split(',');
 													for(let key of arr1){
