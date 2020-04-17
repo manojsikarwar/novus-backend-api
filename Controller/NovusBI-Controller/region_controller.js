@@ -86,6 +86,7 @@ module.exports.region = (body) => {
 
 module.exports.regionList = () => {
 	return new Promise((resolve,reject)=>{
+	   	// const reslist = `select * from region `;
 	   	const reslist = `select * from region `;
 		client.query(reslist, (reserror,resresult)=>{
 			if(reserror){

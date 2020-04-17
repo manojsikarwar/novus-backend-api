@@ -76,9 +76,11 @@ module.exports.createContant = (user, info) => {
 						}else{
 							const cat_value =  info.category
 							if (res1.rows == '') {	
+								// resolve(info)
 							    const sql = `INSERT INTO bi_contant(title,contant,type,categories,date,author,higlight,resume,comment,updated_at,status,created_by,pdf,categories_name,thumbnail,created_at,region) VALUES ('${info.title}','${contantdat}','${info.type}','${cat_value}','${info.date}','${info.author}','${info.heighlight}','${info.resume}','${info.comment}','${myDate}','${'pending'}','${user.id}','${info.pdf}','${info.categories_name}','${info.thumbnail}','${myDate}','${info.region}')RETURNING contant_id`;
 							    client.query(sql, (error, result) => {
 									if(error){
+										console.log(sql)
 										resolve(message.SOMETHINGWRONG);
 									}else{
 										if (result != '') {

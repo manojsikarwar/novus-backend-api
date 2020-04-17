@@ -172,7 +172,7 @@ module.exports.Categories = (user) => {
 					});
 				}else{
 					const errmessage = {
-						'status': false,
+						'success': false,
 						'message': 'You have not permission'
 					}
 					resolve(errmessage);
@@ -231,7 +231,7 @@ module.exports.Categories_list = (user) => {
 					});
 				}else{
 					const errmessage = {
-						'status': false,
+						'success': false,
 						'message': 'You have not permission'
 					}
 					resolve(errmessage);
