@@ -561,7 +561,7 @@ module.exports.latestArtical = (user) => {
 							resolve(successmessage);
 						}else {
 							for(let checktrace of searchcatress.rows){
-								if(checktrace.status != 'trace' && checktrace.categories_name != 'PODCASTS'){
+								if(checktrace.status != 'trace' && checktrace.categories_name != 'Podcast'){
 								console.log(checktrace.categories_name)
 									arrtrace.push(checktrace);
 								}
