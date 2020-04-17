@@ -196,8 +196,9 @@ module.exports.contants = (user, info) => {
 													console.log(arr2)
 												for(let catdata of arr2){
 													const regnId = catdata.region;
-													const arr1  = regnId.split(',');
-													for(let key of arr1){
+													console.log(catdata)
+													const reg_id  = regnId.split(',');
+													for(let key of reg_id){
 														if(key == ''){
 															resolve(message.DATANOTFOUND);
 														}else{
@@ -205,7 +206,7 @@ module.exports.contants = (user, info) => {
 					                                       		if(catdata.status != 'trace'){
 					                                       			arr3.push(catdata)
 					                                       		}else{
-					                                       			arr1.push('already deleted');
+					                                       			arr3.push('already deleted');
 					                                       		}
 					                                       }
 														}
