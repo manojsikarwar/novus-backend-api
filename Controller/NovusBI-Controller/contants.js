@@ -171,59 +171,64 @@ module.exports.contants = (user, info) => {
 	                                       }
 										}
 									}
+									const successmessage = {
+													'status': true,
+													'data':arr2
+												}
+									resolve(successmessage);
 								}
 		//===========================================================================================
-				const searchUser = `select * from signup where user_id = '${user.id}'`
-				client.query(searchUser, (userError, userResult) => {
-					if(userError){
-						resolve(message.SOMETHINGWRONG)
-					}else {
-						if(userResult.rows != ''){
-							const country_name = userResult.rows[0].country.trim();
-							const searchcountry = `select * from countries where country_name = '${country_name}'`
-							client.query(searchcountry, (countryError, countryResult) => {
-								if(countryError){
-									resolve(message.SOMETHINGWRONG)
-								}else {
-									const country_id = countryResult.rows[0].id;
-									const searchRegion = `select * from region_country where country = '${country_id}'`;
-									client.query(searchRegion, (regionError, regionResult) => {
-									 	if(regionError){
-									 		resolve(message.SOMETHINGWRONG)
-									 	}else {
-									 		for(let data of regionResult.rows){
-												for(let catdata of arr2){
-													const regnId = catdata.region.split(",");
-													for(let key of regnId){
-													console.log(catdata)
-														if(key == ''){
-															resolve(message.DATANOTFOUND);
-														}else{
-					                                       if(key == data.region_id){
-					                                       		if(catdata.status != 'trace'){
-					                                       			arr3.push(catdata)
-					                                       		}else{
-					                                       			arr3.push('already deleted');
-					                                       		}
-					                                       }
-														}
-													}
-												const successmessage = {
-													'status': true,
-													'data':arr3
-												}
-												resolve(successmessage);
-												}
-											}
-									 	}	
-									})
-								}
-							})
-						}else{
-							resolve(message.USERNOTFOUND)
-						}
-					}
-				})
+				// const searchUser = `select * from signup where user_id = '${user.id}'`
+				// client.query(searchUser, (userError, userResult) => {
+				// 	if(userError){
+				// 		resolve(message.SOMETHINGWRONG)
+				// 	}else {
+				// 		if(userResult.rows != ''){
+				// 			const country_name = userResult.rows[0].country.trim();
+				// 			const searchcountry = `select * from countries where country_name = '${country_name}'`
+				// 			client.query(searchcountry, (countryError, countryResult) => {
+				// 				if(countryError){
+				// 					resolve(message.SOMETHINGWRONG)
+				// 				}else {
+				// 					const country_id = countryResult.rows[0].id;
+				// 					const searchRegion = `select * from region_country where country = '${country_id}'`;
+				// 					client.query(searchRegion, (regionError, regionResult) => {
+				// 					 	if(regionError){
+				// 					 		resolve(message.SOMETHINGWRONG)
+				// 					 	}else {
+				// 					 		for(let data of regionResult.rows){
+				// 								for(let catdata of arr2){
+				// 									const regnId = catdata.region.split(",");
+				// 									for(let key of regnId){
+				// 									console.log(catdata)
+				// 										if(key == ''){
+				// 											resolve(message.DATANOTFOUND);
+				// 										}else{
+				// 	                                       if(key == data.region_id){
+				// 	                                       		if(catdata.status != 'trace'){
+				// 	                                       			arr3.push(catdata)
+				// 	                                       		}else{
+				// 	                                       			arr3.push('already deleted');
+				// 	                                       		}
+				// 	                                       }
+				// 										}
+				// 									}
+				// 								const successmessage = {
+				// 									'status': true,
+				// 									'data':arr3
+				// 								}
+				// 								resolve(successmessage);
+				// 								}
+				// 							}
+				// 					 	}	
+				// 					})
+				// 				}
+				// 			})
+				// 		}else{
+				// 			resolve(message.USERNOTFOUND)
+				// 		}
+				// 	}
+				// })
 //============================================================================================
 							}
 						}
