@@ -60,6 +60,7 @@ const message = {
 	CREATEDSUCCESS 		: {'success':true,'message':'Created'},
 	UPDATEDSUCCESS 		: {'success':true,'message':'Updated'},
 	DELETEDSUCCESS 		: {'success':true,'message':'Deleted'},
+	ACTIVE 				: {'success':true,'message':'Active'},
 
 
 

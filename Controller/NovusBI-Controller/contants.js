@@ -171,10 +171,10 @@ module.exports.contants = (user, info) => {
 	                                       }
 										}
 									}
-									const successmessage = {
-													'status': true,
-													'data':arr2
-												}
+									// const successmessage = {
+									// 				'status': true,
+									// 				'data':arr2
+									// 			}
 									// resolve(successmessage);
 								}
 		//===========================================================================================
@@ -473,12 +473,12 @@ module.exports.active_content = (user, body) => {
 											deleted_by    : user.id,
 											pdf			  : contentress.rows[0].pdf
 										}
-										redisClient.hmset('bi_contant', info.title, JSON.stringify(redata), function (err, data) {
+										redisClient.hmset('bi_contant', contentress.rows[0].title, JSON.stringify(redata), function (err, data) {
 										    if(err){
 										    	resolve(message.SOMETHINGWRONG);
 										    }else{
 										    	if(data == 'OK'){
-													resolve(message.DELETEDSUCCESS);
+													resolve(message.ACTIVE);
 										    	}else{
 											    	resolve(message.SOMETHINGWRONG);
 										    	}
