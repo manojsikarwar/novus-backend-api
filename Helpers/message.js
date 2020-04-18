@@ -33,6 +33,8 @@ const message = {
 	IDNOTEXISTS     : {'success':false,'message':'Id not found'},
 	ACCOUNTNOTACTIVE: {'success':false,'message': "User not activated for this application"},
 	USERNOTFOUND 	: {'success':false,'message': "User not found"},
+	CATIDNOTFOUND 	: {'success':false,'message': "Cat ID not found"},
+	REGION 		 	: {'success':false,'message': "User not belong in this Region"},
 
 	//======================== true ====================================
 
