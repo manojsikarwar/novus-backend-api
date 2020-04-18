@@ -144,7 +144,7 @@ module.exports.appuser_login = (body) => {
 								resolve(message.ACCOUNTNOTACTIVE)
 							}
 						}else{
-							resolve(message.DATANOTFOUND);
+							resolve(message.NOTALLOW);
 						}
 					}
 				})

@@ -34,7 +34,8 @@ const message = {
 	ACCOUNTNOTACTIVE: {'success':false,'message': "User not activated for this application"},
 	USERNOTFOUND 	: {'success':false,'message': "User not found"},
 	CATIDNOTFOUND 	: {'success':false,'message': "Cat ID not found"},
-	REGION 		 	: {'success':false,'message': "User not belong in this Region"},
+	NOTALLOW	 	: {'success':false,'message': "You are not allowed to access this app."},
+
 
 	//======================== true ====================================
 

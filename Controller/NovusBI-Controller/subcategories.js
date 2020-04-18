@@ -98,7 +98,7 @@ module.exports.SubCategories = (user, catId) => {
 					}else{
 						if(searchress.rows != ''){
 							if(searchress.rows[0].parant_id == 0){
-								const sql = `SELECT * FROM bi_categories WHERE parant_id = '${catId}' AND is_status = '${1}' ORDER BY  cat_id DESC`;
+								const sql = `SELECT * FROM bi_categories WHERE parant_id = '${catId}' AND is_status = '${1}'`;
 								client.query(sql, (error, result) => {
 									if(error){
 										resolve(message.SOMETHINGWRONG);
