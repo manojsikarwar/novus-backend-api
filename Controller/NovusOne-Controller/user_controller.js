@@ -261,7 +261,8 @@ module.exports.login = (body) => {
 																	    "state": data.state,
 																	    "city": data.city,
 																	    "zipcode": data.zipcode,
-																	    "rollid":data.role_id
+																	    "rollid":data.role_id,
+																	    "app_user":JSON.parse(key.app_user)
 					                                                }
 					                                                const tokenData = {
 					                                                    'success': true,
@@ -288,7 +289,8 @@ module.exports.login = (body) => {
 																		created_date :data.created_date,
 																		created_by :data.created_by,
 																		device_type :device_type,
-																		device_token :device_token
+																		device_token :device_token,
+																		app_user : key.app_user,
 
 																	}
 															   		const sql = `update signup set device_type='${device_type}',device_token ='${device_token}' where user_id ='${data.user_id}'`;
