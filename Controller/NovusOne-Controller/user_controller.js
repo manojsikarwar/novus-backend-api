@@ -1016,7 +1016,7 @@ module.exports.ValidateUser = (body) => {
 								url: URL,
 								method: 'POST',
 								form: {
-										"UserName": 'kkarde',
+										"UserName": body.username,
 										"ApplicationName": body.ApplicationName,
 										"ApplicationId " : body.ApplicationId 
 									  }
