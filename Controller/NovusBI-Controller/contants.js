@@ -168,8 +168,6 @@ module.exports.contants = (user, info) => {
 	                                       		}else{
 	                                       			// arr2.push('already deleted')	
 	                                       		}
-	                                       }else {
-	                                       		resolve(message.CATIDNOTFOUND)
 	                                       }
 										}
 									}
@@ -212,8 +210,6 @@ module.exports.contants = (user, info) => {
 									                                       		}else{
 									                                       			arr3.push('already deleted');
 									                                       		}
-									                                       }else {
-									                                       		resolve(message.REGION)
 									                                       }
 																		}
 																	}
