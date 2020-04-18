@@ -129,7 +129,7 @@ module.exports.SubCategories = (user, catId) => {
 											})
 										}else{
 											const errmessage = {
-												'status':true,
+												'success':true,
 												'data': result.rows
 											}
 											resolve(errmessage)
@@ -139,7 +139,7 @@ module.exports.SubCategories = (user, catId) => {
 
 							}else{
 								const errmessage = {
-									'status':true,
+									'success':true,
 									"message":'this is not category'
 								}
 								resolve(errmessage)
@@ -151,7 +151,7 @@ module.exports.SubCategories = (user, catId) => {
 				})
 			}else{
 				const errmessage = {
-					'status':false,
+					'success':false,
 					'message':'You have not permission'
 				}
 				resolve(errmessage)
@@ -211,7 +211,7 @@ module.exports.updateSubCategories = (user, info) => {
 							})
 						}else{
 							const errmessage = {
-								'status':false,
+								'success':false,
 								'message':'this is not a subcategories'
 							}
 							resolve(errmessage)
