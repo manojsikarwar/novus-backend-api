@@ -462,7 +462,7 @@ module.exports.createUser = (body, user) => {
 													    	// sendEmailToSignup(email, company, fullname);
 												    		for(let appData of app_user){
 												    			
-												    			const sqlApp = `insert into app_user(application_id,user_name,user_id,status,role_id,country) values('${appData.application_id}','${appData.user_name}','${userId}','${1}','${4}','${country}')RETURNING app_id`;
+												    			const sqlApp = `insert into app_user(application_id,user_name,user_id,status,role_id,country) values('${appData.application_id}','${appData.user_name}','${userId}','${1}','${rollid}','${country}')RETURNING app_id`;
 												
 																client.query(sqlApp, (err1, res1) => {
 																	if (err1) {
@@ -474,7 +474,7 @@ module.exports.createUser = (body, user) => {
 																			user_id		   : userId,
 																			app_id    	   : res1.rows[0].app_id,
 																			status 			: 1,
-																			role_id 		: 4,
+																			role_id 		: rollid,
 																			country			: country,
 																		}
 																		//console.log(AppRedis)
@@ -602,6 +602,7 @@ module.exports.AppUserApprove = (body, user) => {
 												user_name 		: emailress.rows[0].user_name,
 												user_id 		: emailress.rows[0].user_id,
 												status 			: '0',
+												role_id 		: '4'
 											}
 				   							redisClient.hmset('app_user', emailress.user_name, JSON.stringify(redata), function (err, data) {
 											    if(err){

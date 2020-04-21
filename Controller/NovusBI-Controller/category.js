@@ -125,10 +125,12 @@ module.exports.createCategories = (user, info) => {
 module.exports.Categories = (user) => {
 	return new Promise((resolve, reject) => {
 		try{
+			// console.log(user)
 			const role_id = user.role_id;
 			if (user.role > 2 ) {
 				resolve(message.PERMISSIONERROR);
 			}else{
+				console.log(user)
 				const catArray = [];
 				if (role_id == 1 || role_id == 4 ) {
 					const sql = `SELECT * FROM bi_categories where is_status = '${1}' and parant_id = '${0}'`;

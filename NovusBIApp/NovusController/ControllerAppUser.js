@@ -123,6 +123,7 @@ module.exports.appuser_login = (body) => {
 					if(getusererr){
 						resolve(message.SOMETHINGWRONG)
 					}else{
+						// console.log(user)
 						if(getuserress.rows != ''){
 							if(getuserress.rows[0].status == 0){
 								var token = jwt.sign({
@@ -134,10 +135,18 @@ module.exports.appuser_login = (body) => {
 	                            }, 'secret', {
 		                                expiresIn: "12hr"
 		                            });
+								const userData = {
+									'id': getuserress.rows[0].user_id,
+									'username': getuserress.rows[0].user_name.trim(),
+									'status':getuserress.rows[0].status,
+									'role_id':getuserress.rows[0].role_id,
+									'application_id': getuserress.rows[0].application_id
+								}
 								const successmessage = {
 									'status':true,
 									'username':getuserress.rows[0].username,
-									'token':token
+									'token':token,
+									'data':userData
 								}
 								resolve(successmessage)
 							}else{

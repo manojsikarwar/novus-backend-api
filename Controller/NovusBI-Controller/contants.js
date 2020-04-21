@@ -205,6 +205,7 @@ module.exports.contants = (user, info) => {
 																			resolve(message.DATANOTFOUND);
 																		}else{
 									                                       if(key == data.region_id){
+									                                       	    // return true;
 									                                       		if(catdata.status != 'trace'){
 									                                       			arr3.push(catdata)
 									                                       		}else{
@@ -213,13 +214,13 @@ module.exports.contants = (user, info) => {
 									                                       }
 																		}
 																	}
+																}
+															}
 																const successmessage = {
 																	'status': true,
 																	'data':arr3
 																}
 																resolve(successmessage);
-																}
-															}
 													 	}	
 													})
 												}
