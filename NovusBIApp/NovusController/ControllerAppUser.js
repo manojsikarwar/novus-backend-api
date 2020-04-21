@@ -172,14 +172,101 @@ module.exports.appuser_login = (body) => {
 }
 
 //============= latestArtical ==================
-//get
+//post
 
-module.exports.articles_list = (user) => {
+module.exports.articles_list = (user,info) => {
 	return new Promise((resolve, reject) => {
-		try{
-			if (user.role_id == 1 || user.role_id == 2 ||user.role_id == 4 ) {
-				const arrtrace = [];
+	try{
+		console.log(info)
+		const role_id = user.role_id;
+		const arr2 = [];
+		const arr3  = [];
+		if(role_id == 1 || role_id == 2 || role_id == 4){
+			if(info.cat_id != ''){
+				const searchcat = `select * from bi_contant where status = 'active'`;
+				client.query(searchcat, (searchcaterr, searchcatress) => {
+					if(searchcaterr){
+						resolve(message.SOMETHINGWRONG);
+					}else{
+						if(searchcatress.rows == ''){
+							resolve(message.DATANOTFOUND);
+						}else {
+							for(let catdata of searchcatress.rows){
+								const catId = catdata.categories;
+								const arr1  = catId.split(',');
+								for(let key of arr1){
+									if(key == ''){
+										resolve(message.DATANOTFOUND)
+									}else{
+                                       if(key == info.cat_id){
+                                       		if(catdata.status != 'trace'){
 
+                                       			arr2.push(catdata)
+
+                                       		}else{
+                                       			// arr2.push('already deleted')	
+                                       		}
+                                       }
+									}
+								}
+							}
+							const searchUser = `select * from signup where user_id = '${user.id}'`
+							client.query(searchUser, (userError, userResult) => {
+								if(userError){
+									resolve(message.SOMETHINGWRONG)
+								}else {
+									if(userResult.rows != ''){
+										const country_name = userResult.rows[0].country.trim();
+										const searchcountry = `select * from countries where country_name = '${country_name}'`
+										client.query(searchcountry, (countryError, countryResult) => {
+											if(countryError){
+												resolve(message.SOMETHINGWRONG)
+											}else {
+												const country_id = countryResult.rows[0].id;
+												const searchRegion = `select * from region_country where country = '${country_id}'`;
+												client.query(searchRegion, (regionError, regionResult) => {
+												 	if(regionError){
+												 		resolve(message.SOMETHINGWRONG)
+												 	}else {
+												 		for(let data of regionResult.rows){
+															for(let catdata of arr2){
+																const regnId = catdata.region.split(",");
+																for(let key of regnId){
+																// console.log(catdata)
+																	if(key == ''){
+																		resolve(message.DATANOTFOUND);
+																	}else{
+								                                       if(key == data.region_id){
+								                                       	    // return true;
+								                                       		if(catdata.status != 'trace'){
+								                                       			arr3.push(catdata)
+								                                       		}else{
+								                                       			arr3.push('already deleted');
+								                                       		}
+								                                       }
+																	}
+																}
+															}
+														}
+															const successmessage = {
+																'status': true,
+																'data':arr3
+															}
+															resolve(successmessage);
+												 	}	
+												})
+											}
+										})
+									}else{
+										resolve(message.USERNOTFOUND)
+									}
+								}
+							})
+						}
+					}
+				})
+			}else {
+				const arrtrace = [];
 				const searchcat = `select * from bi_contant where status = 'active' ORDER BY contant_id DESC`;
 				client.query(searchcat, (searchcaterr, searchcatress) => {
 					if(searchcaterr){
@@ -187,33 +274,30 @@ module.exports.articles_list = (user) => {
 					}else{
 						if(searchcatress.rows == ''){
 							const successmessage = {
-								'status': true,
-								'data': arrtrace
-							}
-							resolve(successmessage);
-						}else {
-							for(let checktrace of searchcatress.rows){
-									arrtrace.push(checktrace);
-							}
-							redisClient.hgetall('bi_contant', function (err, data) {
-							    if(err){
-							    	resolve(message.SOMETHINGWRONG);
-							    }else{
-									const successmessage = {
 										'status': true,
 										'data': arrtrace
 									}
 									resolve(successmessage);
-							    }
-							})
+						}else {
+							for(let checktrace of searchcatress.rows){
+								if(checktrace.status != 'trace'){
+									arrtrace.push(checktrace);
+								}
+							}
+							const successmessage = {
+								'status': true,
+								'data': arrtrace
+							}
+							resolve(successmessage);
 						}
 					}
 				})
-			}else{
-				resolve(message.PERMISSIONERROR);
 			}
+		}else{
+			resolve(message.NOTPERMISSION)
+		}
 		}catch(error){
-			console.log(error)
+			resolve(error)
 		}
 	})
 }
