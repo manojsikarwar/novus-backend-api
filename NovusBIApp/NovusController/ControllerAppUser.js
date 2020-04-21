@@ -12,7 +12,8 @@ const generator 	= require('generate-password');
 const FCM 			= require('fcm-node');
 const KEY 			= serverKey.KEY;
 
-
+//============== create user =================
+//post
 module.exports.NovusUser = (body) => {
 	return new Promise((resolve, reject) => {
 		try{
@@ -111,6 +112,8 @@ module.exports.NovusUser = (body) => {
 		}
 	})
 }
+//================= appuser login ==============
+//post
 
 module.exports.appuser_login = (body) => {
 	return new Promise((resolve,reject) => {
@@ -164,6 +167,53 @@ module.exports.appuser_login = (body) => {
 			}
 		}catch(error){
 			resolve(error)
+		}
+	})
+}
+
+//============= latestArtical ==================
+//get
+
+module.exports.articles_list = (user) => {
+	return new Promise((resolve, reject) => {
+		try{
+			if (user.role_id == 1 || user.role_id == 2 ||user.role_id == 4 ) {
+				const arrtrace = [];
+
+				const searchcat = `select * from bi_contant where status = 'active' ORDER BY contant_id DESC`;
+				client.query(searchcat, (searchcaterr, searchcatress) => {
+					if(searchcaterr){
+						resolve(message.SOMETHINGWRONG);
+					}else{
+						if(searchcatress.rows == ''){
+							const successmessage = {
+								'status': true,
+								'data': arrtrace
+							}
+							resolve(successmessage);
+						}else {
+							for(let checktrace of searchcatress.rows){
+									arrtrace.push(checktrace);
+							}
+							redisClient.hgetall('bi_contant', function (err, data) {
+							    if(err){
+							    	resolve(message.SOMETHINGWRONG);
+							    }else{
+									const successmessage = {
+										'status': true,
+										'data': arrtrace
+									}
+									resolve(successmessage);
+							    }
+							})
+						}
+					}
+				})
+			}else{
+				resolve(message.PERMISSIONERROR);
+			}
+		}catch(error){
+			console.log(error)
 		}
 	})
 }

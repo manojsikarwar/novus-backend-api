@@ -16,3 +16,12 @@ module.exports.appuser_login = (req, res, next) => {
 		res.json(data);
 	})
 }
+
+module.exports.articles_list = (req, res, next) => {
+	// const body = req.body;
+	const user = req.user;
+	
+	AppUser.articles_list(user).then((data)=>{
+		res.json(data);
+	})
+}

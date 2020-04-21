@@ -23,6 +23,9 @@ router.use(bodyParser.json());
 
 router.post('/NovusUser', UserBI.NovusUser);
 router.post('/appuser_login', UserBI.appuser_login);
+router.get('/articles_list',userAuthenticator,UserBI.articles_list);
+
+router.post('/')
 
 
 
