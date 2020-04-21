@@ -132,6 +132,7 @@ module.exports.appuser_login = (body) => {
 	                                status:getuserress.rows[0].status,
 	                                role_id : getuserress.rows[0].role_id,
 	                                application_id : getuserress.rows[0].application_id,
+	                                country : getuserress.rows[0].country
 	                            }, 'secret', {
 		                                expiresIn: "12hr"
 		                            });
@@ -140,7 +141,8 @@ module.exports.appuser_login = (body) => {
 									'username': getuserress.rows[0].user_name.trim(),
 									'status':getuserress.rows[0].status,
 									'role_id':getuserress.rows[0].role_id,
-									'application_id': getuserress.rows[0].application_id
+									'application_id': getuserress.rows[0].application_id,
+									'country' : getuserress.rows[0].country
 								}
 								const successmessage = {
 									'status':true,

@@ -57,6 +57,7 @@ app.use((req, res, next) => {
                         company : userData.company,
                         status  : userData.status,
                         application_id: userData.application_id,
+                        country : userData.country,
                         token   : token,
                         exp     : userData.exp
                     }
