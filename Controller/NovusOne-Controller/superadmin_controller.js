@@ -1018,7 +1018,7 @@ module.exports.admin_update_userProfile = (body, user) => {
 
 										    		for(let appData of app_user){
 												    			
-										    			const sqlApp = `insert into app_user(application_id,user_name,user_id,status) values('${appData.application_id}','${appData.user_name}','${user_id}','${0}')RETURNING app_id`;
+										    			const sqlApp = `insert into app_user(application_id,user_name,user_id,status,role_id) values('${appData.application_id}','${appData.user_name}','${user_id}','${0}','${4}')RETURNING app_id`;
 										
 														client.query(sqlApp, (err1, res1) => {
 															if (err1) {
@@ -1029,7 +1029,8 @@ module.exports.admin_update_userProfile = (body, user) => {
 																	user_name	   : appData.user_name,
 																	user_id		   : user_id,
 																	app_id    	   : res1.rows[0].app_id,
-																	status 			: 0
+																	status 		   : 0,
+																	role_id 	   : 4
 																}
 
 																redisClient.hmset('app_user', appData.user_name, JSON.stringify(AppRedis), function (err1, data1) {

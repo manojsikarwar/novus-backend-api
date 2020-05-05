@@ -125,7 +125,7 @@ module.exports.createCategories = (user, info) => {
 module.exports.Categories = (user) => {
 	return new Promise((resolve, reject) => {
 		try{
-			// console.log(user)
+			console.log(user)
 			const role_id = user.role_id;
 			if (user.role > 2 ) {
 				resolve(message.PERMISSIONERROR);

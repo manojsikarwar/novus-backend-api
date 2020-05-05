@@ -177,7 +177,7 @@ module.exports.appuser_login = (body) => {
 module.exports.articles_list = (user,info) => {
 	return new Promise((resolve, reject) => {
 	try{
-		console.log(info)
+		// console.log(info)
 		const role_id = user.role_id;
 		const arr2 = [];
 		const arr3  = [];

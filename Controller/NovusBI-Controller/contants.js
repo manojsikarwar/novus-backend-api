@@ -177,7 +177,6 @@ module.exports.contants = (user, info) => {
 									// 			}
 									// resolve(successmessage);
 								}
-		//===========================================================================================
 								const searchUser = `select * from signup where user_id = '${user.id}'`
 								client.query(searchUser, (userError, userResult) => {
 									if(userError){
@@ -230,7 +229,6 @@ module.exports.contants = (user, info) => {
 										}
 									}
 								})
-//============================================================================================
 							}
 						}
 					})
